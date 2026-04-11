@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fourseat — Your Personal Board of Directors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Inter',sans-serif;
+  background:#110f0d;
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ─── SCROLL ANIMATIONS ───────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── NAV ─────────────────────────────────────────── */
+nav{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  z-index:300;
+  display:flex;align-items:center;gap:0;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(32px);
+  -webkit-backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:999px;
+  padding:6px 6px 6px 24px;
+  width:min(860px,94vw);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.nav-logo{
+  font-family:'Instrument Serif',serif;
+  font-size:1.3rem;
+  color:#fff;
+  margin-right:auto;
+  letter-spacing:-.01em;
+  display:flex;align-items:center;gap:5px;
+  cursor: pointer;
+}
+.nav-logo sup{
+  font-family:'Inter',sans-serif;
+  font-size:.55rem;font-weight:600;
+  background:rgba(255,255,255,.2);
+  border-radius:4px;padding:2px 6px;
+  letter-spacing:.05em;
+}
+.nav-links{display:flex;align-items:center;gap:4px;margin:0 1.5rem}
+.nav-link{
+  padding:.4rem 1rem;
+  font-size:.85rem;font-weight:400;
+  color:rgba(255,255,255,.7);
+  border:none;background:none;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space:nowrap;
+}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.1)}
+.nav-link.active{color:#fff;background:rgba(255,255,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1)}
+.nav-cta{
+  display:flex;align-items:center;
+  padding:.5rem 1.1rem;
+  background:#fff;
+  color:#110f0d;
+  border-radius:999px;
+  font-size:.85rem;font-weight:600;
+  border:none;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space:nowrap;
+  box-shadow: 0 2px 12px rgba(255,255,255,0.2);
+}
+.nav-cta:hover{background:#f0ebe1;transform:translateY(-1px);box-shadow: 0 4px 16px rgba(255,255,255,0.3);}
+
+/* ─── PAGES ───────────────────────────────────────── */
+.page{display:none}
+.page.active{display:block; animation: fadeIn 0.4s ease-out;}
+@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+
+/* ─── ALVEN TEXT REVEAL ───────────────────────────── */
+.text-reveal { overflow: hidden; display: inline-flex; vertical-align: top; }
+.text-reveal span { display: inline-block; transform: translateY(110%); opacity: 0; animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.text-reveal-d1 span { animation-delay: 0.1s; }
+.text-reveal-d2 span { animation-delay: 0.2s; }
+.text-reveal-d3 span { animation-delay: 0.35s; }
+@keyframes slideUp { 0% { transform: translateY(110%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+
+.cycle-text {
+  display: inline-block;
+  color: #e8ba83;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(0);
+}
+.cycle-text.swap-out {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.cycle-text.swap-in {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ─── HERO ────────────────────────────────────────── */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+/* Dark cinematic background with warm amber blur blobs */
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 80% at 75% 45%, rgba(180,110,40,.3) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 20% 60%, rgba(90,50,20,.4) 0%, transparent 60%),
+    linear-gradient(160deg,#1c1814 0%,#110f0d 40%,#080706 100%);
+  z-index:0;
+}
+/* cinematic blur blobs */
+.hero-bg::before{
+  content:'';position:absolute;
+  width:500px;height:500px;
+  right:25%;top:5%;
+  background:rgba(215,135,50,.2);
+  border-radius:50%;
+  filter:blur(110px);
+  animation: float 12s infinite ease-in-out alternate;
+}
+.hero-bg::after{
+  content:'';position:absolute;
+  width:400px;height:600px;
+  right:5%;top:15%;
+  background:rgba(140,70,25,.2);
+  border-radius:50%;
+  filter:blur(80px);
+  animation: float 15s infinite ease-in-out alternate-reverse;
+}
+@keyframes float {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-40px) scale(1.05); }
+}
+.hero-content{
+  position:relative;z-index:10;
+  width:100%;
+  max-width:1150px;
+  margin:0 auto;
+  padding:0 3rem;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:5rem;
+  padding-top:80px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.8rem;color:rgba(255,255,255,.8);
+  margin-bottom:2rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+}
+.hero-badge svg{width:16px;height:16px;color:#e8ba83;}
+.hero-title{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(3.5rem,6.5vw,6rem);
+  font-weight:400;
+  line-height:1.02;
+  letter-spacing:-.02em;
+  color:#fff;
+  margin-bottom:1.5rem;
+}
+.hero-title em{font-style:italic;color:rgba(255,255,255,.7)}
+.hero-sub{
+  font-size:1.05rem;
+  color:rgba(255,255,255,.6);
+  line-height:1.65;
+  margin-bottom:2.6rem;
+  max-width:440px;
+}
+.hero-sub strong{color:rgba(255,255,255,.9);font-weight:500}
+.hero-actions{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+
+/* White Pill Buttons */
+.btn-hero-primary{
+  padding:.8rem 1.8rem;
+  background:#fff;
+  color:#110f0d;
+  border-radius:999px;
+  font-size:.95rem;font-weight:600;
+  border:none;cursor:pointer;
+  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(255,255,255,0.15);
+}
+.btn-hero-primary:hover{background:#f0ebe1;transform:translateY(-2px);box-shadow: 0 8px 24px rgba(255,255,255,0.25);}
+.btn-hero-secondary{
+  padding:.8rem 1.8rem;
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  border-radius:999px;
+  font-size:.95rem;font-weight:500;
+  border:1px solid rgba(255,255,255,.15);
+  cursor:pointer;
+  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter:blur(8px);
+}
+.btn-hero-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);}
+.hero-trial{font-size:.8rem;color:rgba(255,255,255,.4);}
+
+/* Floating glass card with 3D golden orb */
+.hero-card{
+  background:rgba(20,18,16,.4);
+  backdrop-filter:blur(32px);
+  -webkit-backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:28px;
+  padding:2.5rem;
+  width:260px;
+  display:flex;flex-direction:column;align-items:center;gap:1.8rem;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  animation: hoverFloat 6s ease-in-out infinite;
+}
+@keyframes hoverFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.hero-orb{
+  width:110px;height:110px;
+  border-radius:50%;
+  background: conic-gradient(
+    rgba(217,141,56,1) 0deg 90deg, 
+    rgba(125,72,23,1) 90deg 180deg, 
+    rgba(255,215,160,1) 180deg 270deg, 
+    rgba(47,23,4,1) 270deg 360deg
+  );
+  box-shadow:0 12px 32px rgba(217,141,56,.3), inset 0 2px 8px rgba(255,255,255,.4), inset -4px -8px 16px rgba(0,0,0,0.6);
+  position:relative;
+  animation: spinPie 15s linear infinite;
+}
+@keyframes spinPie { 100% { transform: rotate(360deg); } }
+.hero-orb::after{
+  content:'';position:absolute;
+  top:15%;left:20%;
+  width:30%;height:20%;
+  background:rgba(255,255,255,.5);
+  border-radius:50%;
+  filter:blur(5px);
+  transform:rotate(-35deg);
+}
+
+/* ─── GENERIC SECTION ─────────────────────────────── */
+.section{padding:8rem 0; position:relative;}
+.section-inner{max-width:1150px;margin:0 auto;padding:0 3rem;}
+.section-label{
+  font-size:.75rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:#e8ba83;
+  margin-bottom:1.2rem;
+}
+.section-title{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(2.5rem,4.5vw,3.5rem);
+  font-weight:400;
+  line-height:1.1;
+  letter-spacing:-.02em;
+  color:#fff;
+  margin-bottom:1.2rem;
+}
+.section-title em{font-style:italic;color:rgba(255,255,255,.55)}
+.section-sub{
+  font-size:1.05rem;
+  color:rgba(255,255,255,.6);
+  max-width:520px;
+  line-height:1.7;
+}
+
+/* ─── FEATURES GRID ───────────────────────────────── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+  margin-top:4rem;
+}
+.feature-card{
+  background:rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px;
+  padding:2.5rem 2rem;
+  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor:pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.feature-card:hover{
+  background:rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.15);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+.feature-icon{
+  width:48px;height:48px;
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+  margin-bottom:1.5rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+}
+.feature-name{font-size:1.1rem;font-weight:500;color:#fff;margin-bottom:.8rem;}
+.feature-desc{font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.6;}
+
+/* ─── TESTIMONIALS (Alven style photos/structure) ─── */
+.testimonials-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+  margin-top:4rem;
+}
+.testi-card{
+  background:rgba(20,18,16,.4);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:24px;
+  padding:2rem;
+  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.testi-card:hover{background:rgba(255,255,255,.05);transform:translateY(-5px);}
+.testi-quote{
+  font-size:1.05rem;
+  color:rgba(255,255,255,.8);
+  line-height:1.6;
+  margin-bottom:2rem;
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+.testi-author{display:flex;align-items:center;gap:.8rem}
+/* Updated responsive premium photos */
+.testi-avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;font-weight:600;color:#fff;
+  flex-shrink:0; border: 1px solid rgba(255,255,255,0.2);
+  background-size: cover; background-position: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+.t-img-1 { background-image: radial-gradient(circle at top right, #9fa1a6, #3f434a); }
+.t-img-2 { background-image: radial-gradient(circle at top right, #d9aca4, #734a41); }
+.t-img-3 { background-image: radial-gradient(circle at top right, #a0b5a3, #4a5c4c); }
+.testi-name{font-size:.9rem;font-weight:500;color:#fff}
+.testi-role{font-size:.8rem;color:rgba(255,255,255,.4)}
+
+/* ─── PRICING ─────────────────────────────────────── */
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+  margin-top:4.rem;
+  align-items:center;
+}
+.price-card{
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  padding:3rem 2.5rem;
+  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column;
+}
+.price-card:hover{background:rgba(255,255,255,.06); transform:translateY(-8px);}
+.price-card.featured{
+  background:rgba(20,18,16,.6);
+  border-color:rgba(232,186,131,.4);
+  box-shadow:0 12px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+  transform:scale(1.03);
+  z-index: 2;
+}
+.price-card.featured:hover{transform:scale(1.03) translateY(-5px);}
+.price-tier{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#e8ba83;margin-bottom:1rem}
+.price-amount{
+  font-family:'Instrument Serif',serif;
+  font-size:3.5rem;font-weight:400;
+  color:#fff;line-height:1;
+  margin-bottom:.5rem; letter-spacing: -0.02em;
+}
+.price-amount span{font-family:'Inter',sans-serif;font-size:1.1rem;color:rgba(255,255,255,.4)}
+.price-desc{font-size:.9rem;color:rgba(255,255,255,.5);margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.08); line-height: 1.5;}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;flex-grow:1;}
+.price-features li{font-size:.9rem;color:rgba(255,255,255,.7);display:flex;gap:.8rem;align-items:flex-start}
+.price-features li::before{content:'✓';color:#e8ba83;flex-shrink:0;}
+.btn-price{
+  width:100%;padding:.9rem;
+  border-radius:999px;
+  font-size:.9rem;font-weight:600;
+  border:1px solid rgba(255,255,255,.2);
+  background:transparent;color:#fff;
+  cursor:pointer;transition:all .3s ease;
+}
+.btn-price:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.4)}
+.btn-price.featured{background:#fff;color:#110f0d;border-color:#fff}
+.btn-price.featured:hover{background:#f0ebe1;box-shadow: 0 4px 16px rgba(255,255,255,.2);}
+
+/* ─── APP GLASS CARDS ─────────────────────────────── */
+.glass-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(32px);
+  -webkit-backdrop-filter:blur(32px);
+  border-radius: 28px;
+  padding:2.5rem;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.input-label{
+  display:block;
+  font-size:.75rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+  margin-bottom:.8rem;
+}
+textarea,input[type=text],input[type=number],select{
+  width:100%;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:.95rem;
+  padding:1rem 1.25rem;
+  resize:vertical;
+  transition:all .3s ease;
+  outline:none;
+}
+textarea::placeholder,input::placeholder{color:rgba(255,255,255,.2)}
+textarea:focus,input:focus,select:focus{border-color:rgba(232,186,131,.5);background:rgba(0,0,0,.4);box-shadow:0 0 0 4px rgba(232,186,131,.05);}
+textarea{min-height:120px}
+select option{background:#1a1714;color:#fff}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.input-group{margin-bottom:1.5rem}
+
+/* ─── BUTTONS ─────────────────────────────────────── */
+.btn-primary {
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.8rem 1.8rem;
+  background:#fff;color:#110f0d;
+  border-radius:999px; font-family:'Inter',sans-serif;
+  font-size:.95rem;font-weight:600;border:none;cursor:pointer;
+  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+}
+.btn-primary:hover { background:#f0ebe1;transform:translateY(-2px);box-shadow: 0 8px 24px rgba(255,255,255,0.2); }
+.btn-primary:disabled{background:rgba(255,255,255,.1);color:rgba(255,255,255,.3);cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ─── BOARDS / CHAT RESPONSES ─────────────────────── */
+.board-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem}
+.board-card{
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:24px;
+  padding:1.8rem;
+  position:relative;overflow:hidden;
+  transition: transform 0.3s ease;
+}
+.board-card:hover{transform:translateY(-2px);background:rgba(255,255,255,.04);}
+.board-card-bar{position:absolute;top:0;left:0;right:0;height:3px;}
+.board-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem;gap:.5rem}
+.member-name{font-size:1.05rem;font-weight:500;color:#fff}
+.member-title{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:4px}
+.ai-badge{
+  font-size:.7rem;padding:.3rem .8rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.5);
+  white-space:nowrap;flex-shrink:0;
+}
+.round-tag{
+  font-size:.7rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(255,255,255,.3);
+  margin-bottom:1rem;
+}
+.board-response{font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.7}
+
+/* Chairman Section */
+.chairman{
+  background:rgba(20,18,16,.6);
+  border:1px solid rgba(232,186,131,.3);
+  border-radius:28px;
+  padding:2.5rem;
+  margin-top:2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.chairman-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+.chairman-orb{
+  width:50px;height:50px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffd7a0,#d98d38 40%,#7d4817);
+  box-shadow:0 6px 20px rgba(0,0,0,.6);
+  flex-shrink:0;
+}
+.chairman-title{font-size:1.2rem;font-weight:600;color:#fff}
+.chairman-sub{font-size:.85rem;color:rgba(255,255,255,.5)}
+.verdict-box{
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:1.5rem 2rem;
+  margin-bottom:2.5rem;
+}
+.verdict-text{
+  font-family:'Instrument Serif',serif;
+  font-size:1.5rem;color:#fff;line-height:1.4;
+}
+.conf-pill{
+  display:inline-block; font-family:'Inter',sans-serif;
+  font-size:.75rem;font-weight:600;
+  padding:.3rem .8rem;border-radius:999px;
+  margin-left:1rem;vertical-align:middle;
+}
+.conf-high{background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.conf-med{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+.conf-low{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem}
+.ch-col{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.5rem}
+.ch-col-title{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1rem}
+.ch-list{list-style:none;display:flex;flex-direction:column;gap:.8rem}
+.ch-list li{font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.6;padding-left:1.2rem;position:relative}
+.ch-list li::before{content:'→';position:absolute;left:0;color:#e8ba83;}
+
+/* ─── LOADING ─────────────────────────────────────── */
+.loading{display:none;text-align:center;padding:4rem}
+.loading.active{display:block; animation: fadeIn 0.4s ease;}
+.spinner{
+  width:44px;height:44px;
+  border:2px solid rgba(255,255,255,.05);
+  border-top-color:#e8ba83;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 1.5rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-size:1rem;color:rgba(255,255,255,.6)}
+.loading-steps{margin-top:1.5rem;display:flex;flex-direction:column;gap:.6rem}
+.step{font-size:.85rem;color:rgba(255,255,255,.3);transition:color .4s;}
+.step.done{color:rgba(255,255,255,.5)}
+.step.now{color:#e8ba83;}
+
+/* ─── APP SPECIFIC: MEMORY ────────────────────────── */
+.upload-zone{
+  border:2px dashed rgba(255,255,255,.1);
+  border-radius:20px;padding:3rem;
+  text-align:center;cursor:pointer;
+  transition:all .3s ease;
+  background:rgba(0,0,0,.15);
+  margin-bottom:1.5rem;
+}
+.upload-zone:hover{border-color:rgba(232,186,131,.4);background:rgba(0,0,0,.3);}
+.upload-icon{font-size:2.5rem;margin-bottom:1rem}
+.doc-item{
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+  border-radius:16px; padding:1.2rem 1.5rem; margin-bottom:.8rem; display:flex; align-items:flex-start; justify-content:space-between;
+}
+.doc-name{font-size:.95rem;font-weight:500;color:#fff;margin-bottom:.3rem}
+.doc-meta{font-size:.8rem;color:rgba(255,255,255,.4)}
+.memory-answer{
+  background:rgba(232,186,131,.05); border:1px solid rgba(232,186,131,.2);
+  border-radius:20px;padding:2rem; margin-top:2rem;
+}
+.answer-text{font-size:.95rem;line-height:1.7;color:rgba(255,255,255,.85)}
+.source-chip{
+  display:inline-block; font-size:.7rem;padding:.3rem .8rem;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;color:rgba(255,255,255,.5); margin:.4rem .4rem 0 0;
+}
+
+/* ─── APP SPECIFIC: BRIEF ─────────────────────────── */
+.metric-box{
+  background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.08);
+  border-radius:16px; padding:1.2rem 1.5rem;
+}
+.metric-lbl-input{
+  background:transparent;border:none; font-size:.7rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(255,255,255,.4); padding:0;width:100%;margin-bottom:.5rem;
+}
+.metric-val-input{
+  background:transparent;border:none; font-family:'Instrument Serif',serif;
+  font-size:2rem;color:#fff; padding:0;width:100%;
+}
+.metric-val-input:focus,.metric-lbl-input:focus{outline:none}
+.deck-done{
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;padding:3rem; text-align:center;margin-top:2rem;
+}
+.deck-done-title{font-family:'Instrument Serif',serif;font-size:2rem;color:#fff;margin-bottom:.5rem}
+
+/* ─── STATUS BAR ──────────────────────────────────── */
+.status-bar{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.8rem;color:rgba(255,255,255,.4);
+  margin-bottom:2rem;
+}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
+
+/* ─── TOAST ───────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:999;
+  background:rgba(30,26,22,.95); border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(24px); border-radius:16px;padding:1rem 1.5rem;
+  font-size:.9rem;color:#fff; transform:translateY(100px);opacity:0; transition:all .4s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:rgba(74,222,128,.4);color:#4ade80}
+.toast.err{border-color:rgba(248,113,113,.4);color:#f87171}
+
+/* ─── FOOTER ──────────────────────────────────────── */
+footer{
+  border-top:1px solid rgba(255,255,255,.05);
+  padding:3rem; display:flex;align-items:center;justify-content:space-between;
+  max-width:1150px;margin:5rem auto 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════ -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    Fourseat <sup>AI</sup>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('home')">How it works</button>
+    <button class="nav-link" onclick="showPage('pricing')">Pricing</button>
+    <button class="nav-link" onclick="showPage('home')">About</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('waitlist')">
+    Sign up
+  </button>
+</nav>
+
+<!-- ══ HOME PAGE ═════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero reveal">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div>
+        <div class="hero-badge">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
+          500+ founders already using Fourseat
+        </div>
+        <h1 class="hero-title">
+          <div class="text-reveal text-reveal-d1"><span>Fourseat,</span></div><br/>
+          <div class="text-reveal text-reveal-d2"><span>your personal <em>board of</em></span></div><br/>
+          <div class="text-reveal text-reveal-d3"><span><em>directors.</em></span></div>
+        </h1>
+        <p class="hero-sub" style="font-size: 1.2rem; max-width: 500px">
+          Fourseat is your full time AI employee that <br/>
+          <span style="position:relative; display:inline-block; width:280px; height:1.2rem">
+            <strong id="type-text" class="cycle-text" style="position:absolute; left:0; white-space:nowrap;">debates every decision.</strong>
+          </span>
+        </p>
+        <div class="hero-actions">
+          <button class="btn-hero-primary" onclick="showPage('pricing')">Start a 7-day free trial</button>
+          <button class="btn-hero-secondary" onclick="showPage('pricing')">See pricing</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-orb"></div>
+        <button class="btn-hero-primary" style="width:100%; border-radius:12px; padding:0.6rem 1rem" onclick="showPage('debate')">
+          ✦ Open Fourseat
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="section-inner reveal">
+      <div class="section-label">Platform</div>
+      <h2 class="section-title">Everything you need to<br/><em>make smarter decisions</em></h2>
+      <p class="section-sub">Three powerful modules working together to give you a complete strategic command center.</p>
+      <div class="features-grid">
+        <div class="feature-card" onclick="showPage('debate')">
+          <div class="feature-icon">🎙</div>
+          <div class="feature-name">The Four Seats</div>
+          <div class="feature-desc">Ask any question. Claude, GPT-4, Gemini, and a Contrarian AI debate it from every angle. A Chairman AI delivers the final verdict.</div>
+        </div>
+        <div class="feature-card" onclick="showPage('memory')">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-name">Fourseat Memory</div>
+          <div class="feature-desc">Upload your PDFs, decks, memos and investor updates into vector memory. Query your entire company history in plain English.</div>
+        </div>
+        <div class="feature-card" onclick="showPage('brief')">
+          <div class="feature-icon">📊</div>
+          <div class="feature-name">Fourseat Decks</div>
+          <div class="feature-desc">Enter your metrics, wins, and challenges. Get a polished, board-ready PowerPoint presentation automatically generated.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="padding-top:0">
+    <div class="section-inner reveal">
+      <div class="section-label">Success stories</div>
+      <h2 class="section-title">Founders who stopped<br/><em>trusting their gut alone</em></h2>
+      <div class="testimonials-grid">
+        <div class="testi-card">
+          <div class="testi-quote">"I used Fourseat to stress-test our Series A pitch deck. The debate found three blind spots our lead investor would have hammered us on. We fixed them all before the meeting."</div>
+          <div class="testi-author">
+            <div class="testi-avatar t-img-1">JS</div>
+            <div>
+              <div class="testi-name">James S.</div>
+              <div class="testi-role">Founder, SaaS · Series A</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-quote">"The Fourseat Decks feature alone is worth it. I used to spend 10 hours assembling our monthly board deck. Now it takes 10 minutes. My board actually commented it looks better than before."</div>
+          <div class="testi-author">
+            <div class="testi-avatar t-img-2">MP</div>
+            <div>
+              <div class="testi-name">Maria P.</div>
+              <div class="testi-role">CEO, FinTech · 40 employees</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-quote">"Fourseat Memory is insane. I uploaded 2 years of investor updates and now I can ask it 'what did we commit to in Q1 2025?' and it knows perfectly, citing every PDF exactly."</div>
+          <div class="testi-author">
+            <div class="testi-avatar t-img-3">DK</div>
+            <div>
+              <div class="testi-name">David K.</div>
+              <div class="testi-role">Co-founder, B2B · Seed stage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section">
+    <div class="section-inner reveal">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, transparent<br/><em>plans for 2026.</em></h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tier">Founder</div>
+          <div class="price-amount">$49<span>/mo</span></div>
+          <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
+          <ul class="price-features">
+            <li>50 Fourseat debates/mo</li>
+            <li>4 AI board members + Chairman</li>
+            <li>Fourseat Memory — 10 documents</li>
+            <li>2 Fourseat Decks decks/month</li>
+          </ul>
+          <button class="btn-price" onclick="showPage('debate')">Get started</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-tier">Growth</div>
+          <div class="price-amount">$149<span>/mo</span></div>
+          <div class="price-desc">For funded teams with active boards and real decisions.</div>
+          <ul class="price-features">
+            <li>Everything in Founder</li>
+            <li>250 Fourseat debates/mo</li>
+            <li>Fourseat Memory — unlimited docs</li>
+            <li>Unlimited Fourseat Decks decks</li>
+            <li>Custom AI personas</li>
+            <li>Team workspace</li>
+          </ul>
+          <button class="btn-price featured" onclick="showPage('debate')">Start free trial</button>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Studio</div>
+          <div class="price-amount">$399<span>/mo</span></div>
+          <div class="price-desc">For studios and operators managing multiple companies.</div>
+          <ul class="price-features">
+            <li>Everything in Growth</li>
+            <li>Multiple company workspaces</li>
+            <li>API access</li>
+            <li>White-label decks</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn-price" onclick="showPage('debate')">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══ WAITLIST PAGE ═════════════════════════════════ -->
+<div class="page" id="page-waitlist">
+  <section class="section" style="padding-top:10rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center;">
+    <div class="glass-card reveal" style="max-width:550px; width:100%; text-align:center;">
+      <h2 class="section-title" style="margin-bottom:1rem;">Join the <em>waitlist</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Fourseat is currently in closed beta. Enter your email below to reserve priority access.</p>
+      <div style="display:flex; gap:.8rem;">
+        <input type="email" id="waitlist-email" placeholder="name@company.com" style="flex-grow:1; background:rgba(0,0,0,0.3); padding:1rem 1.5rem;" />
+        <button class="btn-primary" onclick="toast('Added to priority waitlist!','ok')">Sign up</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ PRICING PAGE ══════════════════════════════════ -->
+<div class="page" id="page-pricing">
+  <section class="section" style="padding-top:10rem">
+    <div class="section-inner reveal">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, transparent<br/><em>pricing</em></h2>
+      <div class="pricing-grid">
+        <!-- Re-use the pricing grid from home -->
+        <div class="price-card">
+          <div class="price-tier">Founder</div>
+          <div class="price-amount">$49<span>/mo</span></div>
+          <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
+          <ul class="price-features">
+            <li>50 Fourseat debates/mo</li>
+            <li>4 AI board members + Chairman</li>
+            <li>Fourseat Memory — 10 documents</li>
+            <li>2 Fourseat Decks decks/month</li>
+          </ul>
+          <button class="btn-price" onclick="showPage('debate')">Get started</button>
+        </div>
+        <div class="price-card featured">
+          <div class="price-tier">Growth</div>
+          <div class="price-amount">$149<span>/mo</span></div>
+          <div class="price-desc">For funded teams with active boards and real decisions.</div>
+          <ul class="price-features">
+            <li>Everything in Founder</li>
+            <li>250 Fourseat debates/mo</li>
+            <li>Fourseat Memory — unlimited docs</li>
+            <li>Unlimited Fourseat Decks decks</li>
+            <li>Custom AI personas</li>
+          </ul>
+          <button class="btn-price featured" onclick="showPage('debate')">Start free trial</button>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Studio</div>
+          <div class="price-amount">$399<span>/mo</span></div>
+          <div class="price-desc">For studios and operators managing multiple companies.</div>
+          <ul class="price-features">
+            <li>Everything in Growth</li>
+            <li>Multiple company workspaces</li>
+            <li>API access</li>
+            <li>White-label decks</li>
+          </ul>
+          <button class="btn-price" onclick="showPage('debate')">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ DEBATE PAGE (Engine 1) ════════════════════════ -->
+<div class="page" id="page-debate">
+  <section class="section" style="padding-top:8rem">
+    <div class="section-inner reveal">
+      <div class="status-bar"><div class="status-dot"></div> Board is in session API Connected</div>
+      <div class="section-label">The Fourseat Engine</div>
+      <h2 class="section-title">Convene your <em>board</em></h2>
+      <p class="section-sub" style="margin-bottom:3rem">Four AIs (Claude, GPT-4, Gemini, Contrarian) debate your question simultaneously. Finally, a Chairman AI reads the whole debate and delivers a structured verdict.</p>
+
+      <div class="glass-card">
+        <div class="input-group">
+          <label class="input-label">Your question or decision</label>
+          <textarea id="debate-q" placeholder="e.g. Should I take this partnership deal?"></textarea>
+        </div>
+        <div class="input-group" style="margin-bottom:0">
+          <label class="input-label">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
+          <textarea id="debate-ctx" style="min-height:80px" placeholder="Company stage, industry, numbers, constraints..."></textarea>
+        </div>
+        <div style="margin-top:2rem">
+          <button class="btn-primary" id="debate-btn" onclick="runDebate()">⚡ Convene the Board</button>
+        </div>
+      </div>
+
+      <div class="loading" id="debate-loading">
+        <div class="spinner"></div>
+        <div class="loading-msg">Board is deliberating…</div>
+        <div class="loading-steps">
+          <div class="step" id="s1">→ Sending simultaneously to Claude, GPT-4, Gemini, and Contrarian AI</div>
+          <div class="step" id="s2">→ Board members actively debating each other's answers</div>
+          <div class="step" id="s3">→ Chairman AI synthesising final verdict, listing risks & ops</div>
+        </div>
+      </div>
+
+      <div id="debate-out" style="display:none; padding-top:2rem;">
+        <div class="section-label" style="text-align:center;margin:3rem 0 1.5rem">Round 1 — Independent Analysis</div>
+        <div class="board-grid" id="r1"></div>
+        
+        <div class="section-label" style="text-align:center;margin:3rem 0 1.5rem">Round 2 — The Debate</div>
+        <div class="board-grid" id="r2"></div>
+        
+        <div class="chairman" id="chairman"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ BOARDMIND PAGE (Engine 2) ═════════════════════ -->
+<div class="page" id="page-memory">
+  <section class="section" style="padding-top:8rem">
+    <div class="section-inner reveal">
+      <div class="status-bar"><div class="status-dot"></div> Vector Database Memory Active</div>
+      <div class="section-label">Fourseat Memory Memory System</div>
+      <h2 class="section-title">Your company's <em>perfect memory</em></h2>
+      <p class="section-sub" style="margin-bottom:3rem">Upload PDFs/documents (decks, investor updates) to ChromaDB. Query your entire history in plain English and automatically cite sources.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem">
+        <div>
+          <div class="glass-card" style="margin-bottom:2rem">
+            <label class="input-label">Upload document (PDF/TXT/MD)</label>
+            <div class="upload-zone" onclick="document.getElementById('file-in').click()">
+              <div class="upload-icon">📄</div>
+              <div style="font-size:1rem;color:rgba(255,255,255,.8)">Click to upload</div>
+            </div>
+            <input type="file" id="file-in" accept=".pdf,.txt,.md" style="display:none" onchange="uploadDoc(this)"/>
+            <div class="input-group">
+              <label class="input-label">Document classification</label>
+              <select id="doc-type">
+                <option value="board_deck">Board Deck</option>
+                <option value="investor_update">Investor Update</option>
+                <option value="strategic_memo">Strategic Memo</option>
+              </select>
+            </div>
+            <div id="upload-status"></div>
+          </div>
+          <div class="section-label" style="font-size:.7rem">Ingested into Vector DB</div>
+          <div id="doc-list" style="margin-top:1rem"></div>
+        </div>
+        <div>
+          <div class="glass-card">
+            <label class="input-label">Query History in Plain English</label>
+            <textarea id="mem-q" style="min-height:100px" placeholder="What did we commit to in our Q1 2026 update?"></textarea>
+            <button class="btn-primary" style="margin-top:1.5rem" onclick="queryMem()">🧠 Search Database</button>
+          </div>
+          <div id="mem-out"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ BOARDBRIEF PAGE (Engine 3) ════════════════════ -->
+<div class="page" id="page-brief">
+  <section class="section" style="padding-top:8rem">
+    <div class="section-inner reveal">
+      <div class="status-bar"><div class="status-dot"></div> AI PowerPoint Generator Live</div>
+      <div class="section-label">Fourseat Decks Deck Generator</div>
+      <h2 class="section-title">Your board deck, <em>in seconds</em></h2>
+      <p class="section-sub" style="margin-bottom:3rem">Enter your metrics, wins, challenges, and what you need from the board. AI writes the narrative and downloads a polished PowerPoint (.pptx).</p>
+
+      <div class="glass-card">
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">Company name</label>
+            <input type="text" id="co-name" placeholder="Acme Corp"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Period</label>
+            <input type="text" id="co-period" placeholder="Q2 2026"/>
+          </div>
+        </div>
+
+        <label class="input-label" style="padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);margin-bottom:1.5rem">Key metrics</label>
+        <div class="metrics-grid" id="metrics-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem"></div>
+
+        <div class="input-group">
+          <label class="input-label">Wins & Highlights</label>
+          <textarea id="b-wins" style="min-height:80px" placeholder="Closed 3 enterprise deals..."></textarea>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Challenges & Risks</label>
+          <textarea id="b-risks" style="min-height:80px" placeholder="Churn increased..."></textarea>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Ask of the board</label>
+          <textarea id="b-ask" style="min-height:80px" placeholder="Need introductions to Series A investors..."></textarea>
+        </div>
+        
+        <button class="btn-primary" id="brief-btn" onclick="genDeck()" style="margin-top:1rem">📊 Generate .pptx Deck</button>
+      </div>
+
+      <div class="loading" id="brief-loading">
+        <div class="spinner"></div>
+        <div class="loading-msg">Writing narrative and compiling PowerPoint file…</div>
+      </div>
+      <div id="brief-out"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div style="font-family:'Instrument Serif',serif;font-size:1.2rem;color:rgba(255,255,255,.6)">Fourseat</div>
+  <div style="font-size:.8rem;color:rgba(255,255,255,.3)">© 2026 Fourseat · Built for strategic decisions</div>
+</footer>
+
+<script>
+// Scroll Reveal Observer
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+
+const API='';
+const COLORS={claude:'#e8a87c',gpt4:'#7ccea8',gemini:'#7ca8e8',contrarian:'#e87c7c'};
+const MEMBERS={
+  claude:{name:'Alexandra',title:'CFO Persona',ai:'Claude · Anthropic'},
+  gpt4:{name:'Marcus',title:'CTO Persona',ai:'GPT-4 · OpenAI'},
+  gemini:{name:'Priya',title:'Strategy Advisor',ai:'Gemini · Google'},
+  contrarian:{name:'Viktor',title:'Contrarian Pivot',ai:'Claude · Contrarian Mode'},
+};
+const METRICS=[
+  {l:'Monthly Revenue',p:'$125,000'},
+  {l:'MRR Growth',p:'+18%'},
+  {l:'Total Customers',p:'342'},
+  {l:'Churn Rate',p:'2.1%'}
+];
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo({top:0, behavior: 'smooth'});
+}
+
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function esc(s){
+  if(!s)return'';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
+}
+
+/* DEBATE ENGINE */
+async function runDebate(){
+  const q=document.getElementById('debate-q').value.trim();
+  const ctx=document.getElementById('debate-ctx').value.trim();
+  if(!q){toast('Please enter a question','err');return;}
+  document.getElementById('debate-btn').disabled=true;
+  document.getElementById('debate-out').style.display='none';
+  const L=document.getElementById('debate-loading'); L.classList.add('active');
+  
+  let si=0; const steps=['s1','s2','s3'];
+  steps.forEach(s=>document.getElementById(s).className='step');
+  document.getElementById('s1').className='step now';
+  const iv=setInterval(()=>{
+    if(si<2){ document.getElementById(steps[si]).className='step done'; si++; document.getElementById(steps[si]).className='step now'; }
+  }, 6000);
+
+  try {
+    const res=await fetch(API+'/api/debate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,context:ctx})});
+    const data=await res.json();
+    clearInterval(iv); steps.forEach(s=>document.getElementById(s).className='step done');
+    renderDebate(data);
+  } catch(e) {
+    clearInterval(iv); toast('Error API','err');
+  } finally {
+    L.classList.remove('active'); document.getElementById('debate-btn').disabled=false;
+  }
+}
+
+function memberCard(key,text,round){
+  const m=MEMBERS[key]; const c=COLORS[key];
+  return `<div class="board-card reveal active">
+    <div class="board-card-bar" style="background:${c}"></div>
+    <div class="board-card-header">
+      <div><div class="member-name">${m.name}</div><div class="member-title">${m.title}</div></div>
+      <div class="ai-badge">${m.ai}</div>
+    </div>
+    <div class="round-tag">${round}</div>
+    <div class="board-response">${esc(text)}</div>
+  </div>`;
+}
+
+function renderDebate(data){
+  ['r1','r2'].forEach(id=>document.getElementById(id).innerHTML='');
+  ['claude','gpt4','gemini','contrarian'].forEach(k=>{
+    if(data.round1 && data.round1[k]) document.getElementById('r1').innerHTML += memberCard(k,data.round1[k],'Independent Response');
+    if(data.round2 && data.round2[k]) document.getElementById('r2').innerHTML += memberCard(k,data.round2[k],'Debating Peers');
+  });
+  const c=data.chairman||{};
+  document.getElementById('chairman').innerHTML=`
+  <div class="chairman-hdr"><div class="chairman-orb"></div><div><div class="chairman-title">Chairman's Final Verdict & Recommendation</div><div class="chairman-sub">Bottom-line syntheis of the entire debate</div></div></div>
+  <div class="verdict-box"><div class="verdict-text">${esc(c.verdict||'Consensus reached.')} <span class="conf-pill conf-high">${esc(c.confidence||'High')} Confidence</span></div></div>
+  <div class="ch-grid">
+    <div class="ch-col"><div class="ch-col-title">⚠ Key risks</div><ul class="ch-list">${(c.key_risks||[]).map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>
+    <div class="ch-col"><div class="ch-col-title">✦ Opportunities</div><ul class="ch-list">${(c.key_opportunities||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>
+    <div class="ch-col"><div class="ch-col-title">→ Action steps</div><ul class="ch-list">${(c.action_steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>
+  </div>`;
+  document.getElementById('debate-out').style.display='block';
+}
+
+/* MEMORY ENGINE */
+async function uploadDoc(input){
+  const f=input.files[0];if(!f)return;
+  const st=document.getElementById('upload-status');
+  st.innerHTML='<div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-top:1rem">Ingesting document to Vector DB…</div>';
+  const fd=new FormData(); fd.append('file',f); fd.append('doc_type',document.getElementById('doc-type').value);
+  try{
+    const res=await fetch(API+'/api/memory/upload',{method:'POST',body:fd}); const data=await res.json();
+    if(data.success){ st.innerHTML=`<div style="font-size:.85rem;color:#4ade80;margin-top:1rem">✓ Ingested successfully into Vector memory</div>`; loadDocs(); }
+  } catch(e) { st.innerHTML=`<div class="toast err show">Failed upload</div>`; }
+}
+async function loadDocs(){
+  try{
+    const res=await fetch(API+'/api/memory/documents'); const data=await res.json();
+    document.getElementById('doc-list').innerHTML=data.documents.map(d=>`<div class="doc-item"><div><div class="doc-name">${esc(d.name)}</div><div class="doc-meta">${d.chunks} vector chunks</div></div></div>`).join('');
+  } catch(e){}
+}
+async function queryMem(){
+  const q=document.getElementById('mem-q').value; if(!q) return;
+  const el=document.getElementById('mem-out'); el.innerHTML='<div class="spinner" style="margin-top:2rem"></div>';
+  try{
+    const res=await fetch(API+'/api/memory/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const data=await res.json();
+    el.innerHTML=`<div class="memory-answer"><div class="section-label">Vector Match Result</div><div class="answer-text">${esc(data.answer)}</div><div style="margin-top:1.5rem">${data.sources.map(s=>`<span class="source-chip">Cited source: ${esc(s)}</span>`).join('')}</div></div>`;
+  } catch(e){ el.innerHTML=''; }
+}
+
+/* BRIEF ENGINE */
+document.getElementById('metrics-grid').innerHTML=METRICS.map((m,i)=>`<div class="metric-box"><input class="metric-lbl-input" value="${m.l}" id="m-l${i}"/><input class="metric-val-input" placeholder="${m.p}" id="m-v${i}"/></div>`).join('');
+async function genDeck(){
+  const payload={company_name:document.getElementById('co-name').value, period:document.getElementById('co-period').value, highlights:document.getElementById('b-wins').value, challenges:document.getElementById('b-risks').value, ask:document.getElementById('b-ask').value, metrics:{}};
+  METRICS.forEach((_,i)=>{ payload.metrics[document.getElementById('m-l'+i).value]=document.getElementById('m-v'+i).value });
+  document.getElementById('brief-btn').disabled=true; document.getElementById('brief-loading').classList.add('active');
+  try{
+    const res=await fetch(API+'/api/brief/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(data.success) document.getElementById('brief-out').innerHTML=`<div class="deck-done reveal active"><div class="deck-done-title">Your .pptx deck is ready</div><div style="color:rgba(255,255,255,.5);margin-bottom:2rem">${data.slides} slides generated via python-pptx</div><a href="${data.download_url}" class="btn-primary" download>⬇ Download Generated PowerPoint</a></div>`;
+  } catch(e){}
+  document.getElementById('brief-loading').classList.remove('active'); document.getElementById('brief-btn').disabled=false;
+}
+
+// hero text cycle
+const phrases = ["debates every decision.", "generates pitch decks.", "recalls past history.", "analyzes metrics.", "evaluates risks."];
+let pIdx = 0;
+const typeEl = document.getElementById('type-text');
+if(typeEl) {
+  setInterval(() => {
+    typeEl.classList.add('swap-out');
+    setTimeout(() => {
+      pIdx = (pIdx + 1) % phrases.length;
+      typeEl.textContent = phrases[pIdx];
+      typeEl.classList.remove('swap-out');
+      typeEl.classList.add('swap-in');
+      void typeEl.offsetWidth; // reflow
+      typeEl.classList.remove('swap-in');
+    }, 400);
+  }, 3000);
+}
+
+// load vector docs on click
+document.querySelectorAll('.nav-link').forEach(l=>{ if(l.textContent.includes('Memory')) l.addEventListener('click',loadDocs); });
+</script>
+</body>
+</html>
