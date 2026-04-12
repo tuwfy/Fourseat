@@ -16,7 +16,9 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-WAITLIST_FILE = BASE_DIR / "data" / "waitlist" / "waitlist.jsonl"
+DEFAULT_DATA_DIR = Path("/tmp/fourseat-data") if os.getenv("VERCEL") else (BASE_DIR / "data")
+DATA_DIR = Path(os.getenv("FOURSEAT_DATA_DIR", str(DEFAULT_DATA_DIR)))
+WAITLIST_FILE = DATA_DIR / "waitlist" / "waitlist.jsonl"
 WAITLIST_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 

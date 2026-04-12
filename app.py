@@ -12,16 +12,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Import our modules
 from backend.debate_engine import run_debate
-from backend.board_mind    import ingest_document, query_memory, get_all_documents
-from backend.board_brief   import generate_board_deck
 from backend.waitlist      import add_waitlist_entry
 from backend.billing       import create_checkout_session
 
 BASE_DIR   = Path(__file__).parent
-UPLOAD_DIR = BASE_DIR / "data" / "uploads"
-OUTPUT_DIR = BASE_DIR / "data" / "outputs"
+DEFAULT_DATA_DIR = Path("/tmp/fourseat-data") if os.getenv("VERCEL") else (BASE_DIR / "data")
+DATA_DIR = Path(os.getenv("FOURSEAT_DATA_DIR", str(DEFAULT_DATA_DIR)))
+UPLOAD_DIR = DATA_DIR / "uploads"
+OUTPUT_DIR = DATA_DIR / "outputs"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -100,6 +99,9 @@ def billing_checkout_session():
 
 @app.route("/api/memory/upload", methods=["POST"])
 def memory_upload():
+    # Lazy import so homepage still works if optional memory deps are unavailable.
+    from backend.board_mind import ingest_document
+
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -120,6 +122,8 @@ def memory_upload():
 
 @app.route("/api/memory/query", methods=["POST"])
 def memory_query():
+    from backend.board_mind import query_memory
+
     body     = request.get_json(silent=True) or {}
     question = (body.get("question") or "").strip()
 
@@ -132,6 +136,8 @@ def memory_query():
 
 @app.route("/api/memory/documents", methods=["GET"])
 def memory_documents():
+    from backend.board_mind import get_all_documents
+
     docs = get_all_documents()
     return jsonify({"documents": docs})
 
@@ -140,6 +146,8 @@ def memory_documents():
 
 @app.route("/api/brief/generate", methods=["POST"])
 def brief_generate():
+    from backend.board_brief import generate_board_deck
+
     body = request.get_json(silent=True) or {}
 
     required = ["company_name", "period", "metrics"]

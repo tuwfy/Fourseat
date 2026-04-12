@@ -17,7 +17,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATA_DIR   = Path(__file__).parent.parent / "data"
+BASE_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_DATA_DIR = Path("/tmp/fourseat-data") if os.getenv("VERCEL") else (BASE_DIR / "data")
+DATA_DIR   = Path(os.getenv("FOURSEAT_DATA_DIR", str(DEFAULT_DATA_DIR)))
 MEMORY_DIR = DATA_DIR / "memory"
 MEMORY_DIR.mkdir(parents=True, exist_ok=True)
 
