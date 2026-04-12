@@ -21,7 +21,45 @@ DEBATE_MODE = os.getenv("DEBATE_MODE", "free").strip().lower()
 
 # ── Individual AI board members ───────────────────────────────────────────────
 
+def _ask_openai_compatible(
+    *,
+    prompt: str,
+    system: str,
+    model: str,
+    api_key: str,
+    base_url: str,
+    provider_name: str,
+) -> str:
+    try:
+        import openai
+
+        client = openai.OpenAI(api_key=api_key, base_url=base_url.rstrip("/"))
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=1024,
+        )
+        return response.choices[0].message.content
+    except Exception as exc:
+        return f"[{provider_name} unavailable: {exc}]"
+
+
 def ask_claude(prompt: str, system: str = "", model: str = "claude-3-haiku-20240307") -> str:
+    nia_key = os.getenv("NIA_API_KEY", "").strip()
+    if nia_key:
+        return _ask_openai_compatible(
+            prompt=prompt,
+            system=system,
+            model=os.getenv("NIA_MODEL", "nia-1"),
+            api_key=nia_key,
+            base_url=os.getenv("NIA_BASE_URL", "https://api.nia.ai/v1"),
+            provider_name="Nia.ai",
+        )
+
     try:
         import anthropic
         anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
@@ -36,6 +74,17 @@ def ask_claude(prompt: str, system: str = "", model: str = "claude-3-haiku-20240
 
 
 def ask_gpt4(prompt: str, system: str = "") -> str:
+    cerebras_key = os.getenv("CEREBRAS_API_KEY", "").strip()
+    if cerebras_key:
+        return _ask_openai_compatible(
+            prompt=prompt,
+            system=system,
+            model=os.getenv("CEREBRAS_MODEL", "llama3.1-70b"),
+            api_key=cerebras_key,
+            base_url=os.getenv("CEREBRAS_BASE_URL", "https://api.cerebras.ai/v1"),
+            provider_name="Cerebras",
+        )
+
     try:
         import openai
         openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
@@ -54,6 +103,17 @@ def ask_gpt4(prompt: str, system: str = "") -> str:
 
 
 def ask_gemini(prompt: str, system: str = "") -> str:
+    nvidia_key = os.getenv("NVIDIA_API_KEY", "").strip()
+    if nvidia_key:
+        return _ask_openai_compatible(
+            prompt=prompt,
+            system=system,
+            model=os.getenv("NVIDIA_MODEL", "meta/llama-3.1-70b-instruct"),
+            api_key=nvidia_key,
+            base_url=os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1"),
+            provider_name="NVIDIA",
+        )
+
     try:
         import google.generativeai as genai
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY", ""))
@@ -70,7 +130,7 @@ def ask_gemini(prompt: str, system: str = "") -> str:
 BOARD_PERSONAS = {
     "claude": {
         "role": "Chief Strategy Officer",
-        "ai": "Free Strategy Model",
+        "ai": "Nia.ai",
         "focus": "long-term strategy, ethics, risk, and second-order consequences",
         "system": (
             "You are a seasoned Chief Strategy Officer on a board of directors. "
@@ -81,7 +141,7 @@ BOARD_PERSONAS = {
     },
     "gpt4": {
         "role": "Chief Financial Officer",
-        "ai": "Free Finance Model",
+        "ai": "Cerebras",
         "focus": "financial risk, unit economics, market dynamics, and ROI",
         "system": (
             "You are a sharp CFO on a board of directors. "
@@ -92,7 +152,7 @@ BOARD_PERSONAS = {
     },
     "gemini": {
         "role": "Chief Technology Officer",
-        "ai": "Free Tech Model",
+        "ai": "NVIDIA",
         "focus": "technical feasibility, competitive landscape, and data-driven insights",
         "system": (
             "You are a technical CTO on a board of directors. "

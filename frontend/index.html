@@ -318,10 +318,10 @@ nav{
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.12);
   display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;
   margin-bottom:1.5rem;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
 }
+.feature-icon svg{width:22px;height:22px;stroke:#e8ba83;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .feature-name{font-size:1.1rem;font-weight:500;color:#fff;margin-bottom:.8rem;}
 .feature-desc{font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.6;}
 
@@ -434,7 +434,7 @@ nav{
   color:rgba(255,255,255,.5);
   margin-bottom:.8rem;
 }
-textarea,input[type=text],input[type=number],select{
+textarea,input[type=text],input[type=email],input[type=number],select{
   width:100%;
   background:rgba(0,0,0,.2);
   border:1px solid rgba(255,255,255,.1);
@@ -447,8 +447,8 @@ textarea,input[type=text],input[type=number],select{
   transition:all .3s ease;
   outline:none;
 }
-textarea::placeholder,input::placeholder{color:rgba(255,255,255,.2)}
-textarea:focus,input:focus,select:focus{border-color:rgba(232,186,131,.5);background:rgba(0,0,0,.4);box-shadow:0 0 0 4px rgba(232,186,131,.05);}
+textarea::placeholder,input[type=text]::placeholder,input[type=email]::placeholder,input[type=number]::placeholder{color:rgba(255,255,255,.2)}
+textarea:focus,input[type=text]:focus,input[type=email]:focus,input[type=number]:focus,select:focus{border-color:rgba(232,186,131,.5);background:rgba(0,0,0,.4);box-shadow:0 0 0 4px rgba(232,186,131,.05);}
 textarea{min-height:120px}
 select option{background:#1a1714;color:#fff}
 .input-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
@@ -644,9 +644,9 @@ footer{
     Fourseat <sup>AI</sup>
   </div>
   <div class="nav-links">
-    <button class="nav-link" onclick="showPage('home')">How it works</button>
-    <button class="nav-link" onclick="showPage('pricing')">Pricing</button>
-    <button class="nav-link" onclick="showPage('home')">About</button>
+    <button class="nav-link" data-page="how" onclick="showPage('how')">How it works</button>
+    <button class="nav-link" data-page="pricing" onclick="showPage('pricing')">Pricing</button>
+    <button class="nav-link" data-page="about" onclick="openAboutTab()">About</button>
   </div>
   <button class="nav-cta" onclick="showPage('waitlist')">
     Sign up
@@ -697,17 +697,17 @@ footer{
       <p class="section-sub">Three powerful modules working together to give you a complete strategic command center.</p>
       <div class="features-grid">
         <div class="feature-card" onclick="showPage('debate')">
-          <div class="feature-icon">🎙</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6 10a6 6 0 0 0 12 0"></path><path d="M12 16v4"></path><path d="M9 20h6"></path></svg></div>
           <div class="feature-name">The Four Seats</div>
-          <div class="feature-desc">Ask any question. Claude, GPT-4, Gemini, and a Contrarian AI debate it from every angle. A Chairman AI delivers the final verdict.</div>
+          <div class="feature-desc">Ask any question. Strategy, Finance, Technology, and Contrarian roles debate it from every angle. A Board Chair delivers the final verdict.</div>
         </div>
         <div class="feature-card" onclick="showPage('memory')">
-          <div class="feature-icon">🧠</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M9 7a3 3 0 0 1 6 0v10a3 3 0 0 1-6 0Z"></path><path d="M9 9H7a2 2 0 0 0 0 4h2"></path><path d="M15 9h2a2 2 0 1 1 0 4h-2"></path><path d="M12 7v10"></path></svg></div>
           <div class="feature-name">Fourseat Memory</div>
           <div class="feature-desc">Upload your PDFs, decks, memos and investor updates into vector memory. Query your entire company history in plain English.</div>
         </div>
         <div class="feature-card" onclick="showPage('brief')">
-          <div class="feature-icon">📊</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
           <div class="feature-name">Fourseat Decks</div>
           <div class="feature-desc">Enter your metrics, wins, and challenges. Get a polished, board-ready PowerPoint presentation automatically generated.</div>
         </div>
@@ -805,6 +805,60 @@ footer{
     </div>
   </section>
 
+</div>
+
+
+
+<!-- ══ HOW PAGE ══════════════════════════════════════ -->
+<div class="page" id="page-how">
+  <section class="section" style="padding-top:10rem">
+    <div class="section-inner reveal">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">How Fourseat works<br/><em>step by step</em></h2>
+      <p class="section-sub">Fourseat runs four role-based analyses in parallel, then combines them into one board-style decision summary you can act on quickly.</p>
+      <div class="features-grid" style="margin-top:2rem;">
+        <div class="feature-card">
+          <div class="feature-name">1) Ask your question</div>
+          <div class="feature-desc">Enter a decision, problem, or strategy question with optional context (stage, metrics, constraints).</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-name">2) Four role perspectives</div>
+          <div class="feature-desc">You get Strategy, Finance, Technology, and Contrarian views so blind spots are surfaced early.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-name">3) Board Chair decision</div>
+          <div class="feature-desc">A final synthesis returns verdict, risks, opportunities, and concrete action steps.</div>
+        </div>
+      </div>
+      <div class="glass-card" style="margin-top:2rem;">
+        <div class="section-label">Other modules</div>
+        <p class="section-sub" style="max-width:none;">
+          <strong>Fourseat Memory:</strong> Upload docs and query historical decisions.
+          <br/>
+          <strong>Fourseat Decks:</strong> Enter key data and generate a board-ready presentation draft.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ ABOUT PAGE ════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <section class="section" style="padding-top:10rem">
+    <div class="section-inner reveal">
+      <div class="section-label">About</div>
+      <h2 class="section-title">About Fourseat<br/><em>what it is and is not</em></h2>
+      <div class="glass-card">
+        <p class="section-sub" style="max-width:none;">
+          Fourseat is a decision-support workspace for founders and operators. It helps structure analysis, highlight trade-offs, and create action plans.
+          <br/><br/>
+          Outputs are guidance, not legal, tax, or investment advice. Use your own judgment and qualified professional advisors when needed.
+          <br/><br/>
+          Pricing and examples on this site are illustrative unless explicitly stated otherwise.
+        </p>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- ══ WAITLIST PAGE ═════════════════════════════════ -->
@@ -1029,6 +1083,11 @@ footer{
 <script>
 // Scroll Reveal Observer
 document.addEventListener('DOMContentLoaded', () => {
+  const hashPage = (window.location.hash || '').replace('#','');
+  if (hashPage && document.getElementById('page-'+hashPage)) {
+    showPage(hashPage);
+  }
+
 
   const params = new URLSearchParams(window.location.search);
   if (params.get('trial') === '1') {
@@ -1048,10 +1107,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const API='';
 const COLORS={claude:'#e8a87c',gpt4:'#7ccea8',gemini:'#7ca8e8',contrarian:'#e87c7c'};
 const MEMBER_DEFAULTS={
-  claude:{role:'Chief Strategy Officer',ai:'Free Strategy Model'},
-  gpt4:{role:'Chief Financial Officer',ai:'Free Finance Model'},
-  gemini:{role:'Chief Technology Officer',ai:'Free Tech Model'},
-  contrarian:{role:'Independent Contrarian Board Member',ai:'Free Contrarian Model'},
+  claude:{role:'Chief Strategy Officer',ai:'Nia.ai'},
+  gpt4:{role:'Chief Financial Officer',ai:'Cerebras'},
+  gemini:{role:'Chief Technology Officer',ai:'NVIDIA'},
+  contrarian:{role:'Independent Contrarian Board Member',ai:'Nia.ai'},
 };
 const METRICS=[
   {l:'Monthly Revenue',p:'$125,000'},
@@ -1062,8 +1121,18 @@ const METRICS=[
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
+  const target=document.getElementById('page-'+id);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-link[data-page]').forEach(b=>b.classList.remove('active'));
+  const activeBtn=document.querySelector(`.nav-link[data-page="${id}"]`);
+  if(activeBtn) activeBtn.classList.add('active');
+  window.location.hash=id;
   window.scrollTo({top:0, behavior: 'smooth'});
+}
+
+function openAboutTab(){
+  const url = `${window.location.origin}${window.location.pathname}#about`;
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 function toast(msg,type='ok'){
