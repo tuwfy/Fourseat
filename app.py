@@ -13,9 +13,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import our modules
-from backend.debate_engine import run_debate, BOARD_PERSONAS
+from backend.debate_engine import run_debate
 from backend.board_mind    import ingest_document, query_memory, get_all_documents
 from backend.board_brief   import generate_board_deck
+from backend.waitlist      import add_waitlist_entry
 
 BASE_DIR   = Path(__file__).parent
 UPLOAD_DIR = BASE_DIR / "data" / "uploads"
@@ -54,18 +55,40 @@ def debate():
     body     = request.get_json(silent=True) or {}
     question = (body.get("question") or "").strip()
     context  = (body.get("context") or "").strip()
+    seat_names = body.get("seat_names") or {}
+    leader_name = (body.get("leader_name") or "").strip()
 
     if not question:
         return jsonify({"error": "question is required"}), 400
 
     try:
-        result = run_debate(question, context)
+        result = run_debate(
+            question=question,
+            context=context,
+            seat_names=seat_names,
+            leader_name=leader_name,
+        )
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-# ── Module 2: Fourseat Memory ────────────────────────────────────────────────────────
+# ── Waitlist ──────────────────────────────────────────────────────────────────
+
+@app.route("/api/waitlist", methods=["POST"])
+def waitlist_join():
+    body = request.get_json(silent=True) or {}
+    result = add_waitlist_entry(
+        email=body.get("email", ""),
+        name=body.get("name", ""),
+        company=body.get("company", ""),
+    )
+    if not result.get("success"):
+        return jsonify({"error": result.get("error", "unable to add waitlist entry")}), 400
+    return jsonify(result)
+
+
+# ── Module 2: Fourseat Memory ────────────────────────────────────────────────
 
 @app.route("/api/memory/upload", methods=["POST"])
 def memory_upload():

@@ -811,11 +811,20 @@ footer{
   <section class="section" style="padding-top:10rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center;">
     <div class="glass-card reveal" style="max-width:550px; width:100%; text-align:center;">
       <h2 class="section-title" style="margin-bottom:1rem;">Join the <em>waitlist</em></h2>
-      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Fourseat is currently in closed beta. Enter your email below to reserve priority access.</p>
-      <div style="display:flex; gap:.8rem;">
-        <input type="email" id="waitlist-email" placeholder="name@company.com" style="flex-grow:1; background:rgba(0,0,0,0.3); padding:1rem 1.5rem;" />
-        <button class="btn-primary" onclick="toast('Added to priority waitlist!','ok')">Sign up</button>
+      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Fourseat is currently in closed beta. Enter your details below to reserve priority access and receive email confirmation.</p>
+      <div class="input-group" style="text-align:left;">
+        <label class="input-label">Full name</label>
+        <input type="text" id="waitlist-name" placeholder="Jane Founder" style="background:rgba(0,0,0,0.3);" />
       </div>
+      <div class="input-group" style="text-align:left;">
+        <label class="input-label">Work email</label>
+        <input type="email" id="waitlist-email" placeholder="name@company.com" style="background:rgba(0,0,0,0.3);" />
+      </div>
+      <div class="input-group" style="text-align:left; margin-bottom:0;">
+        <label class="input-label">Company (optional)</label>
+        <input type="text" id="waitlist-company" placeholder="Acme Inc" style="background:rgba(0,0,0,0.3);" />
+      </div>
+      <button class="btn-primary" style="margin-top:1.5rem;" onclick="joinWaitlist()">Sign up</button>
     </div>
   </section>
 </div>
@@ -884,9 +893,21 @@ footer{
           <label class="input-label">Your question or decision</label>
           <textarea id="debate-q" placeholder="e.g. Should I take this partnership deal?"></textarea>
         </div>
-        <div class="input-group" style="margin-bottom:0">
+        <div class="input-group">
           <label class="input-label">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
           <textarea id="debate-ctx" style="min-height:80px" placeholder="Company stage, industry, numbers, constraints..."></textarea>
+        </div>
+        <div class="input-group" style="margin-bottom:0;">
+          <label class="input-label">Name your 4 seats + leader decision maker</label>
+          <div class="input-row" style="margin-bottom:.8rem;">
+            <input type="text" id="seat-claude" value="Alexandra" placeholder="Seat 1 name"/>
+            <input type="text" id="seat-gpt4" value="Marcus" placeholder="Seat 2 name"/>
+          </div>
+          <div class="input-row" style="margin-bottom:.8rem;">
+            <input type="text" id="seat-gemini" value="Priya" placeholder="Seat 3 name"/>
+            <input type="text" id="seat-contrarian" value="Viktor" placeholder="Seat 4 name"/>
+          </div>
+          <input type="text" id="seat-leader" value="Leader One" placeholder="Leader who makes final decision"/>
         </div>
         <div style="margin-top:2rem">
           <button class="btn-primary" id="debate-btn" onclick="runDebate()">⚡ Convene the Board</button>
@@ -1031,11 +1052,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const API='';
 const COLORS={claude:'#e8a87c',gpt4:'#7ccea8',gemini:'#7ca8e8',contrarian:'#e87c7c'};
-const MEMBERS={
-  claude:{name:'Alexandra',title:'CFO Persona',ai:'Claude · Anthropic'},
-  gpt4:{name:'Marcus',title:'CTO Persona',ai:'GPT-4 · OpenAI'},
-  gemini:{name:'Priya',title:'Strategy Advisor',ai:'Gemini · Google'},
-  contrarian:{name:'Viktor',title:'Contrarian Pivot',ai:'Claude · Contrarian Mode'},
+const MEMBER_DEFAULTS={
+  claude:{name:'Alexandra',title:'Chief Strategy Officer',ai:'Claude · Anthropic'},
+  gpt4:{name:'Marcus',title:'Chief Financial Officer',ai:'GPT-4 · OpenAI'},
+  gemini:{name:'Priya',title:'Chief Technology Officer',ai:'Gemini · Google'},
+  contrarian:{name:'Viktor',title:'Independent Contrarian',ai:'Claude · Contrarian Mode'},
 };
 const METRICS=[
   {l:'Monthly Revenue',p:'$125,000'},
@@ -1061,15 +1082,52 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
 }
 
+async function joinWaitlist(){
+  const email=(document.getElementById('waitlist-email')?.value || '').trim();
+  const name=(document.getElementById('waitlist-name')?.value || '').trim();
+  const company=(document.getElementById('waitlist-company')?.value || '').trim();
+  if(!email){toast('Please enter an email','err');return;}
+
+  try {
+    const res=await fetch(API+'/api/waitlist',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,name,company}),
+    });
+    const data=await res.json();
+    if(!res.ok){
+      toast(data.error || 'Unable to join waitlist','err');
+      return;
+    }
+    toast('You are on the waitlist. Check your email for confirmation.','ok');
+    document.getElementById('waitlist-email').value='';
+    if(document.getElementById('waitlist-name')) document.getElementById('waitlist-name').value='';
+    if(document.getElementById('waitlist-company')) document.getElementById('waitlist-company').value='';
+  } catch(e) {
+    toast('Unable to join waitlist right now','err');
+  }
+}
+
+function getSeatConfig(){
+  return {
+    claude:(document.getElementById('seat-claude')?.value || MEMBER_DEFAULTS.claude.name).trim(),
+    gpt4:(document.getElementById('seat-gpt4')?.value || MEMBER_DEFAULTS.gpt4.name).trim(),
+    gemini:(document.getElementById('seat-gemini')?.value || MEMBER_DEFAULTS.gemini.name).trim(),
+    contrarian:(document.getElementById('seat-contrarian')?.value || MEMBER_DEFAULTS.contrarian.name).trim(),
+    leader:(document.getElementById('seat-leader')?.value || 'Leader One').trim(),
+  };
+}
+
 /* DEBATE ENGINE */
 async function runDebate(){
   const q=document.getElementById('debate-q').value.trim();
   const ctx=document.getElementById('debate-ctx').value.trim();
+  const seats=getSeatConfig();
   if(!q){toast('Please enter a question','err');return;}
   document.getElementById('debate-btn').disabled=true;
   document.getElementById('debate-out').style.display='none';
   const L=document.getElementById('debate-loading'); L.classList.add('active');
-  
+
   let si=0; const steps=['s1','s2','s3'];
   steps.forEach(s=>document.getElementById(s).className='step');
   document.getElementById('s1').className='step now';
@@ -1078,7 +1136,21 @@ async function runDebate(){
   }, 6000);
 
   try {
-    const res=await fetch(API+'/api/debate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,context:ctx})});
+    const res=await fetch(API+'/api/debate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        question:q,
+        context:ctx,
+        seat_names:{
+          claude:seats.claude,
+          gpt4:seats.gpt4,
+          gemini:seats.gemini,
+          contrarian:seats.contrarian,
+        },
+        leader_name:seats.leader,
+      })
+    });
     const data=await res.json();
     clearInterval(iv); steps.forEach(s=>document.getElementById(s).className='step done');
     renderDebate(data);
@@ -1089,8 +1161,8 @@ async function runDebate(){
   }
 }
 
-function memberCard(key,text,round){
-  const m=MEMBERS[key]; const c=COLORS[key];
+function memberCard(key,text,round,personas){
+  const m=(personas && personas[key]) || MEMBER_DEFAULTS[key]; const c=COLORS[key];
   return `<div class="board-card reveal active">
     <div class="board-card-bar" style="background:${c}"></div>
     <div class="board-card-header">
@@ -1103,14 +1175,16 @@ function memberCard(key,text,round){
 }
 
 function renderDebate(data){
+  const personas=data.personas || MEMBER_DEFAULTS;
+  const leader=data.leader_name || 'Leader One';
   ['r1','r2'].forEach(id=>document.getElementById(id).innerHTML='');
   ['claude','gpt4','gemini','contrarian'].forEach(k=>{
-    if(data.round1 && data.round1[k]) document.getElementById('r1').innerHTML += memberCard(k,data.round1[k],'Independent Response');
-    if(data.round2 && data.round2[k]) document.getElementById('r2').innerHTML += memberCard(k,data.round2[k],'Debating Peers');
+    if(data.round1 && data.round1[k]) document.getElementById('r1').innerHTML += memberCard(k,data.round1[k],'Independent Response',personas);
+    if(data.round2 && data.round2[k]) document.getElementById('r2').innerHTML += memberCard(k,data.round2[k],'Debating Peers',personas);
   });
   const c=data.chairman||{};
   document.getElementById('chairman').innerHTML=`
-  <div class="chairman-hdr"><div class="chairman-orb"></div><div><div class="chairman-title">Chairman's Final Verdict & Recommendation</div><div class="chairman-sub">Bottom-line syntheis of the entire debate</div></div></div>
+  <div class="chairman-hdr"><div class="chairman-orb"></div><div><div class="chairman-title">${esc(leader)} Final Decision</div><div class="chairman-sub">Bottom-line synthesis of the entire debate</div></div></div>
   <div class="verdict-box"><div class="verdict-text">${esc(c.verdict||'Consensus reached.')} <span class="conf-pill conf-high">${esc(c.confidence||'High')} Confidence</span></div></div>
   <div class="ch-grid">
     <div class="ch-col"><div class="ch-col-title">⚠ Key risks</div><ul class="ch-list">${(c.key_risks||[]).map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>

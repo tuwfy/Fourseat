@@ -84,6 +84,7 @@ boardroom_ai/
 
 | Endpoint | Method | Description |
 |---|---|---|
+| `/api/waitlist` | POST | Add a waitlist entry and send confirmation emails |
 | `/api/debate` | POST | Run a board debate |
 | `/api/memory/upload` | POST | Upload document to BoardMind |
 | `/api/memory/query` | POST | Query company memory |

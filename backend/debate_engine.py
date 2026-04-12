@@ -6,6 +6,7 @@ Orchestrates multi-AI debates, Fourseat Memory memory, and Fourseat Decks deck g
 import os
 import json
 import time
+from copy import deepcopy
 from typing import Optional
 import anthropic
 import openai
@@ -136,15 +137,33 @@ Structure your response EXACTLY as valid JSON with these keys:
 Return ONLY the JSON object, no markdown, no extra text."""
 
 
+def _build_personas(seat_names: Optional[dict] = None) -> dict:
+    personas = deepcopy(BOARD_PERSONAS)
+    for key in ["claude", "gpt4", "gemini", "contrarian"]:
+        if not isinstance(seat_names, dict):
+            continue
+        requested_name = str(seat_names.get(key, "")).strip()
+        if requested_name:
+            personas[key]["name"] = requested_name
+    return personas
+
+
 # ── Main debate orchestrator ──────────────────────────────────────────────────
 
-def run_debate(question: str, context: str = "") -> dict:
+def run_debate(
+    question: str,
+    context: str = "",
+    seat_names: Optional[dict] = None,
+    leader_name: str = "",
+) -> dict:
     """
     Full Fourseat debate pipeline:
     1. Each board member gives independent analysis
     2. Each member sees the others' views and responds
     3. Chairman synthesizes into final recommendation
     """
+    personas = _build_personas(seat_names=seat_names)
+    leader = leader_name.strip() or "Chairman"
     full_question = f"{question}\n\nAdditional context: {context}" if context else question
 
     # ── Round 1: Independent analysis ────────────────────────────────────────
@@ -156,19 +175,19 @@ def run_debate(question: str, context: str = "") -> dict:
         f"Give your independent board member perspective on this."
     )
 
-    round1["claude"]      = ask_claude(round1_prompt,  BOARD_PERSONAS["claude"]["system"])
-    round1["gpt4"]        = ask_gpt4(round1_prompt,    BOARD_PERSONAS["gpt4"]["system"])
-    round1["gemini"]      = ask_gemini(round1_prompt,  BOARD_PERSONAS["gemini"]["system"])
+    round1["claude"]      = ask_claude(round1_prompt,  personas["claude"]["system"])
+    round1["gpt4"]        = ask_gpt4(round1_prompt,    personas["gpt4"]["system"])
+    round1["gemini"]      = ask_gemini(round1_prompt,  personas["gemini"]["system"])
     round1["contrarian"]  = ask_claude(              # uses claude in contrarian mode
-        round1_prompt, BOARD_PERSONAS["contrarian"]["system"]
+        round1_prompt, personas["contrarian"]["system"]
     )
 
     # ── Round 2: Debate — each sees the others' responses ────────────────────
     debate_context = "\n\n".join([
-        f"Alexandra Chen (Strategy): {round1['claude']}",
-        f"Marcus Williams (Finance): {round1['gpt4']}",
-        f"Priya Patel (Technology): {round1['gemini']}",
-        f"Viktor Roth (Contrarian): {round1['contrarian']}",
+        f"{personas['claude']['name']} ({personas['claude']['title']}): {round1['claude']}",
+        f"{personas['gpt4']['name']} ({personas['gpt4']['title']}): {round1['gpt4']}",
+        f"{personas['gemini']['name']} ({personas['gemini']['title']}): {round1['gemini']}",
+        f"{personas['contrarian']['name']} ({personas['contrarian']['title']}): {round1['contrarian']}",
     ])
 
     round2_prompt = (
@@ -180,23 +199,25 @@ def run_debate(question: str, context: str = "") -> dict:
     )
 
     round2 = {}
-    round2["claude"]      = ask_claude(round2_prompt,  BOARD_PERSONAS["claude"]["system"])
-    round2["gpt4"]        = ask_gpt4(round2_prompt,    BOARD_PERSONAS["gpt4"]["system"])
-    round2["gemini"]      = ask_gemini(round2_prompt,  BOARD_PERSONAS["gemini"]["system"])
-    round2["contrarian"]  = ask_claude(round2_prompt,  BOARD_PERSONAS["contrarian"]["system"])
+    round2["claude"]      = ask_claude(round2_prompt,  personas["claude"]["system"])
+    round2["gpt4"]        = ask_gpt4(round2_prompt,    personas["gpt4"]["system"])
+    round2["gemini"]      = ask_gemini(round2_prompt,  personas["gemini"]["system"])
+    round2["contrarian"]  = ask_claude(round2_prompt,  personas["contrarian"]["system"])
 
     # ── Chairman synthesis ────────────────────────────────────────────────────
     chairman_prompt = (
         f"Original question: \"{full_question}\"\n\n"
         f"=== ROUND 1: INDEPENDENT VIEWS ===\n{debate_context}\n\n"
         f"=== ROUND 2: DEBATE ===\n"
-        + "\n\n".join([
-            f"Alexandra Chen rebuttal: {round2['claude']}",
-            f"Marcus Williams rebuttal: {round2['gpt4']}",
-            f"Priya Patel rebuttal: {round2['gemini']}",
-            f"Viktor Roth rebuttal: {round2['contrarian']}",
-        ])
-        + f"\n\nNow synthesize the full debate into a final board recommendation."
+        + "\n\n".join(
+            [
+                f"{personas['claude']['name']} rebuttal: {round2['claude']}",
+                f"{personas['gpt4']['name']} rebuttal: {round2['gpt4']}",
+                f"{personas['gemini']['name']} rebuttal: {round2['gemini']}",
+                f"{personas['contrarian']['name']} rebuttal: {round2['contrarian']}",
+            ]
+        )
+        + f"\n\nNow synthesize the full debate into a final board recommendation from {leader}."
     )
 
     chairman_raw = ask_claude(chairman_prompt, CHAIRMAN_SYSTEM, model="claude-3-opus-20240229")
@@ -222,6 +243,7 @@ def run_debate(question: str, context: str = "") -> dict:
         "round1": round1,
         "round2": round2,
         "chairman": chairman,
-        "personas": BOARD_PERSONAS,
+        "personas": personas,
+        "leader_name": leader,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
