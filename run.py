@@ -17,19 +17,20 @@ if not Path(".env").exists():
     print("    cp .env.example .env\n")
     sys.exit(1)
 
-# Check API keys
+# Check API keys only if paid mode is enabled
 from dotenv import load_dotenv
 load_dotenv()
 
-missing = []
-if not os.getenv("ANTHROPIC_API_KEY","").startswith("sk-"):
-    missing.append("ANTHROPIC_API_KEY")
-if not os.getenv("OPENAI_API_KEY","").startswith("sk-"):
-    missing.append("OPENAI_API_KEY")
-
-if missing:
-    print(f"\n⚠️  Missing or invalid API keys in .env: {', '.join(missing)}")
-    print("The app will still run but some board members may be unavailable.\n")
+debate_mode = os.getenv("DEBATE_MODE", "free").strip().lower()
+if debate_mode == "paid":
+    missing = []
+    if not os.getenv("ANTHROPIC_API_KEY", "").startswith("sk-"):
+        missing.append("ANTHROPIC_API_KEY")
+    if not os.getenv("OPENAI_API_KEY", "").startswith("sk-"):
+        missing.append("OPENAI_API_KEY")
+    if missing:
+        print(f"\n⚠️  Missing or invalid API keys in .env: {', '.join(missing)}")
+        print("Switch DEBATE_MODE=free to avoid paid API calls.\n")
 
 from app import app
 
@@ -43,6 +44,7 @@ print(f"  → http://localhost:{port}")
 print(f"  → Boardroom: http://localhost:{port}/#debate")
 print(f"  → Fourseat Memory:  http://localhost:{port}/#memory")
 print(f"  → Fourseat Decks: http://localhost:{port}/#brief")
+print(f"  → Debate mode: {debate_mode}")
 print("═"*50 + "\n")
 
 app.run(host="0.0.0.0", port=port, debug=debug)

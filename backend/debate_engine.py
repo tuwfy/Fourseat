@@ -1,23 +1,25 @@
 """
 Fourseat - Debate Engine
-Orchestrates multi-AI debates, Fourseat Memory memory, and Fourseat Decks deck generation.
+Supports free local mode (default) and optional paid API mode.
 """
 
 import os
 import json
 import time
-from copy import deepcopy
 from typing import Optional
+
 import anthropic
-import openai
 import google.generativeai as genai
+import openai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# ── API clients ──────────────────────────────────────────────────────────────
+DEBATE_MODE = os.getenv("DEBATE_MODE", "free").strip().lower()
+
+# ── API clients (used in paid mode only) ─────────────────────────────────────
 anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
-openai_client    = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
+openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY", ""))
 
 
@@ -65,56 +67,44 @@ def ask_gemini(prompt: str, system: str = "") -> str:
 
 BOARD_PERSONAS = {
     "claude": {
-        "name": "Alexandra Chen",
-        "title": "Chief Strategy Officer",
-        "ai": "Claude (Anthropic)",
+        "role": "Chief Strategy Officer",
+        "ai": "Free Strategy Model",
         "focus": "long-term strategy, ethics, risk, and second-order consequences",
-        "color": "#FF6B35",
-        "emoji": "🟠",
         "system": (
-            "You are Alexandra Chen, a seasoned Chief Strategy Officer on a board of directors. "
+            "You are a seasoned Chief Strategy Officer on a board of directors. "
             "You focus on long-term strategy, ethical implications, and second-order consequences. "
             "You are thoughtful, nuanced, and always consider how decisions affect all stakeholders. "
             "Be direct, opinionated, and concise. Max 200 words."
         ),
     },
     "gpt4": {
-        "name": "Marcus Williams",
-        "title": "Chief Financial Officer",
-        "ai": "GPT-4 (OpenAI)",
+        "role": "Chief Financial Officer",
+        "ai": "Free Finance Model",
         "focus": "financial risk, unit economics, market dynamics, and ROI",
-        "color": "#4CAF50",
-        "emoji": "🟢",
         "system": (
-            "You are Marcus Williams, a sharp CFO on a board of directors. "
+            "You are a sharp CFO on a board of directors. "
             "You focus on financial risk, unit economics, burn rate, market sizing, and ROI. "
             "You challenge assumptions with data. You are skeptical of optimism without numbers. "
             "Be direct, numbers-focused, and concise. Max 200 words."
         ),
     },
     "gemini": {
-        "name": "Priya Patel",
-        "title": "Chief Technology Officer",
-        "ai": "Gemini (Google)",
+        "role": "Chief Technology Officer",
+        "ai": "Free Tech Model",
         "focus": "technical feasibility, competitive landscape, and data-driven insights",
-        "color": "#2196F3",
-        "emoji": "🔵",
         "system": (
-            "You are Priya Patel, a technical CTO on a board of directors. "
+            "You are a technical CTO on a board of directors. "
             "You focus on technical feasibility, scalability, competitive landscape, and data. "
             "You look at what the market data says and what competitors are doing. "
             "Be analytical, precise, and concise. Max 200 words."
         ),
     },
     "contrarian": {
-        "name": "Viktor Roth",
-        "title": "Independent Board Member",
-        "ai": "Claude (Contrarian Mode)",
+        "role": "Independent Contrarian Board Member",
+        "ai": "Free Contrarian Model",
         "focus": "devil's advocate, stress-testing assumptions, and finding fatal flaws",
-        "color": "#9C27B0",
-        "emoji": "🟣",
         "system": (
-            "You are Viktor Roth, a contrarian independent board member known for stress-testing ideas. "
+            "You are a contrarian independent board member known for stress-testing ideas. "
             "Your job is to find the fatal flaw, challenge consensus, and voice the uncomfortable truth. "
             "You are not cynical for sport — you genuinely protect founders from blind spots. "
             "Be bold, provocative, and concise. Max 200 words."
@@ -122,7 +112,7 @@ BOARD_PERSONAS = {
     },
 }
 
-CHAIRMAN_SYSTEM = """You are the Chairman of the Board at Fourseat.
+CHAIRMAN_SYSTEM = """You are the Board Chair at Fourseat.
 Your job is to synthesize a multi-AI debate into one clear, actionable recommendation for a founder.
 Structure your response EXACTLY as valid JSON with these keys:
 {
@@ -137,15 +127,42 @@ Structure your response EXACTLY as valid JSON with these keys:
 Return ONLY the JSON object, no markdown, no extra text."""
 
 
-def _build_personas(seat_names: Optional[dict] = None) -> dict:
-    personas = deepcopy(BOARD_PERSONAS)
-    for key in ["claude", "gpt4", "gemini", "contrarian"]:
-        if not isinstance(seat_names, dict):
-            continue
-        requested_name = str(seat_names.get(key, "")).strip()
-        if requested_name:
-            personas[key]["name"] = requested_name
-    return personas
+def _free_role_response(role: str, focus: str, question: str, context: str, debate_view: str = "") -> str:
+    context_line = context.strip() or "No extra context provided."
+    if debate_view:
+        return (
+            f"Position ({role}): I challenge the current direction through a {focus} lens.\n"
+            f"Key adjustment: The board should tighten assumptions before execution, especially around: {question[:140]}.\n"
+            f"What the board missed: convert debate points into measurable checkpoints and a 30-day review trigger."
+        )
+    return (
+        f"Position ({role}): Prioritize decisions through {focus}.\n"
+        f"Recommendation: For \"{question[:160]}\", set one clear success metric and one risk guardrail before committing.\n"
+        f"Context signal: {context_line[:180]}"
+    )
+
+
+def _free_chairman_summary(question: str, round2: dict) -> dict:
+    return {
+        "verdict": f"Proceed in staged milestones on: {question[:180]}",
+        "confidence": "Medium",
+        "key_risks": [
+            "Execution complexity is underestimated",
+            "Weak measurement can hide failure until late",
+            "Resource allocation may dilute core priorities",
+        ],
+        "key_opportunities": [
+            "Faster learning via milestone-based rollout",
+            "Clearer board visibility with defined KPIs",
+        ],
+        "action_steps": [
+            "Define success KPI, stop-loss trigger, and owner",
+            "Run a 30-day pilot and review outcomes",
+            "Scale only if KPI and risk thresholds are met",
+        ],
+        "dissenting_view": "A decisive all-in move might capture market timing faster than a staged rollout.",
+        "best_board_member": "Independent Contrarian Board Member for pressure-testing assumptions early.",
+    }
 
 
 # ── Main debate orchestrator ──────────────────────────────────────────────────
@@ -162,8 +179,9 @@ def run_debate(
     2. Each member sees the others' views and responds
     3. Chairman synthesizes into final recommendation
     """
-    personas = _build_personas(seat_names=seat_names)
-    leader = leader_name.strip() or "Chairman"
+    del seat_names  # kept for backward compatibility with older frontend payloads
+    personas = BOARD_PERSONAS
+    leader = "Board Chair"
     full_question = f"{question}\n\nAdditional context: {context}" if context else question
 
     # ── Round 1: Independent analysis ────────────────────────────────────────
@@ -175,19 +193,23 @@ def run_debate(
         f"Give your independent board member perspective on this."
     )
 
-    round1["claude"]      = ask_claude(round1_prompt,  personas["claude"]["system"])
-    round1["gpt4"]        = ask_gpt4(round1_prompt,    personas["gpt4"]["system"])
-    round1["gemini"]      = ask_gemini(round1_prompt,  personas["gemini"]["system"])
-    round1["contrarian"]  = ask_claude(              # uses claude in contrarian mode
-        round1_prompt, personas["contrarian"]["system"]
-    )
+    if DEBATE_MODE == "free":
+        round1["claude"] = _free_role_response(personas["claude"]["role"], personas["claude"]["focus"], question, context)
+        round1["gpt4"] = _free_role_response(personas["gpt4"]["role"], personas["gpt4"]["focus"], question, context)
+        round1["gemini"] = _free_role_response(personas["gemini"]["role"], personas["gemini"]["focus"], question, context)
+        round1["contrarian"] = _free_role_response(personas["contrarian"]["role"], personas["contrarian"]["focus"], question, context)
+    else:
+        round1["claude"] = ask_claude(round1_prompt, personas["claude"]["system"])
+        round1["gpt4"] = ask_gpt4(round1_prompt, personas["gpt4"]["system"])
+        round1["gemini"] = ask_gemini(round1_prompt, personas["gemini"]["system"])
+        round1["contrarian"] = ask_claude(round1_prompt, personas["contrarian"]["system"])
 
     # ── Round 2: Debate — each sees the others' responses ────────────────────
     debate_context = "\n\n".join([
-        f"{personas['claude']['name']} ({personas['claude']['title']}): {round1['claude']}",
-        f"{personas['gpt4']['name']} ({personas['gpt4']['title']}): {round1['gpt4']}",
-        f"{personas['gemini']['name']} ({personas['gemini']['title']}): {round1['gemini']}",
-        f"{personas['contrarian']['name']} ({personas['contrarian']['title']}): {round1['contrarian']}",
+        f"{personas['claude']['role']}: {round1['claude']}",
+        f"{personas['gpt4']['role']}: {round1['gpt4']}",
+        f"{personas['gemini']['role']}: {round1['gemini']}",
+        f"{personas['contrarian']['role']}: {round1['contrarian']}",
     ])
 
     round2_prompt = (
@@ -199,44 +221,50 @@ def run_debate(
     )
 
     round2 = {}
-    round2["claude"]      = ask_claude(round2_prompt,  personas["claude"]["system"])
-    round2["gpt4"]        = ask_gpt4(round2_prompt,    personas["gpt4"]["system"])
-    round2["gemini"]      = ask_gemini(round2_prompt,  personas["gemini"]["system"])
-    round2["contrarian"]  = ask_claude(round2_prompt,  personas["contrarian"]["system"])
+    if DEBATE_MODE == "free":
+        round2["claude"] = _free_role_response(personas["claude"]["role"], personas["claude"]["focus"], question, context, debate_view=debate_context)
+        round2["gpt4"] = _free_role_response(personas["gpt4"]["role"], personas["gpt4"]["focus"], question, context, debate_view=debate_context)
+        round2["gemini"] = _free_role_response(personas["gemini"]["role"], personas["gemini"]["focus"], question, context, debate_view=debate_context)
+        round2["contrarian"] = _free_role_response(personas["contrarian"]["role"], personas["contrarian"]["focus"], question, context, debate_view=debate_context)
+    else:
+        round2["claude"] = ask_claude(round2_prompt, personas["claude"]["system"])
+        round2["gpt4"] = ask_gpt4(round2_prompt, personas["gpt4"]["system"])
+        round2["gemini"] = ask_gemini(round2_prompt, personas["gemini"]["system"])
+        round2["contrarian"] = ask_claude(round2_prompt, personas["contrarian"]["system"])
 
     # ── Chairman synthesis ────────────────────────────────────────────────────
-    chairman_prompt = (
-        f"Original question: \"{full_question}\"\n\n"
-        f"=== ROUND 1: INDEPENDENT VIEWS ===\n{debate_context}\n\n"
-        f"=== ROUND 2: DEBATE ===\n"
-        + "\n\n".join(
-            [
-                f"{personas['claude']['name']} rebuttal: {round2['claude']}",
-                f"{personas['gpt4']['name']} rebuttal: {round2['gpt4']}",
-                f"{personas['gemini']['name']} rebuttal: {round2['gemini']}",
-                f"{personas['contrarian']['name']} rebuttal: {round2['contrarian']}",
-            ]
+    if DEBATE_MODE == "free":
+        chairman = _free_chairman_summary(question=question, round2=round2)
+    else:
+        chairman_prompt = (
+            f"Original question: \"{full_question}\"\n\n"
+            f"=== ROUND 1: INDEPENDENT VIEWS ===\n{debate_context}\n\n"
+            f"=== ROUND 2: DEBATE ===\n"
+            + "\n\n".join(
+                [
+                    f"{personas['claude']['role']} rebuttal: {round2['claude']}",
+                    f"{personas['gpt4']['role']} rebuttal: {round2['gpt4']}",
+                    f"{personas['gemini']['role']} rebuttal: {round2['gemini']}",
+                    f"{personas['contrarian']['role']} rebuttal: {round2['contrarian']}",
+                ]
+            )
+            + f"\n\nNow synthesize the full debate into a final board recommendation from {leader}."
         )
-        + f"\n\nNow synthesize the full debate into a final board recommendation from {leader}."
-    )
+        chairman_raw = ask_claude(chairman_prompt, CHAIRMAN_SYSTEM, model="claude-3-opus-20240229")
 
-    chairman_raw = ask_claude(chairman_prompt, CHAIRMAN_SYSTEM, model="claude-3-opus-20240229")
-
-    # parse chairman JSON safely
-    try:
-        # strip any accidental markdown fences
-        clean = chairman_raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
-        chairman = json.loads(clean)
-    except Exception:
-        chairman = {
-            "verdict": chairman_raw[:300],
-            "confidence": "Medium",
-            "key_risks": [],
-            "key_opportunities": [],
-            "action_steps": [],
-            "dissenting_view": "",
-            "best_board_member": "",
-        }
+        try:
+            clean = chairman_raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+            chairman = json.loads(clean)
+        except Exception:
+            chairman = {
+                "verdict": chairman_raw[:300],
+                "confidence": "Medium",
+                "key_risks": [],
+                "key_opportunities": [],
+                "action_steps": [],
+                "dissenting_view": "",
+                "best_board_member": "",
+            }
 
     return {
         "question": question,
@@ -245,5 +273,6 @@ def run_debate(
         "chairman": chairman,
         "personas": personas,
         "leader_name": leader,
+        "mode": DEBATE_MODE,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
     }

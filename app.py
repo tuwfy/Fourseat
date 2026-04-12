@@ -17,6 +17,7 @@ from backend.debate_engine import run_debate
 from backend.board_mind    import ingest_document, query_memory, get_all_documents
 from backend.board_brief   import generate_board_deck
 from backend.waitlist      import add_waitlist_entry
+from backend.billing       import create_checkout_session
 
 BASE_DIR   = Path(__file__).parent
 UPLOAD_DIR = BASE_DIR / "data" / "uploads"
@@ -55,8 +56,6 @@ def debate():
     body     = request.get_json(silent=True) or {}
     question = (body.get("question") or "").strip()
     context  = (body.get("context") or "").strip()
-    seat_names = body.get("seat_names") or {}
-    leader_name = (body.get("leader_name") or "").strip()
 
     if not question:
         return jsonify({"error": "question is required"}), 400
@@ -65,8 +64,6 @@ def debate():
         result = run_debate(
             question=question,
             context=context,
-            seat_names=seat_names,
-            leader_name=leader_name,
         )
         return jsonify(result)
     except Exception as e:
@@ -85,6 +82,17 @@ def waitlist_join():
     )
     if not result.get("success"):
         return jsonify({"error": result.get("error", "unable to add waitlist entry")}), 400
+    return jsonify(result)
+
+
+@app.route("/api/billing/checkout-session", methods=["POST"])
+def billing_checkout_session():
+    body = request.get_json(silent=True) or {}
+    email = (body.get("email") or "").strip()
+    name = (body.get("name") or "").strip()
+    result = create_checkout_session(email=email, name=name)
+    if not result.get("success"):
+        return jsonify({"error": result.get("error", "unable to create checkout session")}), 400
     return jsonify(result)
 
 

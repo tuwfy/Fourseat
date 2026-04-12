@@ -662,7 +662,7 @@ footer{
       <div>
         <div class="hero-badge">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
-          500+ founders already using Fourseat
+          Early access is now open
         </div>
         <h1 class="hero-title">
           <div class="text-reveal text-reveal-d1"><span>Fourseat,</span></div><br/>
@@ -676,7 +676,7 @@ footer{
           </span>
         </p>
         <div class="hero-actions">
-          <button class="btn-hero-primary" onclick="showPage('pricing')">Start a 7-day free trial</button>
+          <button class="btn-hero-primary" onclick="showPage('pricing')">Get early access</button>
           <button class="btn-hero-secondary" onclick="showPage('pricing')">See pricing</button>
         </div>
       </div>
@@ -718,36 +718,37 @@ footer{
   <!-- TESTIMONIALS -->
   <section class="section" style="padding-top:0">
     <div class="section-inner reveal">
-      <div class="section-label">Success stories</div>
-      <h2 class="section-title">Founders who stopped<br/><em>trusting their gut alone</em></h2>
+      <div class="section-label">Example scenarios</div>
+      <h2 class="section-title">How teams can<br/><em>use Fourseat</em></h2>
+      <p class="section-sub" style="max-width:760px;margin-top:1rem;color:rgba(255,255,255,.55)">Examples are illustrative scenarios, not customer claims or guaranteed outcomes.</p>
       <div class="testimonials-grid">
         <div class="testi-card">
-          <div class="testi-quote">"I used Fourseat to stress-test our Series A pitch deck. The debate found three blind spots our lead investor would have hammered us on. We fixed them all before the meeting."</div>
+          <div class="testi-quote">Scenario example: A team uses Fourseat to stress-test a fundraise narrative and identify overlooked risks before investor meetings.</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-1">JS</div>
             <div>
-              <div class="testi-name">James S.</div>
-              <div class="testi-role">Founder, SaaS · Series A</div>
+              <div class="testi-name">Scenario A</div>
+              <div class="testi-role">Illustrative use case</div>
             </div>
           </div>
         </div>
         <div class="testi-card">
-          <div class="testi-quote">"The Fourseat Decks feature alone is worth it. I used to spend 10 hours assembling our monthly board deck. Now it takes 10 minutes. My board actually commented it looks better than before."</div>
+          <div class="testi-quote">Scenario example: An operator drafts a board update faster by using structured prompts and auto-generated deck outlines.</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-2">MP</div>
             <div>
-              <div class="testi-name">Maria P.</div>
-              <div class="testi-role">CEO, FinTech · 40 employees</div>
+              <div class="testi-name">Scenario B</div>
+              <div class="testi-role">Illustrative use case</div>
             </div>
           </div>
         </div>
         <div class="testi-card">
-          <div class="testi-quote">"Fourseat Memory is insane. I uploaded 2 years of investor updates and now I can ask it 'what did we commit to in Q1 2025?' and it knows perfectly, citing every PDF exactly."</div>
+          <div class="testi-quote">Scenario example: A founder queries historical documents to recover prior commitments and reduce decision blind spots.</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-3">DK</div>
             <div>
-              <div class="testi-name">David K.</div>
-              <div class="testi-role">Co-founder, B2B · Seed stage</div>
+              <div class="testi-name">Scenario C</div>
+              <div class="testi-role">Illustrative use case</div>
             </div>
           </div>
         </div>
@@ -759,7 +760,7 @@ footer{
   <section class="section">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">Simple, transparent<br/><em>plans for 2026.</em></h2>
+      <h2 class="section-title">Illustrative plans<br/><em>subject to change.</em></h2>
       <div class="pricing-grid">
         <div class="price-card">
           <div class="price-tier">Founder</div>
@@ -811,7 +812,7 @@ footer{
   <section class="section" style="padding-top:10rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center;">
     <div class="glass-card reveal" style="max-width:550px; width:100%; text-align:center;">
       <h2 class="section-title" style="margin-bottom:1rem;">Join the <em>waitlist</em></h2>
-      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Fourseat is currently in closed beta. Enter your details below to reserve priority access and receive email confirmation.</p>
+      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Enter your details to join the list and continue to secure checkout for trial access. Marketing examples on this page are illustrative and not guarantees.</p>
       <div class="input-group" style="text-align:left;">
         <label class="input-label">Full name</label>
         <input type="text" id="waitlist-name" placeholder="Jane Founder" style="background:rgba(0,0,0,0.3);" />
@@ -824,7 +825,7 @@ footer{
         <label class="input-label">Company (optional)</label>
         <input type="text" id="waitlist-company" placeholder="Acme Inc" style="background:rgba(0,0,0,0.3);" />
       </div>
-      <button class="btn-primary" style="margin-top:1.5rem;" onclick="joinWaitlist()">Sign up</button>
+      <button class="btn-primary" id="signup-btn" style="margin-top:1.5rem;" onclick="startSignup()">Sign up & Continue to Checkout</button>
     </div>
   </section>
 </div>
@@ -834,7 +835,7 @@ footer{
   <section class="section" style="padding-top:10rem">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">Simple, transparent<br/><em>pricing</em></h2>
+      <h2 class="section-title">Illustrative <br/><em>pricing only</em></h2>
       <div class="pricing-grid">
         <!-- Re-use the pricing grid from home -->
         <div class="price-card">
@@ -886,7 +887,7 @@ footer{
       <div class="status-bar"><div class="status-dot"></div> Board is in session API Connected</div>
       <div class="section-label">The Fourseat Engine</div>
       <h2 class="section-title">Convene your <em>board</em></h2>
-      <p class="section-sub" style="margin-bottom:3rem">Four AIs (Claude, GPT-4, Gemini, Contrarian) debate your question simultaneously. Finally, a Chairman AI reads the whole debate and delivers a structured verdict.</p>
+      <p class="section-sub" style="margin-bottom:3rem">Four role-based advisors debate your question simultaneously. Finally, the Board Chair reads the whole debate and delivers a structured verdict.</p>
 
       <div class="glass-card">
         <div class="input-group">
@@ -897,18 +898,6 @@ footer{
           <label class="input-label">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
           <textarea id="debate-ctx" style="min-height:80px" placeholder="Company stage, industry, numbers, constraints..."></textarea>
         </div>
-        <div class="input-group" style="margin-bottom:0;">
-          <label class="input-label">Name your 4 seats + leader decision maker</label>
-          <div class="input-row" style="margin-bottom:.8rem;">
-            <input type="text" id="seat-claude" value="Alexandra" placeholder="Seat 1 name"/>
-            <input type="text" id="seat-gpt4" value="Marcus" placeholder="Seat 2 name"/>
-          </div>
-          <div class="input-row" style="margin-bottom:.8rem;">
-            <input type="text" id="seat-gemini" value="Priya" placeholder="Seat 3 name"/>
-            <input type="text" id="seat-contrarian" value="Viktor" placeholder="Seat 4 name"/>
-          </div>
-          <input type="text" id="seat-leader" value="Leader One" placeholder="Leader who makes final decision"/>
-        </div>
         <div style="margin-top:2rem">
           <button class="btn-primary" id="debate-btn" onclick="runDebate()">⚡ Convene the Board</button>
         </div>
@@ -918,9 +907,9 @@ footer{
         <div class="spinner"></div>
         <div class="loading-msg">Board is deliberating…</div>
         <div class="loading-steps">
-          <div class="step" id="s1">→ Sending simultaneously to Claude, GPT-4, Gemini, and Contrarian AI</div>
+          <div class="step" id="s1">→ Sending simultaneously to Strategy, Finance, Technology, and Contrarian advisors</div>
           <div class="step" id="s2">→ Board members actively debating each other's answers</div>
-          <div class="step" id="s3">→ Chairman AI synthesising final verdict, listing risks & ops</div>
+          <div class="step" id="s3">→ Board Chair synthesising final verdict, listing risks & ops</div>
         </div>
       </div>
 
@@ -1034,12 +1023,18 @@ footer{
 
 <footer>
   <div style="font-family:'Instrument Serif',serif;font-size:1.2rem;color:rgba(255,255,255,.6)">Fourseat</div>
-  <div style="font-size:.8rem;color:rgba(255,255,255,.3)">© 2026 Fourseat · Built for strategic decisions</div>
+  <div style="font-size:.8rem;color:rgba(255,255,255,.3)">© 2026 Fourseat · Information provided for planning support only</div>
 </footer>
 
 <script>
 // Scroll Reveal Observer
 document.addEventListener('DOMContentLoaded', () => {
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('trial') === '1') {
+    showPage('debate');
+    toast('Trial access enabled. Welcome to Fourseat.','ok');
+  }
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if(entry.isIntersecting) {
@@ -1053,10 +1048,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const API='';
 const COLORS={claude:'#e8a87c',gpt4:'#7ccea8',gemini:'#7ca8e8',contrarian:'#e87c7c'};
 const MEMBER_DEFAULTS={
-  claude:{name:'Alexandra',title:'Chief Strategy Officer',ai:'Claude · Anthropic'},
-  gpt4:{name:'Marcus',title:'Chief Financial Officer',ai:'GPT-4 · OpenAI'},
-  gemini:{name:'Priya',title:'Chief Technology Officer',ai:'Gemini · Google'},
-  contrarian:{name:'Viktor',title:'Independent Contrarian',ai:'Claude · Contrarian Mode'},
+  claude:{role:'Chief Strategy Officer',ai:'Free Strategy Model'},
+  gpt4:{role:'Chief Financial Officer',ai:'Free Finance Model'},
+  gemini:{role:'Chief Technology Officer',ai:'Free Tech Model'},
+  contrarian:{role:'Independent Contrarian Board Member',ai:'Free Contrarian Model'},
 };
 const METRICS=[
   {l:'Monthly Revenue',p:'$125,000'},
@@ -1082,47 +1077,53 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
 }
 
-async function joinWaitlist(){
+async function startSignup(){
   const email=(document.getElementById('waitlist-email')?.value || '').trim();
   const name=(document.getElementById('waitlist-name')?.value || '').trim();
   const company=(document.getElementById('waitlist-company')?.value || '').trim();
+  const btn=document.getElementById('signup-btn');
   if(!email){toast('Please enter an email','err');return;}
 
+  if(btn) btn.disabled=true;
   try {
-    const res=await fetch(API+'/api/waitlist',{
+    const waitlistRes=await fetch(API+'/api/waitlist',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email,name,company}),
     });
-    const data=await res.json();
-    if(!res.ok){
-      toast(data.error || 'Unable to join waitlist','err');
+    const waitlistData=await waitlistRes.json();
+    if(!waitlistRes.ok){
+      toast(waitlistData.error || 'Unable to join waitlist','err');
       return;
     }
-    toast('You are on the waitlist. Check your email for confirmation.','ok');
-    document.getElementById('waitlist-email').value='';
-    if(document.getElementById('waitlist-name')) document.getElementById('waitlist-name').value='';
-    if(document.getElementById('waitlist-company')) document.getElementById('waitlist-company').value='';
-  } catch(e) {
-    toast('Unable to join waitlist right now','err');
-  }
-}
 
-function getSeatConfig(){
-  return {
-    claude:(document.getElementById('seat-claude')?.value || MEMBER_DEFAULTS.claude.name).trim(),
-    gpt4:(document.getElementById('seat-gpt4')?.value || MEMBER_DEFAULTS.gpt4.name).trim(),
-    gemini:(document.getElementById('seat-gemini')?.value || MEMBER_DEFAULTS.gemini.name).trim(),
-    contrarian:(document.getElementById('seat-contrarian')?.value || MEMBER_DEFAULTS.contrarian.name).trim(),
-    leader:(document.getElementById('seat-leader')?.value || 'Leader One').trim(),
-  };
+    const checkoutRes=await fetch(API+'/api/billing/checkout-session',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,name}),
+    });
+    const checkoutData=await checkoutRes.json();
+    if(!checkoutRes.ok){
+      toast(checkoutData.error || 'Unable to start checkout','err');
+      return;
+    }
+
+    if(checkoutData.checkout_url){
+      window.location.href=checkoutData.checkout_url;
+      return;
+    }
+    toast('Checkout link was not returned','err');
+  } catch(e) {
+    toast('Unable to process signup right now','err');
+  } finally {
+    if(btn) btn.disabled=false;
+  }
 }
 
 /* DEBATE ENGINE */
 async function runDebate(){
   const q=document.getElementById('debate-q').value.trim();
   const ctx=document.getElementById('debate-ctx').value.trim();
-  const seats=getSeatConfig();
   if(!q){toast('Please enter a question','err');return;}
   document.getElementById('debate-btn').disabled=true;
   document.getElementById('debate-out').style.display='none';
@@ -1142,13 +1143,6 @@ async function runDebate(){
       body:JSON.stringify({
         question:q,
         context:ctx,
-        seat_names:{
-          claude:seats.claude,
-          gpt4:seats.gpt4,
-          gemini:seats.gemini,
-          contrarian:seats.contrarian,
-        },
-        leader_name:seats.leader,
       })
     });
     const data=await res.json();
@@ -1166,7 +1160,7 @@ function memberCard(key,text,round,personas){
   return `<div class="board-card reveal active">
     <div class="board-card-bar" style="background:${c}"></div>
     <div class="board-card-header">
-      <div><div class="member-name">${m.name}</div><div class="member-title">${m.title}</div></div>
+      <div><div class="member-name">${m.role}</div></div>
       <div class="ai-badge">${m.ai}</div>
     </div>
     <div class="round-tag">${round}</div>
@@ -1176,7 +1170,7 @@ function memberCard(key,text,round,personas){
 
 function renderDebate(data){
   const personas=data.personas || MEMBER_DEFAULTS;
-  const leader=data.leader_name || 'Leader One';
+  const leader=data.leader_name || 'Board Chair';
   ['r1','r2'].forEach(id=>document.getElementById(id).innerHTML='');
   ['claude','gpt4','gemini','contrarian'].forEach(k=>{
     if(data.round1 && data.round1[k]) document.getElementById('r1').innerHTML += memberCard(k,data.round1[k],'Independent Response',personas);
