@@ -36,6 +36,23 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app = Flask(__name__, static_folder="frontend/static", template_folder="frontend/templates")
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "boardroom-dev-key")
 CORS(app)
+IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+
+
+def _server_error(message: str, exc: Exception):
+    app.logger.exception("%s: %s", message, exc)
+    if IS_DEBUG:
+        return jsonify({"error": f"{message}: {exc}"}), 500
+    return jsonify({"error": "internal server error"}), 500
+
+
+@app.after_request
+def apply_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    return response
 
 
 # ── Serve frontend ─────────────────────────────────────────────────────────────
@@ -75,7 +92,7 @@ def debate():
         )
         return jsonify(result)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return _server_error("debate failed", e)
 
 
 # ── Waitlist ──────────────────────────────────────────────────────────────────
@@ -170,7 +187,7 @@ def brief_generate():
             result["download_url"] = f"/api/brief/download/{result['filename']}"
         return jsonify(result)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return _server_error("brief generation failed", e)
 
 
 @app.route("/api/brief/download/<filename>")
@@ -189,6 +206,6 @@ def brief_download(filename):
 
 if __name__ == "__main__":
     port  = int(os.getenv("PORT", 5001))
-    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    debug = IS_DEBUG
     print(f"\n🎯 Fourseat running at http://localhost:{port}\n")
     app.run(host="0.0.0.0", port=port, debug=debug)
