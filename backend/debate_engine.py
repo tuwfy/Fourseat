@@ -8,25 +8,23 @@ import json
 import time
 from typing import Optional
 
-import anthropic
-import google.generativeai as genai
-import openai
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:
+    def load_dotenv():
+        return None
 
 load_dotenv()
 
 DEBATE_MODE = os.getenv("DEBATE_MODE", "free").strip().lower()
-
-# ── API clients (used in paid mode only) ─────────────────────────────────────
-anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
-openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY", ""))
 
 
 # ── Individual AI board members ───────────────────────────────────────────────
 
 def ask_claude(prompt: str, system: str = "", model: str = "claude-3-haiku-20240307") -> str:
     try:
+        import anthropic
+        anthropic_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
         messages = [{"role": "user", "content": prompt}]
         kwargs = {"model": model, "max_tokens": 1024, "messages": messages}
         if system:
@@ -39,6 +37,8 @@ def ask_claude(prompt: str, system: str = "", model: str = "claude-3-haiku-20240
 
 def ask_gpt4(prompt: str, system: str = "") -> str:
     try:
+        import openai
+        openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
         messages = []
         if system:
             messages.append({"role": "system", "content": system})
@@ -55,6 +55,8 @@ def ask_gpt4(prompt: str, system: str = "") -> str:
 
 def ask_gemini(prompt: str, system: str = "") -> str:
     try:
+        import google.generativeai as genai
+        genai.configure(api_key=os.getenv("GOOGLE_API_KEY", ""))
         model = genai.GenerativeModel("gemini-1.5-flash")
         full_prompt = f"{system}\n\n{prompt}" if system else prompt
         response = model.generate_content(full_prompt)

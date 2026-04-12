@@ -5,8 +5,6 @@ Stripe billing helpers for Fourseat signup checkout.
 import os
 from urllib.parse import urlencode
 
-import requests
-
 
 def create_checkout_session(email: str, name: str = "") -> dict:
     secret_key = os.getenv("STRIPE_SECRET_KEY", "").strip()
@@ -36,6 +34,7 @@ def create_checkout_session(email: str, name: str = "") -> dict:
         payload["metadata[name]"] = name
 
     try:
+        import requests
         response = requests.post(
             "https://api.stripe.com/v1/checkout/sessions",
             headers={

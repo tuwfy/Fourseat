@@ -7,8 +7,17 @@ import os
 import json
 from pathlib import Path
 from flask import Flask, request, jsonify, send_file, send_from_directory
-from flask_cors import CORS
-from dotenv import load_dotenv
+try:
+    from flask_cors import CORS
+except Exception:
+    def CORS(_app):
+        return None
+
+try:
+    from dotenv import load_dotenv
+except Exception:
+    def load_dotenv():
+        return None
 
 load_dotenv()
 
