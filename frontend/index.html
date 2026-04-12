@@ -646,7 +646,7 @@ footer{
   <div class="nav-links">
     <button class="nav-link" data-page="how" onclick="showPage('how')">How it works</button>
     <button class="nav-link" data-page="pricing" onclick="showPage('pricing')">Pricing</button>
-    <button class="nav-link" data-page="about" onclick="openAboutTab()">About</button>
+    <button class="nav-link" data-page="about" onclick="showPage('about')">About</button>
   </div>
   <button class="nav-cta" onclick="showPage('waitlist')">
     Sign up
@@ -850,6 +850,8 @@ footer{
       <h2 class="section-title">About Fourseat<br/><em>what it is and is not</em></h2>
       <div class="glass-card">
         <p class="section-sub" style="max-width:none;">
+          Founder: Tyler Riccardi.
+          <br/><br/>
           Fourseat is a decision-support workspace for founders and operators. It helps structure analysis, highlight trade-offs, and create action plans.
           <br/><br/>
           Outputs are guidance, not legal, tax, or investment advice. Use your own judgment and qualified professional advisors when needed.
@@ -1128,11 +1130,6 @@ function showPage(id){
   if(activeBtn) activeBtn.classList.add('active');
   window.location.hash=id;
   window.scrollTo({top:0, behavior: 'smooth'});
-}
-
-function openAboutTab(){
-  const url = `${window.location.origin}${window.location.pathname}#about`;
-  window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 function toast(msg,type='ok'){
