@@ -85,7 +85,7 @@ boardroom_ai/
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/waitlist` | POST | Add a waitlist entry and send confirmation emails |
-| `/api/billing/checkout-session` | POST | Create Stripe Checkout session for signup |
+| `/api/billing/checkout-session` | POST | Create Stripe Checkout session when `STRIPE_SECRET_KEY` + `STRIPE_PRICE_ID` are set; otherwise returns success with `billing_available: false` (waitlist-only) |
 | `/api/debate` | POST | Run a board debate |
 | `/api/memory/upload` | POST | Upload document to BoardMind |
 | `/api/memory/query` | POST | Query company memory |

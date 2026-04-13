@@ -12,9 +12,12 @@ def create_checkout_session(email: str, name: str = "") -> dict:
     base_url = os.getenv("APP_BASE_URL", "http://localhost:5000").strip().rstrip("/")
 
     if not secret_key or not price_id:
+        # Waitlist is already stored; Stripe checkout is optional until env is configured.
         return {
-            "success": False,
-            "error": "Stripe is not configured. Set STRIPE_SECRET_KEY and STRIPE_PRICE_ID in .env",
+            "success": True,
+            "checkout_url": None,
+            "billing_available": False,
+            "message": "You're on the list. We'll email you with next steps.",
         }
 
     success_url = f"{base_url}/?trial=1#debate"

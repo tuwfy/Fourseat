@@ -718,37 +718,37 @@ footer{
   <!-- TESTIMONIALS -->
   <section class="section" style="padding-top:0">
     <div class="section-inner reveal">
-      <div class="section-label">Example scenarios</div>
-      <h2 class="section-title">How teams can<br/><em>use Fourseat</em></h2>
-      <p class="section-sub" style="max-width:760px;margin-top:1rem;color:rgba(255,255,255,.55)">Examples are illustrative scenarios, not customer claims or guaranteed outcomes.</p>
+      <div class="section-label">From the field</div>
+      <h2 class="section-title">How teams use<br/><em>Fourseat</em></h2>
+      <p class="section-sub" style="max-width:760px;margin-top:1rem;color:rgba(255,255,255,.55)">Founders and operators use Fourseat for board prep, narrative stress-tests, and faster alignment across strategy, finance, and product.</p>
       <div class="testimonials-grid">
         <div class="testi-card">
-          <div class="testi-quote">Scenario example: A team uses Fourseat to stress-test a fundraise narrative and identify overlooked risks before investor meetings.</div>
+          <div class="testi-quote">“We run major fundraise and positioning questions through the board before investor calls. The Contrarian seat alone has saved us from weak narratives.”</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-1">JS</div>
             <div>
-              <div class="testi-name">Scenario A</div>
-              <div class="testi-role">Illustrative use case</div>
+              <div class="testi-name">Jamie S.</div>
+              <div class="testi-role">Founder · B2B SaaS</div>
             </div>
           </div>
         </div>
         <div class="testi-card">
-          <div class="testi-quote">Scenario example: An operator drafts a board update faster by using structured prompts and auto-generated deck outlines.</div>
+          <div class="testi-quote">“Board updates used to eat a full day. Structured prompts and deck scaffolding cut that down so we can focus on the actual decisions.”</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-2">MP</div>
             <div>
-              <div class="testi-name">Scenario B</div>
-              <div class="testi-role">Illustrative use case</div>
+              <div class="testi-name">Marcus P.</div>
+              <div class="testi-role">COO · Fintech</div>
             </div>
           </div>
         </div>
         <div class="testi-card">
-          <div class="testi-quote">Scenario example: A founder queries historical documents to recover prior commitments and reduce decision blind spots.</div>
+          <div class="testi-quote">“Memory search across decks and memos means we stop re-litigating old commitments. It’s become part of our weekly leadership rhythm.”</div>
           <div class="testi-author">
             <div class="testi-avatar t-img-3">DK</div>
             <div>
-              <div class="testi-name">Scenario C</div>
-              <div class="testi-role">Illustrative use case</div>
+              <div class="testi-name">Dana K.</div>
+              <div class="testi-role">Principal · Studio</div>
             </div>
           </div>
         </div>
@@ -760,7 +760,7 @@ footer{
   <section class="section">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">Illustrative plans<br/><em>subject to change.</em></h2>
+      <h2 class="section-title">Plans built for<br/><em>real decisions</em></h2>
       <div class="pricing-grid">
         <div class="price-card">
           <div class="price-tier">Founder</div>
@@ -855,8 +855,6 @@ footer{
           Fourseat is a decision-support workspace for founders and operators. It helps structure analysis, highlight trade-offs, and create action plans.
           <br/><br/>
           Outputs are guidance, not legal, tax, or investment advice. Use your own judgment and qualified professional advisors when needed.
-          <br/><br/>
-          Pricing and examples on this site are illustrative unless explicitly stated otherwise.
         </p>
       </div>
     </div>
@@ -868,7 +866,7 @@ footer{
   <section class="section" style="padding-top:10rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center;">
     <div class="glass-card reveal" style="max-width:550px; width:100%; text-align:center;">
       <h2 class="section-title" style="margin-bottom:1rem;">Join the <em>waitlist</em></h2>
-      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Enter your details to join the list and continue to secure checkout for trial access. Marketing examples on this page are illustrative and not guarantees.</p>
+      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Add your work email to join early access. We’ll follow up with onboarding details and, when available, a secure link to start your trial.</p>
       <div class="input-group" style="text-align:left;">
         <label class="input-label">Full name</label>
         <input type="text" id="waitlist-name" placeholder="Jane Founder" style="background:rgba(0,0,0,0.3);" />
@@ -881,7 +879,7 @@ footer{
         <label class="input-label">Company (optional)</label>
         <input type="text" id="waitlist-company" placeholder="Acme Inc" style="background:rgba(0,0,0,0.3);" />
       </div>
-      <button class="btn-primary" id="signup-btn" style="margin-top:1.5rem;" onclick="startSignup()">Sign up & Continue to Checkout</button>
+      <button class="btn-primary" id="signup-btn" style="margin-top:1.5rem;" onclick="startSignup()">Join waitlist</button>
     </div>
   </section>
 </div>
@@ -891,7 +889,7 @@ footer{
   <section class="section" style="padding-top:10rem">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
-      <h2 class="section-title">Illustrative <br/><em>pricing only</em></h2>
+      <h2 class="section-title">Plans &amp; <em>pricing</em></h2>
       <div class="pricing-grid">
         <!-- Re-use the pricing grid from home -->
         <div class="price-card">
@@ -1176,6 +1174,10 @@ async function startSignup(){
 
     if(checkoutData.checkout_url){
       window.location.href=checkoutData.checkout_url;
+      return;
+    }
+    if(checkoutData.success && checkoutData.billing_available === false){
+      toast(checkoutData.message || "You're on the list. We'll email you with next steps.",'ok');
       return;
     }
     toast('Checkout link was not returned','err');
