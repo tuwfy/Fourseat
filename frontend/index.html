@@ -2,762 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Fourseat — Your Personal Board of Directors</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#110f0d"/>
+<meta name="color-scheme" content="dark"/>
+<meta name="description" content="Fourseat is a decision workspace for founders and operators. Strategy, finance, technology, and a contrarian advisor pressure-test every important call before you commit."/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<meta name="format-detection" content="telephone=no"/>
+<title>Fourseat — A board of advisors for every decision</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
-body{
-  font-family:'Inter',sans-serif;
-  background:#110f0d;
-  color:#fff;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-
-/* ─── SCROLL ANIMATIONS ───────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ─── NAV ─────────────────────────────────────────── */
-nav{
-  position:fixed;top:18px;left:50%;transform:translateX(-50%);
-  z-index:300;
-  display:flex;align-items:center;gap:0;
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(32px);
-  -webkit-backdrop-filter:blur(32px);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:999px;
-  padding:6px 6px 6px 24px;
-  width:min(860px,94vw);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-}
-.nav-logo{
-  font-family:'Instrument Serif',serif;
-  font-size:1.3rem;
-  color:#fff;
-  margin-right:auto;
-  letter-spacing:-.01em;
-  display:flex;align-items:center;gap:5px;
-  cursor: pointer;
-}
-.nav-logo sup{
-  font-family:'Inter',sans-serif;
-  font-size:.55rem;font-weight:600;
-  background:rgba(255,255,255,.2);
-  border-radius:4px;padding:2px 6px;
-  letter-spacing:.05em;
-}
-.nav-links{display:flex;align-items:center;gap:4px;margin:0 1.5rem}
-.nav-link{
-  padding:.4rem 1rem;
-  font-size:.85rem;font-weight:400;
-  color:rgba(255,255,255,.7);
-  border:none;background:none;
-  border-radius:999px;
-  cursor:pointer;
-  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space:nowrap;
-}
-.nav-link:hover{color:#fff;background:rgba(255,255,255,.1)}
-.nav-link.active{color:#fff;background:rgba(255,255,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1)}
-.nav-cta{
-  display:flex;align-items:center;
-  padding:.5rem 1.1rem;
-  background:#fff;
-  color:#110f0d;
-  border-radius:999px;
-  font-size:.85rem;font-weight:600;
-  border:none;
-  cursor:pointer;
-  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space:nowrap;
-  box-shadow: 0 2px 12px rgba(255,255,255,0.2);
-}
-.nav-cta:hover{background:#f0ebe1;transform:translateY(-1px);box-shadow: 0 4px 16px rgba(255,255,255,0.3);}
-
-/* ─── PAGES ───────────────────────────────────────── */
-.page{display:none}
-.page.active{display:block; animation: fadeIn 0.4s ease-out;}
-@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
-
-/* ─── ALVEN TEXT REVEAL ───────────────────────────── */
-.text-reveal { overflow: hidden; display: inline-flex; vertical-align: top; }
-.text-reveal span { display: inline-block; transform: translateY(110%); opacity: 0; animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.text-reveal-d1 span { animation-delay: 0.1s; }
-.text-reveal-d2 span { animation-delay: 0.2s; }
-.text-reveal-d3 span { animation-delay: 0.35s; }
-@keyframes slideUp { 0% { transform: translateY(110%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-
-.cycle-text {
-  display: inline-block;
-  color: #e8ba83;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  transform: translateY(0);
-}
-.cycle-text.swap-out {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-.cycle-text.swap-in {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-/* ─── HERO ────────────────────────────────────────── */
-.hero{
-  position:relative;
-  min-height:100vh;
-  display:flex;align-items:center;
-  overflow:hidden;
-}
-/* Dark cinematic background with warm amber blur blobs */
-.hero-bg{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 60% 80% at 75% 45%, rgba(180,110,40,.3) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 20% 60%, rgba(90,50,20,.4) 0%, transparent 60%),
-    linear-gradient(160deg,#1c1814 0%,#110f0d 40%,#080706 100%);
-  z-index:0;
-}
-/* cinematic blur blobs */
-.hero-bg::before{
-  content:'';position:absolute;
-  width:500px;height:500px;
-  right:25%;top:5%;
-  background:rgba(215,135,50,.2);
-  border-radius:50%;
-  filter:blur(110px);
-  animation: float 12s infinite ease-in-out alternate;
-}
-.hero-bg::after{
-  content:'';position:absolute;
-  width:400px;height:600px;
-  right:5%;top:15%;
-  background:rgba(140,70,25,.2);
-  border-radius:50%;
-  filter:blur(80px);
-  animation: float 15s infinite ease-in-out alternate-reverse;
-}
-@keyframes float {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-40px) scale(1.05); }
-}
-.hero-content{
-  position:relative;z-index:10;
-  width:100%;
-  max-width:1150px;
-  margin:0 auto;
-  padding:0 3rem;
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  gap:5rem;
-  padding-top:80px;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:.8rem;color:rgba(255,255,255,.8);
-  margin-bottom:2rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 0.4rem 1.2rem;
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-}
-.hero-badge svg{width:16px;height:16px;color:#e8ba83;}
-.hero-title{
-  font-family:'Instrument Serif',serif;
-  font-size:clamp(3.5rem,6.5vw,6rem);
-  font-weight:400;
-  line-height:1.02;
-  letter-spacing:-.02em;
-  color:#fff;
-  margin-bottom:1.5rem;
-}
-.hero-title em{font-style:italic;color:rgba(255,255,255,.7)}
-.hero-sub{
-  font-size:1.05rem;
-  color:rgba(255,255,255,.6);
-  line-height:1.65;
-  margin-bottom:2.6rem;
-  max-width:440px;
-}
-.hero-sub strong{color:rgba(255,255,255,.9);font-weight:500}
-.hero-actions{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
-
-/* White Pill Buttons */
-.btn-hero-primary{
-  padding:.8rem 1.8rem;
-  background:#fff;
-  color:#110f0d;
-  border-radius:999px;
-  font-size:.95rem;font-weight:600;
-  border:none;cursor:pointer;
-  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 16px rgba(255,255,255,0.15);
-}
-.btn-hero-primary:hover{background:#f0ebe1;transform:translateY(-2px);box-shadow: 0 8px 24px rgba(255,255,255,0.25);}
-.btn-hero-secondary{
-  padding:.8rem 1.8rem;
-  background:rgba(255,255,255,.05);
-  color:#fff;
-  border-radius:999px;
-  font-size:.95rem;font-weight:500;
-  border:1px solid rgba(255,255,255,.15);
-  cursor:pointer;
-  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter:blur(8px);
-}
-.btn-hero-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);}
-.hero-trial{font-size:.8rem;color:rgba(255,255,255,.4);}
-
-/* Floating glass card with 3D golden orb */
-.hero-card{
-  background:rgba(20,18,16,.4);
-  backdrop-filter:blur(32px);
-  -webkit-backdrop-filter:blur(32px);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:28px;
-  padding:2.5rem;
-  width:260px;
-  display:flex;flex-direction:column;align-items:center;gap:1.8rem;
-  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,0.1);
-  animation: hoverFloat 6s ease-in-out infinite;
-}
-@keyframes hoverFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-.hero-orb{
-  width:110px;height:110px;
-  border-radius:50%;
-  background: conic-gradient(
-    rgba(217,141,56,1) 0deg 90deg, 
-    rgba(125,72,23,1) 90deg 180deg, 
-    rgba(255,215,160,1) 180deg 270deg, 
-    rgba(47,23,4,1) 270deg 360deg
-  );
-  box-shadow:0 12px 32px rgba(217,141,56,.3), inset 0 2px 8px rgba(255,255,255,.4), inset -4px -8px 16px rgba(0,0,0,0.6);
-  position:relative;
-  animation: spinPie 15s linear infinite;
-}
-@keyframes spinPie { 100% { transform: rotate(360deg); } }
-.hero-orb::after{
-  content:'';position:absolute;
-  top:15%;left:20%;
-  width:30%;height:20%;
-  background:rgba(255,255,255,.5);
-  border-radius:50%;
-  filter:blur(5px);
-  transform:rotate(-35deg);
-}
-
-/* ─── GENERIC SECTION ─────────────────────────────── */
-.section{padding:8rem 0; position:relative;}
-.section-inner{max-width:1150px;margin:0 auto;padding:0 3rem;}
-.section-label{
-  font-size:.75rem;font-weight:600;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:#e8ba83;
-  margin-bottom:1.2rem;
-}
-.section-title{
-  font-family:'Instrument Serif',serif;
-  font-size:clamp(2.5rem,4.5vw,3.5rem);
-  font-weight:400;
-  line-height:1.1;
-  letter-spacing:-.02em;
-  color:#fff;
-  margin-bottom:1.2rem;
-}
-.section-title em{font-style:italic;color:rgba(255,255,255,.55)}
-.section-sub{
-  font-size:1.05rem;
-  color:rgba(255,255,255,.6);
-  max-width:520px;
-  line-height:1.7;
-}
-
-/* ─── FEATURES GRID ───────────────────────────────── */
-.features-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.5rem;
-  margin-top:4rem;
-}
-.feature-card{
-  background:rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 24px;
-  padding:2.5rem 2rem;
-  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor:pointer;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-.feature-card:hover{
-  background:rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.15);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-}
-.feature-icon{
-  width:48px;height:48px;
-  border-radius:12px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:1.5rem;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
-}
-.feature-icon svg{width:22px;height:22px;stroke:#e8ba83;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-.feature-name{font-size:1.1rem;font-weight:500;color:#fff;margin-bottom:.8rem;}
-.feature-desc{font-size:.9rem;color:rgba(255,255,255,.45);line-height:1.6;}
-
-/* ─── TESTIMONIALS (Alven style photos/structure) ─── */
-.testimonials-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.5rem;
-  margin-top:4rem;
-}
-.testi-card{
-  background:rgba(20,18,16,.4);
-  backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:24px;
-  padding:2rem;
-  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.testi-card:hover{background:rgba(255,255,255,.05);transform:translateY(-5px);}
-.testi-quote{
-  font-size:1.05rem;
-  color:rgba(255,255,255,.8);
-  line-height:1.6;
-  margin-bottom:2rem;
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  letter-spacing: 0.02em;
-}
-.testi-author{display:flex;align-items:center;gap:.8rem}
-/* Updated responsive premium photos */
-.testi-avatar{
-  width:44px;height:44px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;font-weight:600;color:#fff;
-  flex-shrink:0; border: 1px solid rgba(255,255,255,0.2);
-  background-size: cover; background-position: center;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-}
-.t-img-1 { background-image: radial-gradient(circle at top right, #9fa1a6, #3f434a); }
-.t-img-2 { background-image: radial-gradient(circle at top right, #d9aca4, #734a41); }
-.t-img-3 { background-image: radial-gradient(circle at top right, #a0b5a3, #4a5c4c); }
-.testi-name{font-size:.9rem;font-weight:500;color:#fff}
-.testi-role{font-size:.8rem;color:rgba(255,255,255,.4)}
-
-/* ─── PRICING ─────────────────────────────────────── */
-.pricing-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.5rem;
-  margin-top:4.rem;
-  align-items:center;
-}
-.price-card{
-  background:rgba(255,255,255,.03);
-  backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius: 28px;
-  padding:3rem 2.5rem;
-  transition:all .4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex; flex-direction: column;
-}
-.price-card:hover{background:rgba(255,255,255,.06); transform:translateY(-8px);}
-.price-card.featured{
-  background:rgba(20,18,16,.6);
-  border-color:rgba(232,186,131,.4);
-  box-shadow:0 12px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
-  transform:scale(1.03);
-  z-index: 2;
-}
-.price-card.featured:hover{transform:scale(1.03) translateY(-5px);}
-.price-tier{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#e8ba83;margin-bottom:1rem}
-.price-amount{
-  font-family:'Instrument Serif',serif;
-  font-size:3.5rem;font-weight:400;
-  color:#fff;line-height:1;
-  margin-bottom:.5rem; letter-spacing: -0.02em;
-}
-.price-amount span{font-family:'Inter',sans-serif;font-size:1.1rem;color:rgba(255,255,255,.4)}
-.price-desc{font-size:.9rem;color:rgba(255,255,255,.5);margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.08); line-height: 1.5;}
-.price-features{list-style:none;display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;flex-grow:1;}
-.price-features li{font-size:.9rem;color:rgba(255,255,255,.7);display:flex;gap:.8rem;align-items:flex-start}
-.price-features li::before{content:'✓';color:#e8ba83;flex-shrink:0;}
-.btn-price{
-  width:100%;padding:.9rem;
-  border-radius:999px;
-  font-size:.9rem;font-weight:600;
-  border:1px solid rgba(255,255,255,.2);
-  background:transparent;color:#fff;
-  cursor:pointer;transition:all .3s ease;
-}
-.btn-price:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.4)}
-.btn-price.featured{background:#fff;color:#110f0d;border-color:#fff}
-.btn-price.featured:hover{background:#f0ebe1;box-shadow: 0 4px 16px rgba(255,255,255,.2);}
-
-/* ─── APP GLASS CARDS ─────────────────────────────── */
-.glass-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(32px);
-  -webkit-backdrop-filter:blur(32px);
-  border-radius: 28px;
-  padding:2.5rem;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.05);
-}
-.input-label{
-  display:block;
-  font-size:.75rem;font-weight:600;
-  letter-spacing:.08em;text-transform:uppercase;
-  color:rgba(255,255,255,.5);
-  margin-bottom:.8rem;
-}
-textarea,input[type=text],input[type=email],input[type=number],select{
-  width:100%;
-  background:rgba(0,0,0,.2);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;
-  color:#fff;
-  font-family:'Inter',sans-serif;
-  font-size:.95rem;
-  padding:1rem 1.25rem;
-  resize:vertical;
-  transition:all .3s ease;
-  outline:none;
-}
-textarea::placeholder,input[type=text]::placeholder,input[type=email]::placeholder,input[type=number]::placeholder{color:rgba(255,255,255,.2)}
-textarea:focus,input[type=text]:focus,input[type=email]:focus,input[type=number]:focus,select:focus{border-color:rgba(232,186,131,.5);background:rgba(0,0,0,.4);box-shadow:0 0 0 4px rgba(232,186,131,.05);}
-textarea{min-height:120px}
-select option{background:#1a1714;color:#fff}
-.input-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
-.input-group{margin-bottom:1.5rem}
-
-/* ─── BUTTONS ─────────────────────────────────────── */
-.btn-primary {
-  display:inline-flex;align-items:center;gap:.6rem;
-  padding:.8rem 1.8rem;
-  background:#fff;color:#110f0d;
-  border-radius:999px; font-family:'Inter',sans-serif;
-  font-size:.95rem;font-weight:600;border:none;cursor:pointer;
-  transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(255,255,255,0.1);
-}
-.btn-primary:hover { background:#f0ebe1;transform:translateY(-2px);box-shadow: 0 8px 24px rgba(255,255,255,0.2); }
-.btn-primary:disabled{background:rgba(255,255,255,.1);color:rgba(255,255,255,.3);cursor:not-allowed;transform:none;box-shadow:none;}
-
-/* ─── BOARDS / CHAT RESPONSES ─────────────────────── */
-.board-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:3rem}
-.board-card{
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:24px;
-  padding:1.8rem;
-  position:relative;overflow:hidden;
-  transition: transform 0.3s ease;
-}
-.board-card:hover{transform:translateY(-2px);background:rgba(255,255,255,.04);}
-.board-card-bar{position:absolute;top:0;left:0;right:0;height:3px;}
-.board-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem;gap:.5rem}
-.member-name{font-size:1.05rem;font-weight:500;color:#fff}
-.member-title{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:4px}
-.ai-badge{
-  font-size:.7rem;padding:.3rem .8rem;
-  border-radius:999px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  color:rgba(255,255,255,.5);
-  white-space:nowrap;flex-shrink:0;
-}
-.round-tag{
-  font-size:.7rem;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;color:rgba(255,255,255,.3);
-  margin-bottom:1rem;
-}
-.board-response{font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.7}
-
-/* Chairman Section */
-.chairman{
-  background:rgba(20,18,16,.6);
-  border:1px solid rgba(232,186,131,.3);
-  border-radius:28px;
-  padding:2.5rem;
-  margin-top:2rem;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-.chairman-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
-.chairman-orb{
-  width:50px;height:50px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#ffd7a0,#d98d38 40%,#7d4817);
-  box-shadow:0 6px 20px rgba(0,0,0,.6);
-  flex-shrink:0;
-}
-.chairman-title{font-size:1.2rem;font-weight:600;color:#fff}
-.chairman-sub{font-size:.85rem;color:rgba(255,255,255,.5)}
-.verdict-box{
-  background:rgba(0,0,0,.2);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  padding:1.5rem 2rem;
-  margin-bottom:2.5rem;
-}
-.verdict-text{
-  font-family:'Instrument Serif',serif;
-  font-size:1.5rem;color:#fff;line-height:1.4;
-}
-.conf-pill{
-  display:inline-block; font-family:'Inter',sans-serif;
-  font-size:.75rem;font-weight:600;
-  padding:.3rem .8rem;border-radius:999px;
-  margin-left:1rem;vertical-align:middle;
-}
-.conf-high{background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
-.conf-med{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
-.conf-low{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
-.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem}
-.ch-col{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.5rem}
-.ch-col-title{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1rem}
-.ch-list{list-style:none;display:flex;flex-direction:column;gap:.8rem}
-.ch-list li{font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.6;padding-left:1.2rem;position:relative}
-.ch-list li::before{content:'→';position:absolute;left:0;color:#e8ba83;}
-
-/* ─── LOADING ─────────────────────────────────────── */
-.loading{display:none;text-align:center;padding:4rem}
-.loading.active{display:block; animation: fadeIn 0.4s ease;}
-.spinner{
-  width:44px;height:44px;
-  border:2px solid rgba(255,255,255,.05);
-  border-top-color:#e8ba83;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:0 auto 1.5rem;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-msg{font-size:1rem;color:rgba(255,255,255,.6)}
-.loading-steps{margin-top:1.5rem;display:flex;flex-direction:column;gap:.6rem}
-.step{font-size:.85rem;color:rgba(255,255,255,.3);transition:color .4s;}
-.step.done{color:rgba(255,255,255,.5)}
-.step.now{color:#e8ba83;}
-
-/* ─── APP SPECIFIC: MEMORY ────────────────────────── */
-.upload-zone{
-  border:2px dashed rgba(255,255,255,.1);
-  border-radius:20px;padding:3rem;
-  text-align:center;cursor:pointer;
-  transition:all .3s ease;
-  background:rgba(0,0,0,.15);
-  margin-bottom:1.5rem;
-}
-.upload-zone:hover{border-color:rgba(232,186,131,.4);background:rgba(0,0,0,.3);}
-.upload-icon{font-size:2.5rem;margin-bottom:1rem}
-.doc-item{
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
-  border-radius:16px; padding:1.2rem 1.5rem; margin-bottom:.8rem; display:flex; align-items:flex-start; justify-content:space-between;
-}
-.doc-name{font-size:.95rem;font-weight:500;color:#fff;margin-bottom:.3rem}
-.doc-meta{font-size:.8rem;color:rgba(255,255,255,.4)}
-.memory-answer{
-  background:rgba(232,186,131,.05); border:1px solid rgba(232,186,131,.2);
-  border-radius:20px;padding:2rem; margin-top:2rem;
-}
-.answer-text{font-size:.95rem;line-height:1.7;color:rgba(255,255,255,.85)}
-.source-chip{
-  display:inline-block; font-size:.7rem;padding:.3rem .8rem;
-  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
-  border-radius:999px;color:rgba(255,255,255,.5); margin:.4rem .4rem 0 0;
-}
-
-/* ─── APP SPECIFIC: BRIEF ─────────────────────────── */
-.metric-box{
-  background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.08);
-  border-radius:16px; padding:1.2rem 1.5rem;
-}
-.metric-lbl-input{
-  background:transparent;border:none; font-size:.7rem;font-weight:600;letter-spacing:.08em;
-  text-transform:uppercase;color:rgba(255,255,255,.4); padding:0;width:100%;margin-bottom:.5rem;
-}
-.metric-val-input{
-  background:transparent;border:none; font-family:'Instrument Serif',serif;
-  font-size:2rem;color:#fff; padding:0;width:100%;
-}
-.metric-val-input:focus,.metric-lbl-input:focus{outline:none}
-.deck-done{
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.1);
-  border-radius:24px;padding:3rem; text-align:center;margin-top:2rem;
-}
-.deck-done-title{font-family:'Instrument Serif',serif;font-size:2rem;color:#fff;margin-bottom:.5rem}
-
-/* ─── STATUS BAR ──────────────────────────────────── */
-.status-bar{
-  display:flex;align-items:center;gap:.6rem;
-  font-size:.8rem;color:rgba(255,255,255,.4);
-  margin-bottom:2rem;
-}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
-
-/* ─── TOAST ───────────────────────────────────────── */
-.toast{
-  position:fixed;bottom:2rem;right:2rem;z-index:999;
-  background:rgba(30,26,22,.95); border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(24px); border-radius:16px;padding:1rem 1.5rem;
-  font-size:.9rem;color:#fff; transform:translateY(100px);opacity:0; transition:all .4s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.ok{border-color:rgba(74,222,128,.4);color:#4ade80}
-.toast.err{border-color:rgba(248,113,113,.4);color:#f87171}
-
-/* ─── FOOTER ──────────────────────────────────────── */
-footer{
-  border-top:1px solid rgba(255,255,255,.05);
-  padding:3rem; display:flex;align-items:center;justify-content:space-between;
-  max-width:1150px;margin:5rem auto 0;
-}
-</style>
+<link rel="stylesheet" href="/frontend/styles.css"/>
 </head>
 <body>
 
 <!-- ══ NAV ══════════════════════════════════════════ -->
-<nav>
-  <div class="nav-logo" onclick="showPage('home')">
+<nav aria-label="Primary">
+  <button type="button" class="nav-logo" data-action="open-home" aria-label="Fourseat home">
     Fourseat <sup>AI</sup>
+  </button>
+  <div class="nav-links" id="nav-links">
+    <button type="button" class="nav-link" data-page="how" data-action="show-page">How it works</button>
+    <button type="button" class="nav-link" data-page="pricing" data-action="show-page">Pricing</button>
+    <button type="button" class="nav-link" data-page="about" data-action="show-page">About</button>
   </div>
-  <div class="nav-links">
-    <button class="nav-link" data-page="how" onclick="showPage('how')">How it works</button>
-    <button class="nav-link" data-page="pricing" onclick="showPage('pricing')">Pricing</button>
-    <button class="nav-link" data-page="about" onclick="showPage('about')">About</button>
-  </div>
-  <button class="nav-cta" onclick="showPage('waitlist')">
-    Sign up
+  <button type="button" class="nav-cta" data-action="open-waitlist">Get access</button>
+  <button type="button" class="nav-toggle" id="nav-toggle" data-action="toggle-nav" aria-controls="nav-links" aria-expanded="false" aria-label="Open menu">
+    <svg class="icon-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6l-12 12"/></svg>
   </button>
 </nav>
 
 <!-- ══ HOME PAGE ═════════════════════════════════════ -->
-<div class="page active" id="page-home">
+<main id="page-home" class="page active">
 
-  <section class="hero reveal">
-    <div class="hero-bg"></div>
+  <section class="hero reveal" aria-label="Hero">
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-content">
       <div>
         <div class="hero-badge">
-          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
-          Early access is now open
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
+          Early access is open
         </div>
         <h1 class="hero-title">
-          <div class="text-reveal text-reveal-d1"><span>Fourseat,</span></div><br/>
-          <div class="text-reveal text-reveal-d2"><span>your personal <em>board of</em></span></div><br/>
-          <div class="text-reveal text-reveal-d3"><span><em>directors.</em></span></div>
+          A board of advisors<br/>
+          <em>for every decision.</em>
         </h1>
-        <p class="hero-sub" style="font-size: 1.2rem; max-width: 500px">
-          Fourseat is your full time AI employee that <br/>
-          <span style="position:relative; display:inline-block; width:280px; height:1.2rem">
-            <strong id="type-text" class="cycle-text" style="position:absolute; left:0; white-space:nowrap;">debates every decision.</strong>
-          </span>
+        <p class="hero-sub">
+          Fourseat is a decision workspace built for founders and operators. A panel of strategy, finance, technology, and contrarian advisors <strong id="type-text" class="cycle-text">pressure-tests every decision.</strong>
         </p>
         <div class="hero-actions">
-          <button class="btn-hero-primary" onclick="showPage('pricing')">Get early access</button>
-          <button class="btn-hero-secondary" onclick="showPage('pricing')">See pricing</button>
+          <button type="button" class="btn-hero-primary" data-action="open-pricing">Get early access</button>
+          <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
         </div>
       </div>
-      <div class="hero-card">
+      <aside class="hero-card" aria-hidden="true">
         <div class="hero-orb"></div>
-        <button class="btn-hero-primary" style="width:100%; border-radius:12px; padding:0.6rem 1rem" onclick="showPage('debate')">
-          ✦ Open Fourseat
+        <button type="button" class="btn-hero-primary hero-card-cta" data-action="open-debate">
+          Open the boardroom
+        </button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" aria-label="Platform">
+    <div class="section-inner reveal">
+      <div class="section-label">Platform</div>
+      <h2 class="section-title">Everything you need to<br/><em>make sharper decisions</em></h2>
+      <p class="section-sub">Three modules that work together — a structured advisory debate, a private memory of your company history, and a draft generator for board-ready decks.</p>
+      <div class="features-grid">
+        <button type="button" class="feature-card" data-action="open-debate">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6 10a6 6 0 0 0 12 0"></path><path d="M12 16v4"></path><path d="M9 20h6"></path></svg></div>
+          <div class="feature-name">The four advisors</div>
+          <div class="feature-desc">Ask any question. Strategy, finance, technology and a dedicated contrarian debate it from every angle, then a Board Chair delivers a structured verdict.</div>
+        </button>
+        <button type="button" class="feature-card" data-action="open-memory">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7a3 3 0 0 1 6 0v10a3 3 0 0 1-6 0Z"></path><path d="M9 9H7a2 2 0 0 0 0 4h2"></path><path d="M15 9h2a2 2 0 1 1 0 4h-2"></path><path d="M12 7v10"></path></svg></div>
+          <div class="feature-name">Fourseat Memory</div>
+          <div class="feature-desc">Upload your decks, memos and investor updates. Search the full history of your company in plain English — and get cited sources.</div>
+        </button>
+        <button type="button" class="feature-card" data-action="open-brief">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
+          <div class="feature-name">Fourseat Decks</div>
+          <div class="feature-desc">Enter your metrics, wins and risks. Get a polished, board-ready PowerPoint draft you can hand to your investors in minutes.</div>
         </button>
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="section">
-    <div class="section-inner reveal">
-      <div class="section-label">Platform</div>
-      <h2 class="section-title">Everything you need to<br/><em>make smarter decisions</em></h2>
-      <p class="section-sub">Three powerful modules working together to give you a complete strategic command center.</p>
-      <div class="features-grid">
-        <div class="feature-card" onclick="showPage('debate')">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6 10a6 6 0 0 0 12 0"></path><path d="M12 16v4"></path><path d="M9 20h6"></path></svg></div>
-          <div class="feature-name">The Four Seats</div>
-          <div class="feature-desc">Ask any question. Strategy, Finance, Technology, and Contrarian roles debate it from every angle. A Board Chair delivers the final verdict.</div>
-        </div>
-        <div class="feature-card" onclick="showPage('memory')">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M9 7a3 3 0 0 1 6 0v10a3 3 0 0 1-6 0Z"></path><path d="M9 9H7a2 2 0 0 0 0 4h2"></path><path d="M15 9h2a2 2 0 1 1 0 4h-2"></path><path d="M12 7v10"></path></svg></div>
-          <div class="feature-name">Fourseat Memory</div>
-          <div class="feature-desc">Upload your PDFs, decks, memos and investor updates into vector memory. Query your entire company history in plain English.</div>
-        </div>
-        <div class="feature-card" onclick="showPage('brief')">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
-          <div class="feature-name">Fourseat Decks</div>
-          <div class="feature-desc">Enter your metrics, wins, and challenges. Get a polished, board-ready PowerPoint presentation automatically generated.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- TESTIMONIALS -->
-  <section class="section" style="padding-top:0">
+  <section class="section" style="padding-top:0" aria-label="Testimonials">
     <div class="section-inner reveal">
       <div class="section-label">From the field</div>
       <h2 class="section-title">How teams use<br/><em>Fourseat</em></h2>
-      <p class="section-sub" style="max-width:760px;margin-top:1rem;color:rgba(255,255,255,.55)">Founders and operators use Fourseat for board prep, narrative stress-tests, and faster alignment across strategy, finance, and product.</p>
+      <p class="section-sub">Founders and operators rely on Fourseat for board prep, narrative stress-tests, and faster alignment across strategy, finance and product.</p>
       <div class="testimonials-grid">
-        <div class="testi-card">
-          <div class="testi-quote">“We run major fundraise and positioning questions through the board before investor calls. The Contrarian seat alone has saved us from weak narratives.”</div>
+        <article class="testi-card">
+          <div class="testi-quote">“We run major fundraise and positioning questions through the board before investor calls. The contrarian seat alone has saved us from weak narratives.”</div>
           <div class="testi-author">
-            <div class="testi-avatar t-img-1">JS</div>
+            <div class="testi-avatar t-img-1" aria-hidden="true">JS</div>
             <div>
               <div class="testi-name">Jamie S.</div>
               <div class="testi-role">Founder · B2B SaaS</div>
             </div>
           </div>
-        </div>
-        <div class="testi-card">
+        </article>
+        <article class="testi-card">
           <div class="testi-quote">“Board updates used to eat a full day. Structured prompts and deck scaffolding cut that down so we can focus on the actual decisions.”</div>
           <div class="testi-author">
-            <div class="testi-avatar t-img-2">MP</div>
+            <div class="testi-avatar t-img-2" aria-hidden="true">MP</div>
             <div>
               <div class="testi-name">Marcus P.</div>
               <div class="testi-role">COO · Fintech</div>
             </div>
           </div>
-        </div>
-        <div class="testi-card">
+        </article>
+        <article class="testi-card">
           <div class="testi-quote">“Memory search across decks and memos means we stop re-litigating old commitments. It’s become part of our weekly leadership rhythm.”</div>
           <div class="testi-author">
-            <div class="testi-avatar t-img-3">DK</div>
+            <div class="testi-avatar t-img-3" aria-hidden="true">DK</div>
             <div>
               <div class="testi-name">Dana K.</div>
               <div class="testi-role">Principal · Studio</div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- PRICING -->
-  <section class="section">
+  <section class="section" aria-label="Pricing">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
       <h2 class="section-title">Plans built for<br/><em>real decisions</em></h2>
@@ -767,12 +144,12 @@ footer{
           <div class="price-amount">$49<span>/mo</span></div>
           <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
           <ul class="price-features">
-            <li>50 Fourseat debates/mo</li>
-            <li>4 AI board members + Chairman</li>
-            <li>Fourseat Memory — 10 documents</li>
-            <li>2 Fourseat Decks decks/month</li>
+            <li>50 board debates per month</li>
+            <li>4 advisors plus the Board Chair</li>
+            <li>Memory for up to 10 documents</li>
+            <li>2 generated decks per month</li>
           </ul>
-          <button class="btn-price" onclick="showPage('debate')">Get started</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Get started</button>
         </div>
         <div class="price-card featured">
           <div class="price-tier">Growth</div>
@@ -780,13 +157,13 @@ footer{
           <div class="price-desc">For funded teams with active boards and real decisions.</div>
           <ul class="price-features">
             <li>Everything in Founder</li>
-            <li>250 Fourseat debates/mo</li>
-            <li>Fourseat Memory — unlimited docs</li>
-            <li>Unlimited Fourseat Decks decks</li>
-            <li>Custom AI personas</li>
+            <li>250 board debates per month</li>
+            <li>Unlimited memory documents</li>
+            <li>Unlimited generated decks</li>
+            <li>Custom advisor personas</li>
             <li>Team workspace</li>
           </ul>
-          <button class="btn-price featured" onclick="showPage('debate')">Start free trial</button>
+          <button type="button" class="btn-price featured" data-action="open-waitlist">Start free trial</button>
         </div>
         <div class="price-card">
           <div class="price-tier">Studio</div>
@@ -799,43 +176,41 @@ footer{
             <li>White-label decks</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn-price" onclick="showPage('debate')">Contact us</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Contact us</button>
         </div>
       </div>
     </div>
   </section>
 
-</div>
-
-
+</main>
 
 <!-- ══ HOW PAGE ══════════════════════════════════════ -->
 <div class="page" id="page-how">
-  <section class="section" style="padding-top:10rem">
+  <section class="section" style="padding-top:9rem">
     <div class="section-inner reveal">
       <div class="section-label">How it works</div>
       <h2 class="section-title">How Fourseat works<br/><em>step by step</em></h2>
       <p class="section-sub">Fourseat runs four role-based analyses in parallel, then combines them into one board-style decision summary you can act on quickly.</p>
-      <div class="features-grid" style="margin-top:2rem;">
+      <div class="features-grid" style="margin-top:2rem">
         <div class="feature-card">
-          <div class="feature-name">1) Ask your question</div>
-          <div class="feature-desc">Enter a decision, problem, or strategy question with optional context (stage, metrics, constraints).</div>
+          <div class="feature-name">1. Ask your question</div>
+          <div class="feature-desc">Enter a decision, problem, or strategy question with optional context — stage, metrics, constraints.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-name">2) Four role perspectives</div>
-          <div class="feature-desc">You get Strategy, Finance, Technology, and Contrarian views so blind spots are surfaced early.</div>
+          <div class="feature-name">2. Four perspectives</div>
+          <div class="feature-desc">Strategy, finance, technology, and a contrarian respond independently so blind spots are surfaced early.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-name">3) Board Chair decision</div>
-          <div class="feature-desc">A final synthesis returns verdict, risks, opportunities, and concrete action steps.</div>
+          <div class="feature-name">3. A clear verdict</div>
+          <div class="feature-desc">A final synthesis returns a verdict, key risks, opportunities, and concrete action steps.</div>
         </div>
       </div>
-      <div class="glass-card" style="margin-top:2rem;">
+      <div class="glass-card" style="margin-top:2rem">
         <div class="section-label">Other modules</div>
-        <p class="section-sub" style="max-width:none;">
-          <strong>Fourseat Memory:</strong> Upload docs and query historical decisions.
+        <p class="section-sub" style="max-width:none">
+          <strong>Fourseat Memory:</strong> Upload documents and search past decisions in plain English.
           <br/>
-          <strong>Fourseat Decks:</strong> Enter key data and generate a board-ready presentation draft.
+          <strong>Fourseat Decks:</strong> Enter the key data and generate a board-ready presentation draft.
         </p>
       </div>
     </div>
@@ -844,15 +219,15 @@ footer{
 
 <!-- ══ ABOUT PAGE ════════════════════════════════════ -->
 <div class="page" id="page-about">
-  <section class="section" style="padding-top:10rem">
+  <section class="section" style="padding-top:9rem">
     <div class="section-inner reveal">
       <div class="section-label">About</div>
       <h2 class="section-title">About Fourseat<br/><em>what it is and is not</em></h2>
       <div class="glass-card">
-        <p class="section-sub" style="max-width:none;">
+        <p class="section-sub" style="max-width:none">
           Founder: Tyler Riccardi.
           <br/><br/>
-          Fourseat is a decision-support workspace for founders and operators. It helps structure analysis, highlight trade-offs, and create action plans.
+          Fourseat is a decision-support workspace for founders and operators. It helps structure analysis, highlight trade-offs, and create action plans you can act on quickly.
           <br/><br/>
           Outputs are guidance, not legal, tax, or investment advice. Use your own judgment and qualified professional advisors when needed.
         </p>
@@ -863,46 +238,47 @@ footer{
 
 <!-- ══ WAITLIST PAGE ═════════════════════════════════ -->
 <div class="page" id="page-waitlist">
-  <section class="section" style="padding-top:10rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center;">
-    <div class="glass-card reveal" style="max-width:550px; width:100%; text-align:center;">
-      <h2 class="section-title" style="margin-bottom:1rem;">Join the <em>waitlist</em></h2>
-      <p class="section-sub" style="margin:0 auto 2.5rem; color:rgba(255,255,255,0.7);">Add your work email to join early access. We’ll follow up with onboarding details and, when available, a secure link to start your trial.</p>
-      <div class="input-group" style="text-align:left;">
-        <label class="input-label">Full name</label>
-        <input type="text" id="waitlist-name" placeholder="Jane Founder" style="background:rgba(0,0,0,0.3);" />
-      </div>
-      <div class="input-group" style="text-align:left;">
-        <label class="input-label">Work email</label>
-        <input type="email" id="waitlist-email" placeholder="name@company.com" style="background:rgba(0,0,0,0.3);" />
-      </div>
-      <div class="input-group" style="text-align:left; margin-bottom:0;">
-        <label class="input-label">Company (optional)</label>
-        <input type="text" id="waitlist-company" placeholder="Acme Inc" style="background:rgba(0,0,0,0.3);" />
-      </div>
-      <button class="btn-primary" id="signup-btn" style="margin-top:1.5rem;" onclick="startSignup()">Join waitlist</button>
+  <section class="section" style="padding-top:9rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center">
+    <div class="glass-card reveal" style="max-width:540px; width:100%; text-align:center">
+      <h2 class="section-title" style="margin-bottom:1rem">Join the <em>waitlist</em></h2>
+      <p class="section-sub" style="margin:0 auto 2.25rem; color:rgba(255,255,255,.7)">Add your work email to join early access. We’ll follow up with onboarding details and a secure link to start your trial.</p>
+      <form id="waitlist-form" autocomplete="on" novalidate>
+        <div class="input-group" style="text-align:left">
+          <label class="input-label" for="waitlist-name">Full name</label>
+          <input type="text" id="waitlist-name" name="name" autocomplete="name" placeholder="Jane Founder" maxlength="120"/>
+        </div>
+        <div class="input-group" style="text-align:left">
+          <label class="input-label" for="waitlist-email">Work email</label>
+          <input type="email" id="waitlist-email" name="email" autocomplete="email" placeholder="name@company.com" required maxlength="200" inputmode="email"/>
+        </div>
+        <div class="input-group" style="text-align:left">
+          <label class="input-label" for="waitlist-company">Company <span style="font-weight:400;color:rgba(255,255,255,.4)">(optional)</span></label>
+          <input type="text" id="waitlist-company" name="company" autocomplete="organization" placeholder="Acme Inc" maxlength="160"/>
+        </div>
+        <button type="button" class="btn-primary" id="signup-btn" data-action="start-signup" style="margin-top:1.25rem;width:100%;justify-content:center">Join waitlist</button>
+      </form>
     </div>
   </section>
 </div>
 
 <!-- ══ PRICING PAGE ══════════════════════════════════ -->
 <div class="page" id="page-pricing">
-  <section class="section" style="padding-top:10rem">
+  <section class="section" style="padding-top:9rem">
     <div class="section-inner reveal">
       <div class="section-label">Pricing</div>
       <h2 class="section-title">Plans &amp; <em>pricing</em></h2>
       <div class="pricing-grid">
-        <!-- Re-use the pricing grid from home -->
         <div class="price-card">
           <div class="price-tier">Founder</div>
           <div class="price-amount">$49<span>/mo</span></div>
           <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
           <ul class="price-features">
-            <li>50 Fourseat debates/mo</li>
-            <li>4 AI board members + Chairman</li>
-            <li>Fourseat Memory — 10 documents</li>
-            <li>2 Fourseat Decks decks/month</li>
+            <li>50 board debates per month</li>
+            <li>4 advisors plus the Board Chair</li>
+            <li>Memory for up to 10 documents</li>
+            <li>2 generated decks per month</li>
           </ul>
-          <button class="btn-price" onclick="showPage('debate')">Get started</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Get started</button>
         </div>
         <div class="price-card featured">
           <div class="price-tier">Growth</div>
@@ -910,12 +286,12 @@ footer{
           <div class="price-desc">For funded teams with active boards and real decisions.</div>
           <ul class="price-features">
             <li>Everything in Founder</li>
-            <li>250 Fourseat debates/mo</li>
-            <li>Fourseat Memory — unlimited docs</li>
-            <li>Unlimited Fourseat Decks decks</li>
-            <li>Custom AI personas</li>
+            <li>250 board debates per month</li>
+            <li>Unlimited memory documents</li>
+            <li>Unlimited generated decks</li>
+            <li>Custom advisor personas</li>
           </ul>
-          <button class="btn-price featured" onclick="showPage('debate')">Start free trial</button>
+          <button type="button" class="btn-price featured" data-action="open-waitlist">Start free trial</button>
         </div>
         <div class="price-card">
           <div class="price-tier">Studio</div>
@@ -927,7 +303,7 @@ footer{
             <li>API access</li>
             <li>White-label decks</li>
           </ul>
-          <button class="btn-price" onclick="showPage('debate')">Contact us</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Contact us</button>
         </div>
       </div>
     </div>
@@ -936,86 +312,88 @@ footer{
 
 <!-- ══ DEBATE PAGE (Engine 1) ════════════════════════ -->
 <div class="page" id="page-debate">
-  <section class="section" style="padding-top:8rem">
+  <section class="section" style="padding-top:7rem">
     <div class="section-inner reveal">
-      <div class="status-bar"><div class="status-dot"></div> Board is in session API Connected</div>
-      <div class="section-label">The Fourseat Engine</div>
+      <div class="status-bar"><div class="status-dot" aria-hidden="true"></div> Board ready</div>
+      <div class="section-label">The boardroom</div>
       <h2 class="section-title">Convene your <em>board</em></h2>
-      <p class="section-sub" style="margin-bottom:3rem">Four role-based advisors debate your question simultaneously. Finally, the Board Chair reads the whole debate and delivers a structured verdict.</p>
+      <p class="section-sub" style="margin-bottom:2.5rem">Four advisors respond independently, then debate each other’s answers. The Board Chair returns a structured verdict with risks, opportunities, and next steps.</p>
 
       <div class="glass-card">
         <div class="input-group">
-          <label class="input-label">Your question or decision</label>
-          <textarea id="debate-q" placeholder="e.g. Should I take this partnership deal?"></textarea>
+          <label class="input-label" for="debate-q">Your question or decision</label>
+          <textarea id="debate-q" name="debate-q" maxlength="4000" placeholder="e.g. Should we accept this partnership deal?"></textarea>
         </div>
         <div class="input-group">
-          <label class="input-label">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
-          <textarea id="debate-ctx" style="min-height:80px" placeholder="Company stage, industry, numbers, constraints..."></textarea>
+          <label class="input-label" for="debate-ctx">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
+          <textarea id="debate-ctx" name="debate-ctx" maxlength="6000" style="min-height:80px" placeholder="Stage, industry, key numbers, constraints…"></textarea>
         </div>
-        <div style="margin-top:2rem">
-          <button class="btn-primary" id="debate-btn" onclick="runDebate()">⚡ Convene the Board</button>
+        <div style="margin-top:1.75rem">
+          <button type="button" class="btn-primary" id="debate-btn" data-action="run-debate">Convene the board</button>
         </div>
       </div>
 
-      <div class="loading" id="debate-loading">
-        <div class="spinner"></div>
-        <div class="loading-msg">Board is deliberating…</div>
+      <div class="loading" id="debate-loading" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="loading-msg">The board is deliberating…</div>
         <div class="loading-steps">
-          <div class="step" id="s1">→ Sending simultaneously to Strategy, Finance, Technology, and Contrarian advisors</div>
-          <div class="step" id="s2">→ Board members actively debating each other's answers</div>
-          <div class="step" id="s3">→ Board Chair synthesising final verdict, listing risks & ops</div>
+          <div class="step" id="s1">→ Sending the question to all four advisors in parallel</div>
+          <div class="step" id="s2">→ Advisors weigh in on each other’s reasoning</div>
+          <div class="step" id="s3">→ Board Chair synthesises the final verdict</div>
         </div>
       </div>
 
-      <div id="debate-out" style="display:none; padding-top:2rem;">
-        <div class="section-label" style="text-align:center;margin:3rem 0 1.5rem">Round 1 — Independent Analysis</div>
+      <div id="debate-out" style="display:none; padding-top:1.5rem">
+        <div class="section-label" style="text-align:center;margin:2.5rem 0 1.25rem">Round 1 — independent analysis</div>
         <div class="board-grid" id="r1"></div>
-        
-        <div class="section-label" style="text-align:center;margin:3rem 0 1.5rem">Round 2 — The Debate</div>
+
+        <div class="section-label" style="text-align:center;margin:2.5rem 0 1.25rem">Round 2 — the debate</div>
         <div class="board-grid" id="r2"></div>
-        
+
         <div class="chairman" id="chairman"></div>
       </div>
     </div>
   </section>
 </div>
 
-<!-- ══ BOARDMIND PAGE (Engine 2) ═════════════════════ -->
+<!-- ══ MEMORY PAGE (Engine 2) ════════════════════════ -->
 <div class="page" id="page-memory">
-  <section class="section" style="padding-top:8rem">
+  <section class="section" style="padding-top:7rem">
     <div class="section-inner reveal">
-      <div class="status-bar"><div class="status-dot"></div> Vector Database Memory Active</div>
-      <div class="section-label">Fourseat Memory Memory System</div>
-      <h2 class="section-title">Your company's <em>perfect memory</em></h2>
-      <p class="section-sub" style="margin-bottom:3rem">Upload PDFs/documents (decks, investor updates) to ChromaDB. Query your entire history in plain English and automatically cite sources.</p>
+      <div class="status-bar"><div class="status-dot" aria-hidden="true"></div> Memory online</div>
+      <div class="section-label">Fourseat Memory</div>
+      <h2 class="section-title">Your company’s <em>perfect memory</em></h2>
+      <p class="section-sub" style="margin-bottom:2.5rem">Upload PDFs, decks, memos and investor updates. Ask questions in plain English and get answers with cited sources.</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem">
+      <div class="memory-grid">
         <div>
-          <div class="glass-card" style="margin-bottom:2rem">
-            <label class="input-label">Upload document (PDF/TXT/MD)</label>
-            <div class="upload-zone" onclick="document.getElementById('file-in').click()">
-              <div class="upload-icon">📄</div>
-              <div style="font-size:1rem;color:rgba(255,255,255,.8)">Click to upload</div>
+          <div class="glass-card" style="margin-bottom:1.5rem">
+            <label class="input-label">Upload a document</label>
+            <div class="upload-zone" id="upload-zone" data-action="open-file" role="button" tabindex="0" aria-label="Choose a PDF, TXT or Markdown file">
+              <svg class="upload-icon" viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
+              <div style="font-size:1rem;color:rgba(255,255,255,.85)">Tap to upload</div>
+              <div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.4rem">PDF, TXT or Markdown · 12 MB max</div>
             </div>
-            <input type="file" id="file-in" accept=".pdf,.txt,.md" style="display:none" onchange="uploadDoc(this)"/>
-            <div class="input-group">
-              <label class="input-label">Document classification</label>
-              <select id="doc-type">
-                <option value="board_deck">Board Deck</option>
-                <option value="investor_update">Investor Update</option>
-                <option value="strategic_memo">Strategic Memo</option>
+            <input type="file" id="file-in" accept=".pdf,.txt,.md" style="display:none"/>
+            <div class="input-group" style="margin-top:.5rem">
+              <label class="input-label" for="doc-type">Document type</label>
+              <select id="doc-type" name="doc-type">
+                <option value="board_deck">Board deck</option>
+                <option value="investor_update">Investor update</option>
+                <option value="strategic_memo">Strategic memo</option>
+                <option value="general">General document</option>
               </select>
             </div>
             <div id="upload-status"></div>
           </div>
-          <div class="section-label" style="font-size:.7rem">Ingested into Vector DB</div>
+          <div class="section-label" style="font-size:.7rem">Indexed documents</div>
           <div id="doc-list" style="margin-top:1rem"></div>
         </div>
         <div>
           <div class="glass-card">
-            <label class="input-label">Query History in Plain English</label>
-            <textarea id="mem-q" style="min-height:100px" placeholder="What did we commit to in our Q1 2026 update?"></textarea>
-            <button class="btn-primary" style="margin-top:1.5rem" onclick="queryMem()">🧠 Search Database</button>
+            <label class="input-label" for="mem-q">Ask your memory in plain English</label>
+            <textarea id="mem-q" name="mem-q" maxlength="2000" style="min-height:110px" placeholder="What did we commit to in our last investor update?"></textarea>
+            <button type="button" class="btn-primary" data-action="query-mem" style="margin-top:1.5rem">Search memory</button>
           </div>
           <div id="mem-out"></div>
         </div>
@@ -1024,299 +402,62 @@ footer{
   </section>
 </div>
 
-<!-- ══ BOARDBRIEF PAGE (Engine 3) ════════════════════ -->
+<!-- ══ BRIEF PAGE (Engine 3) ═════════════════════════ -->
 <div class="page" id="page-brief">
-  <section class="section" style="padding-top:8rem">
+  <section class="section" style="padding-top:7rem">
     <div class="section-inner reveal">
-      <div class="status-bar"><div class="status-dot"></div> AI PowerPoint Generator Live</div>
-      <div class="section-label">Fourseat Decks Deck Generator</div>
+      <div class="status-bar"><div class="status-dot" aria-hidden="true"></div> Decks ready</div>
+      <div class="section-label">Fourseat Decks</div>
       <h2 class="section-title">Your board deck, <em>in seconds</em></h2>
-      <p class="section-sub" style="margin-bottom:3rem">Enter your metrics, wins, challenges, and what you need from the board. AI writes the narrative and downloads a polished PowerPoint (.pptx).</p>
+      <p class="section-sub" style="margin-bottom:2.5rem">Enter your metrics, wins, challenges and what you need from the board. Fourseat writes the narrative and downloads a polished PowerPoint draft.</p>
 
       <div class="glass-card">
         <div class="input-row">
           <div class="input-group">
-            <label class="input-label">Company name</label>
-            <input type="text" id="co-name" placeholder="Acme Corp"/>
+            <label class="input-label" for="co-name">Company name</label>
+            <input type="text" id="co-name" name="company" maxlength="120" placeholder="Acme Corp"/>
           </div>
           <div class="input-group">
-            <label class="input-label">Period</label>
-            <input type="text" id="co-period" placeholder="Q2 2026"/>
+            <label class="input-label" for="co-period">Period</label>
+            <input type="text" id="co-period" name="period" maxlength="40" placeholder="Q2 2026"/>
           </div>
         </div>
 
-        <label class="input-label" style="padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);margin-bottom:1.5rem">Key metrics</label>
-        <div class="metrics-grid" id="metrics-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2rem"></div>
+        <label class="input-label" style="padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);margin-bottom:1.25rem">Key metrics</label>
+        <div class="metrics-grid" id="metrics-grid"></div>
 
         <div class="input-group">
-          <label class="input-label">Wins & Highlights</label>
-          <textarea id="b-wins" style="min-height:80px" placeholder="Closed 3 enterprise deals..."></textarea>
+          <label class="input-label" for="b-wins">Wins &amp; highlights</label>
+          <textarea id="b-wins" name="wins" maxlength="3000" style="min-height:80px" placeholder="Closed 3 enterprise deals…"></textarea>
         </div>
         <div class="input-group">
-          <label class="input-label">Challenges & Risks</label>
-          <textarea id="b-risks" style="min-height:80px" placeholder="Churn increased..."></textarea>
+          <label class="input-label" for="b-risks">Challenges &amp; risks</label>
+          <textarea id="b-risks" name="risks" maxlength="3000" style="min-height:80px" placeholder="Churn increased…"></textarea>
         </div>
         <div class="input-group">
-          <label class="input-label">Ask of the board</label>
-          <textarea id="b-ask" style="min-height:80px" placeholder="Need introductions to Series A investors..."></textarea>
+          <label class="input-label" for="b-ask">Ask of the board</label>
+          <textarea id="b-ask" name="ask" maxlength="3000" style="min-height:80px" placeholder="Need introductions to Series A investors…"></textarea>
         </div>
-        
-        <button class="btn-primary" id="brief-btn" onclick="genDeck()" style="margin-top:1rem">📊 Generate .pptx Deck</button>
+
+        <button type="button" class="btn-primary" id="brief-btn" data-action="gen-deck" style="margin-top:.5rem">Generate deck</button>
       </div>
 
-      <div class="loading" id="brief-loading">
-        <div class="spinner"></div>
-        <div class="loading-msg">Writing narrative and compiling PowerPoint file…</div>
+      <div class="loading" id="brief-loading" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="loading-msg">Writing the narrative and assembling your PowerPoint…</div>
       </div>
       <div id="brief-out"></div>
     </div>
   </section>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <footer>
-  <div style="font-family:'Instrument Serif',serif;font-size:1.2rem;color:rgba(255,255,255,.6)">Fourseat</div>
-  <div style="font-size:.8rem;color:rgba(255,255,255,.3)">© 2026 Fourseat · Information provided for planning support only</div>
+  <div class="footer-brand">Fourseat</div>
+  <div class="footer-meta">© 2026 Fourseat · Decision support, not legal, tax or investment advice.</div>
 </footer>
 
-<script>
-// Scroll Reveal Observer
-document.addEventListener('DOMContentLoaded', () => {
-  const hashPage = (window.location.hash || '').replace('#','');
-  if (hashPage && document.getElementById('page-'+hashPage)) {
-    showPage(hashPage);
-  }
-
-
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('trial') === '1') {
-    showPage('debate');
-    toast('Trial access enabled. Welcome to Fourseat.','ok');
-  }
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting) {
-        entry.target.classList.add('active');
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-});
-
-const API='';
-const COLORS={claude:'#e8a87c',gpt4:'#7ccea8',gemini:'#7ca8e8',contrarian:'#e87c7c'};
-const MEMBER_DEFAULTS={
-  claude:{role:'Chief Strategy Officer',ai:'Nia.ai'},
-  gpt4:{role:'Chief Financial Officer',ai:'Cerebras'},
-  gemini:{role:'Chief Technology Officer',ai:'NVIDIA'},
-  contrarian:{role:'Independent Contrarian Board Member',ai:'Nia.ai'},
-};
-const METRICS=[
-  {l:'Monthly Revenue',p:'$125,000'},
-  {l:'MRR Growth',p:'+18%'},
-  {l:'Total Customers',p:'342'},
-  {l:'Churn Rate',p:'2.1%'}
-];
-
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target=document.getElementById('page-'+id);
-  if(target) target.classList.add('active');
-  document.querySelectorAll('.nav-link[data-page]').forEach(b=>b.classList.remove('active'));
-  const activeBtn=document.querySelector(`.nav-link[data-page="${id}"]`);
-  if(activeBtn) activeBtn.classList.add('active');
-  window.location.hash=id;
-  window.scrollTo({top:0, behavior: 'smooth'});
-}
-
-function toast(msg,type='ok'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+type+' show';
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
-
-function esc(s){
-  if(!s)return'';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>');
-}
-
-async function startSignup(){
-  const email=(document.getElementById('waitlist-email')?.value || '').trim();
-  const name=(document.getElementById('waitlist-name')?.value || '').trim();
-  const company=(document.getElementById('waitlist-company')?.value || '').trim();
-  const btn=document.getElementById('signup-btn');
-  if(!email){toast('Please enter an email','err');return;}
-
-  if(btn) btn.disabled=true;
-  try {
-    const waitlistRes=await fetch(API+'/api/waitlist',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,name,company}),
-    });
-    const waitlistData=await waitlistRes.json();
-    if(!waitlistRes.ok){
-      toast(waitlistData.error || 'Unable to join waitlist','err');
-      return;
-    }
-
-    const checkoutRes=await fetch(API+'/api/billing/checkout-session',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,name}),
-    });
-    const checkoutData=await checkoutRes.json();
-    if(!checkoutRes.ok){
-      toast(checkoutData.error || 'Unable to start checkout','err');
-      return;
-    }
-
-    if(checkoutData.checkout_url){
-      window.location.href=checkoutData.checkout_url;
-      return;
-    }
-    if(checkoutData.success && checkoutData.billing_available === false){
-      toast(checkoutData.message || "You're on the list. We'll email you with next steps.",'ok');
-      return;
-    }
-    toast('Checkout link was not returned','err');
-  } catch(e) {
-    toast('Unable to process signup right now','err');
-  } finally {
-    if(btn) btn.disabled=false;
-  }
-}
-
-/* DEBATE ENGINE */
-async function runDebate(){
-  const q=document.getElementById('debate-q').value.trim();
-  const ctx=document.getElementById('debate-ctx').value.trim();
-  if(!q){toast('Please enter a question','err');return;}
-  document.getElementById('debate-btn').disabled=true;
-  document.getElementById('debate-out').style.display='none';
-  const L=document.getElementById('debate-loading'); L.classList.add('active');
-
-  let si=0; const steps=['s1','s2','s3'];
-  steps.forEach(s=>document.getElementById(s).className='step');
-  document.getElementById('s1').className='step now';
-  const iv=setInterval(()=>{
-    if(si<2){ document.getElementById(steps[si]).className='step done'; si++; document.getElementById(steps[si]).className='step now'; }
-  }, 6000);
-
-  try {
-    const res=await fetch(API+'/api/debate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        question:q,
-        context:ctx,
-      })
-    });
-    const data=await res.json();
-    clearInterval(iv); steps.forEach(s=>document.getElementById(s).className='step done');
-    renderDebate(data);
-  } catch(e) {
-    clearInterval(iv); toast('Error API','err');
-  } finally {
-    L.classList.remove('active'); document.getElementById('debate-btn').disabled=false;
-  }
-}
-
-function memberCard(key,text,round,personas){
-  const m=(personas && personas[key]) || MEMBER_DEFAULTS[key]; const c=COLORS[key];
-  return `<div class="board-card reveal active">
-    <div class="board-card-bar" style="background:${c}"></div>
-    <div class="board-card-header">
-      <div><div class="member-name">${m.role}</div></div>
-      <div class="ai-badge">${m.ai}</div>
-    </div>
-    <div class="round-tag">${round}</div>
-    <div class="board-response">${esc(text)}</div>
-  </div>`;
-}
-
-function renderDebate(data){
-  const personas=data.personas || MEMBER_DEFAULTS;
-  const leader=data.leader_name || 'Board Chair';
-  ['r1','r2'].forEach(id=>document.getElementById(id).innerHTML='');
-  ['claude','gpt4','gemini','contrarian'].forEach(k=>{
-    if(data.round1 && data.round1[k]) document.getElementById('r1').innerHTML += memberCard(k,data.round1[k],'Independent Response',personas);
-    if(data.round2 && data.round2[k]) document.getElementById('r2').innerHTML += memberCard(k,data.round2[k],'Debating Peers',personas);
-  });
-  const c=data.chairman||{};
-  document.getElementById('chairman').innerHTML=`
-  <div class="chairman-hdr"><div class="chairman-orb"></div><div><div class="chairman-title">${esc(leader)} Final Decision</div><div class="chairman-sub">Bottom-line synthesis of the entire debate</div></div></div>
-  <div class="verdict-box"><div class="verdict-text">${esc(c.verdict||'Consensus reached.')} <span class="conf-pill conf-high">${esc(c.confidence||'High')} Confidence</span></div></div>
-  <div class="ch-grid">
-    <div class="ch-col"><div class="ch-col-title">⚠ Key risks</div><ul class="ch-list">${(c.key_risks||[]).map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>
-    <div class="ch-col"><div class="ch-col-title">✦ Opportunities</div><ul class="ch-list">${(c.key_opportunities||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>
-    <div class="ch-col"><div class="ch-col-title">→ Action steps</div><ul class="ch-list">${(c.action_steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div>
-  </div>`;
-  document.getElementById('debate-out').style.display='block';
-}
-
-/* MEMORY ENGINE */
-async function uploadDoc(input){
-  const f=input.files[0];if(!f)return;
-  const st=document.getElementById('upload-status');
-  st.innerHTML='<div style="font-size:.85rem;color:rgba(255,255,255,.5);margin-top:1rem">Ingesting document to Vector DB…</div>';
-  const fd=new FormData(); fd.append('file',f); fd.append('doc_type',document.getElementById('doc-type').value);
-  try{
-    const res=await fetch(API+'/api/memory/upload',{method:'POST',body:fd}); const data=await res.json();
-    if(data.success){ st.innerHTML=`<div style="font-size:.85rem;color:#4ade80;margin-top:1rem">✓ Ingested successfully into Vector memory</div>`; loadDocs(); }
-  } catch(e) { st.innerHTML=`<div class="toast err show">Failed upload</div>`; }
-}
-async function loadDocs(){
-  try{
-    const res=await fetch(API+'/api/memory/documents'); const data=await res.json();
-    document.getElementById('doc-list').innerHTML=data.documents.map(d=>`<div class="doc-item"><div><div class="doc-name">${esc(d.name)}</div><div class="doc-meta">${d.chunks} vector chunks</div></div></div>`).join('');
-  } catch(e){}
-}
-async function queryMem(){
-  const q=document.getElementById('mem-q').value; if(!q) return;
-  const el=document.getElementById('mem-out'); el.innerHTML='<div class="spinner" style="margin-top:2rem"></div>';
-  try{
-    const res=await fetch(API+'/api/memory/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
-    const data=await res.json();
-    el.innerHTML=`<div class="memory-answer"><div class="section-label">Vector Match Result</div><div class="answer-text">${esc(data.answer)}</div><div style="margin-top:1.5rem">${data.sources.map(s=>`<span class="source-chip">Cited source: ${esc(s)}</span>`).join('')}</div></div>`;
-  } catch(e){ el.innerHTML=''; }
-}
-
-/* BRIEF ENGINE */
-document.getElementById('metrics-grid').innerHTML=METRICS.map((m,i)=>`<div class="metric-box"><input class="metric-lbl-input" value="${m.l}" id="m-l${i}"/><input class="metric-val-input" placeholder="${m.p}" id="m-v${i}"/></div>`).join('');
-async function genDeck(){
-  const payload={company_name:document.getElementById('co-name').value, period:document.getElementById('co-period').value, highlights:document.getElementById('b-wins').value, challenges:document.getElementById('b-risks').value, ask:document.getElementById('b-ask').value, metrics:{}};
-  METRICS.forEach((_,i)=>{ payload.metrics[document.getElementById('m-l'+i).value]=document.getElementById('m-v'+i).value });
-  document.getElementById('brief-btn').disabled=true; document.getElementById('brief-loading').classList.add('active');
-  try{
-    const res=await fetch(API+'/api/brief/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const data=await res.json();
-    if(data.success) document.getElementById('brief-out').innerHTML=`<div class="deck-done reveal active"><div class="deck-done-title">Your .pptx deck is ready</div><div style="color:rgba(255,255,255,.5);margin-bottom:2rem">${data.slides} slides generated via python-pptx</div><a href="${data.download_url}" class="btn-primary" download>⬇ Download Generated PowerPoint</a></div>`;
-  } catch(e){}
-  document.getElementById('brief-loading').classList.remove('active'); document.getElementById('brief-btn').disabled=false;
-}
-
-// hero text cycle
-const phrases = ["debates every decision.", "generates pitch decks.", "recalls past history.", "analyzes metrics.", "evaluates risks."];
-let pIdx = 0;
-const typeEl = document.getElementById('type-text');
-if(typeEl) {
-  setInterval(() => {
-    typeEl.classList.add('swap-out');
-    setTimeout(() => {
-      pIdx = (pIdx + 1) % phrases.length;
-      typeEl.textContent = phrases[pIdx];
-      typeEl.classList.remove('swap-out');
-      typeEl.classList.add('swap-in');
-      void typeEl.offsetWidth; // reflow
-      typeEl.classList.remove('swap-in');
-    }, 400);
-  }, 3000);
-}
-
-// load vector docs on click
-document.querySelectorAll('.nav-link').forEach(l=>{ if(l.textContent.includes('Memory')) l.addEventListener('click',loadDocs); });
-</script>
+<script src="/frontend/app.js" defer></script>
 </body>
 </html>
