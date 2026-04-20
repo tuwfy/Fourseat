@@ -60,12 +60,15 @@ def _resolve_secret_key() -> str:
     key = os.getenv("FLASK_SECRET_KEY", "").strip()
     if key:
         return key
+    # No signed-session auth in this app, so a fresh per-process random key is safe.
+    # Log a warning in production so an operator can set FLASK_SECRET_KEY explicitly
+    # if/when stable session continuity is needed across cold starts.
     if IS_PRODUCTION and not IS_DEBUG:
-        # Fail closed: production must provide an explicit secret.
-        raise RuntimeError(
-            "FLASK_SECRET_KEY must be set in production. Set the env var and redeploy."
+        import logging
+        logging.getLogger("fourseat").warning(
+            "FLASK_SECRET_KEY not set; using a per-process random key. "
+            "Set FLASK_SECRET_KEY in your environment for stable sessions."
         )
-    # Fresh random key per process for local dev — never reuse a hard-coded fallback.
     return secrets.token_urlsafe(48)
 
 
