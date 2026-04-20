@@ -263,20 +263,11 @@ nav.open .nav-toggle .icon-close{display:block}
 .hero-orb{
   width:48px;height:48px;
   border-radius:50%;
-  background:#1a120b url(/frontend/orb.png) center/cover no-repeat;
-  box-shadow:
-    0 8px 24px rgba(217,141,56,.35),
-    0 0 0 1px rgba(232,186,131,.25),
-    inset 0 1px 3px rgba(255,255,255,.25),
-    inset -2px -4px 10px rgba(0,0,0,.45);
+  background:transparent url(/frontend/orb.png) center/contain no-repeat;
+  filter:drop-shadow(0 8px 24px rgba(217,141,56,.35));
   position:relative;flex-shrink:0;
   animation:spinOrb 30s linear infinite;
   will-change:transform;
-}
-.hero-orb::after{
-  content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.35) 0%,transparent 35%);
-  pointer-events:none;
 }
 @keyframes spinOrb{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){
@@ -666,19 +657,11 @@ select option{background:#1a1714;color:#fff}
 .chairman-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
-  background:#1a120b url(/frontend/orb.png) center/cover no-repeat;
-  box-shadow:
-    0 6px 20px rgba(0,0,0,.55),
-    0 0 0 1px rgba(232,186,131,.2),
-    inset 0 1px 3px rgba(255,255,255,.2);
+  background:transparent url(/frontend/orb.png) center/contain no-repeat;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,.45));
   flex-shrink:0;position:relative;
   animation:spinOrb 30s linear infinite;
   will-change:transform;
-}
-.chairman-orb::after{
-  content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.3) 0%,transparent 35%);
-  pointer-events:none;
 }
 .chairman-title{font-size:1.15rem;font-weight:600;color:#fff}
 .chairman-sub{font-size:.82rem;color:rgba(255,255,255,.5)}
