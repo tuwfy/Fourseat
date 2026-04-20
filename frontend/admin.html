@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#110f0d"/>
+<meta name="color-scheme" content="dark"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Fourseat · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/frontend/styles.css"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/frontend/favicon-32.png"/>
+<style>
+  .admin-wrap{max-width:1100px;margin:0 auto;padding:7rem 3rem 4rem}
+  .admin-stat{display:flex;align-items:flex-end;gap:1rem;margin-top:.5rem}
+  .admin-count{font-family:'Instrument Serif',serif;font-size:5.5rem;line-height:1;letter-spacing:-.03em;color:#fff}
+  .admin-count-lbl{font-size:.95rem;color:rgba(255,255,255,.5);padding-bottom:.7rem}
+  .admin-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;font-size:.82rem;color:rgba(255,255,255,.55)}
+  .admin-meta span{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .75rem;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03)}
+  .admin-dot{width:8px;height:8px;border-radius:50%;background:#4ade80}
+  .admin-dot.off{background:#f87171}
+  .admin-toolbar{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;margin-bottom:1.5rem}
+  .admin-table{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden}
+  .admin-table th,.admin-table td{padding:.85rem 1rem;text-align:left;font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
+  .admin-table th{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);background:rgba(0,0,0,.15)}
+  .admin-table tr:last-child td{border-bottom:none}
+  .admin-table td.email a{color:#e8ba83;text-decoration:none}
+  .admin-table td.email a:hover{text-decoration:underline}
+  .admin-empty{padding:2rem;text-align:center;color:rgba(255,255,255,.45)}
+  .admin-login{max-width:480px;margin:0 auto}
+  @media (max-width:768px){
+    .admin-wrap{padding:6rem 1.25rem 3rem}
+    .admin-count{font-size:3.75rem}
+    .admin-table{display:block;overflow-x:auto;white-space:nowrap}
+  }
+</style>
+</head>
+<body>
+
+<nav aria-label="Primary">
+  <a class="nav-logo" href="/" aria-label="Fourseat home" style="text-decoration:none">Fourseat <sup>AI</sup></a>
+  <div class="nav-links" id="nav-links">
+    <a class="nav-link active" href="/admin">Admin</a>
+    <a class="nav-link" href="/">Home</a>
+  </div>
+  <button type="button" class="nav-cta" id="signout-btn" style="display:none">Sign out</button>
+</nav>
+
+<main class="admin-wrap">
+
+  <!-- LOGIN -->
+  <section id="login-view">
+    <div class="section-label">Admin</div>
+    <h1 class="section-title" style="margin-bottom:1rem">Fourseat <em>dashboard</em></h1>
+    <p class="section-sub" style="margin-bottom:2rem">Enter your admin token to view waitlist signups. Set <code>FOURSEAT_ADMIN_TOKEN</code> in your Vercel environment to enable this page.</p>
+    <form class="glass-card admin-login" id="login-form" novalidate>
+      <div class="input-group">
+        <label class="input-label" for="token">Admin token</label>
+        <input type="password" id="token" name="token" autocomplete="current-password" placeholder="••••••••" required/>
+      </div>
+      <div class="input-group" style="margin-bottom:0">
+        <label style="display:inline-flex;align-items:center;gap:.55rem;font-size:.85rem;color:rgba(255,255,255,.6);cursor:pointer">
+          <input type="checkbox" id="remember" style="width:16px;height:16px;accent-color:#e8ba83"/>
+          Keep me signed in on this device
+        </label>
+      </div>
+      <button type="submit" class="btn-primary" id="login-btn" style="margin-top:1.25rem;width:100%;justify-content:center">Unlock dashboard</button>
+      <div id="login-err" style="margin-top:1rem;font-size:.85rem;color:#f87171;min-height:1.1em"></div>
+    </form>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dash-view" style="display:none">
+    <div class="section-label">Waitlist</div>
+    <div class="admin-stat">
+      <div class="admin-count" id="stat-count">—</div>
+      <div class="admin-count-lbl" id="stat-lbl">signups</div>
+    </div>
+    <div class="admin-meta" id="stat-meta"></div>
+
+    <div class="admin-toolbar">
+      <button type="button" class="btn-hero-secondary" id="refresh-btn">Refresh</button>
+      <a href="#" class="btn-hero-secondary" id="csv-btn" download>Download CSV</a>
+      <button type="button" class="btn-hero-secondary" id="copy-btn">Copy all emails</button>
+    </div>
+
+    <table class="admin-table" role="table" aria-label="Waitlist signups">
+      <thead><tr>
+        <th style="width:180px">When</th>
+        <th style="width:32%">Email</th>
+        <th style="width:26%">Name</th>
+        <th>Company</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="admin-empty" style="display:none">No signups yet. When someone joins, they'll appear here.</div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/frontend/admin.js" defer></script>
+</body>
+</html>

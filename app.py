@@ -31,7 +31,11 @@ except Exception:  # pragma: no cover - optional dep
 load_dotenv()
 
 from backend.debate_engine import run_debate
-from backend.waitlist import add_waitlist_entry
+from backend.waitlist import (
+    add_waitlist_entry,
+    count_waitlist,
+    load_waitlist,
+)
 from backend.billing import create_checkout_session
 
 
@@ -56,6 +60,8 @@ ALLOWED_FRONTEND_FILES = {
     "orb.png",
     "favicon-32.png",
     "favicon-180.png",
+    "admin.html",
+    "admin.js",
 }
 
 IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
@@ -278,6 +284,92 @@ def waitlist_join():
         return jsonify({"error": result.get("error", "unable to add waitlist entry")}), 400
     # Don't leak per-recipient SMTP success/failure to the browser.
     return jsonify({k: v for k, v in result.items() if k != "email_notifications"})
+
+
+# ── Admin (waitlist dashboard) ──────────────────────────────────────────────
+
+import hmac
+from functools import wraps
+
+
+def _require_admin_token(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        expected = (os.getenv("FOURSEAT_ADMIN_TOKEN") or "").strip()
+        if not expected:
+            return jsonify({"error": "admin is not configured"}), 503
+        header = (request.headers.get("Authorization") or "").strip()
+        provided = ""
+        if header.lower().startswith("bearer "):
+            provided = header[7:].strip()
+        else:
+            provided = request.args.get("token", "").strip()
+        if not provided or not hmac.compare_digest(provided, expected):
+            return jsonify({"error": "unauthorized"}), 401
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
+@app.route("/admin")
+def admin_page():
+    return send_from_directory("frontend", "admin.html")
+
+
+@app.route("/api/admin/waitlist", methods=["GET"])
+@rate_limited("admin_waitlist", limit=60, window_s=60)
+@_require_admin_token
+def admin_waitlist():
+    try:
+        limit = max(0, min(int(request.args.get("limit", "200")), 1000))
+    except ValueError:
+        limit = 200
+    entries = load_waitlist()
+    if limit:
+        entries = entries[:limit]
+    return jsonify(
+        {
+            "count": count_waitlist(),
+            "entries": entries,
+            "blob_configured": bool((os.getenv("BLOB_READ_WRITE_TOKEN") or "").strip()),
+            "owner_email_configured": bool(
+                (os.getenv("WAITLIST_OWNER_EMAIL") or "").strip()
+            ),
+            "smtp_configured": bool((os.getenv("SMTP_HOST") or "").strip())
+            and bool((os.getenv("SMTP_USERNAME") or "").strip())
+            and bool((os.getenv("SMTP_PASSWORD") or "").strip()),
+        }
+    )
+
+
+@app.route("/api/admin/waitlist.csv", methods=["GET"])
+@rate_limited("admin_waitlist_csv", limit=20, window_s=60)
+@_require_admin_token
+def admin_waitlist_csv():
+    import csv
+    import io
+
+    entries = load_waitlist()
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow(["created_at", "email", "name", "company"])
+    for e in entries:
+        writer.writerow(
+            [
+                e.get("created_at", ""),
+                e.get("email", ""),
+                e.get("name", ""),
+                e.get("company", ""),
+            ]
+        )
+    csv_bytes = buf.getvalue().encode("utf-8")
+    from flask import Response
+
+    return Response(
+        csv_bytes,
+        mimetype="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=fourseat-waitlist.csv"},
+    )
 
 
 @app.route("/api/billing/checkout-session", methods=["POST"])
