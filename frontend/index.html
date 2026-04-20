@@ -38,7 +38,9 @@
 <main id="page-home" class="page active">
 
   <section class="hero reveal" aria-label="Hero">
-    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-grid" aria-hidden="true"></div>
+    </div>
     <div class="hero-content">
       <div>
         <div class="hero-badge">
@@ -56,13 +58,54 @@
           <button type="button" class="btn-hero-primary" data-action="open-pricing">Get early access</button>
           <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
         </div>
+        <ul class="hero-stats" aria-label="Highlights">
+          <li><span class="hero-stat-num">4</span><span class="hero-stat-lbl">specialist advisors</span></li>
+          <li><span class="hero-stat-num">1</span><span class="hero-stat-lbl">structured verdict</span></li>
+          <li><span class="hero-stat-num">~60s</span><span class="hero-stat-lbl">end-to-end</span></li>
+        </ul>
       </div>
-      <aside class="hero-card" aria-hidden="true">
-        <div class="hero-orb"></div>
+
+      <aside class="hero-card" aria-label="Board snapshot">
+        <div class="hero-card-head">
+          <div class="hero-orb" aria-hidden="true"></div>
+          <div>
+            <div class="hero-card-title">Board in session</div>
+            <div class="hero-card-sub">Round 1 — independent analysis</div>
+          </div>
+        </div>
+        <ul class="hero-snapshot" aria-hidden="true">
+          <li><span class="snap-bar" style="background:#e8a87c"></span><span class="snap-role">Strategy</span><span class="snap-text">Strong fit, scoped narrowly.</span></li>
+          <li><span class="snap-bar" style="background:#7ccea8"></span><span class="snap-role">Finance</span><span class="snap-text">Payback inside two quarters.</span></li>
+          <li><span class="snap-bar" style="background:#7ca8e8"></span><span class="snap-role">Technology</span><span class="snap-text">Two-week build, low risk.</span></li>
+          <li><span class="snap-bar" style="background:#e87c7c"></span><span class="snap-role">Contrarian</span><span class="snap-text">What signal are we ignoring?</span></li>
+        </ul>
+        <div class="hero-verdict">
+          <div class="hero-verdict-label">Chair’s verdict</div>
+          <div class="hero-verdict-text">Proceed — with a 30-day off-ramp clause.</div>
+          <div class="hero-verdict-meta"><span class="conf-pill conf-high">High confidence</span></div>
+        </div>
         <button type="button" class="btn-hero-primary hero-card-cta" data-action="open-debate">
           Open the boardroom
         </button>
       </aside>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="trust-strip reveal" aria-label="Built for">
+    <div class="trust-inner">
+      <div class="trust-label">Built for</div>
+      <div class="trust-items">
+        <span>Pre-seed founders</span>
+        <span class="trust-dot"></span>
+        <span>Seed &amp; Series A teams</span>
+        <span class="trust-dot"></span>
+        <span>Operator-led studios</span>
+        <span class="trust-dot"></span>
+        <span>Solo CEOs</span>
+        <span class="trust-dot"></span>
+        <span>Fractional execs</span>
+      </div>
     </div>
   </section>
 
@@ -88,6 +131,88 @@
           <div class="feature-name">Fourseat Decks</div>
           <div class="feature-desc">Enter your metrics, wins and risks. Get a polished, board-ready PowerPoint draft you can hand to your investors in minutes.</div>
         </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE PREVIEW -->
+  <section class="section preview-section" aria-label="See it in action">
+    <div class="section-inner reveal">
+      <div class="section-label">See it in action</div>
+      <h2 class="section-title">A real verdict,<br/><em>on a real question.</em></h2>
+      <p class="section-sub">A snapshot of a finished session — four perspectives plus a Board Chair synthesis with risks, opportunities, and next steps.</p>
+
+      <div class="preview-board">
+        <div class="preview-question">
+          <span class="preview-q-label">Question</span>
+          <span class="preview-q-text">Should we accept the partnership offer from a larger competitor?</span>
+        </div>
+
+        <div class="preview-grid">
+          <div class="preview-card" style="--accent:#e8a87c">
+            <div class="preview-bar"></div>
+            <div class="preview-head">
+              <span class="preview-role">Strategy</span>
+              <span class="preview-tag">Independent response</span>
+            </div>
+            <p class="preview-text">Strong fit if scope is narrow. Lock in a defined surface area before signaling exclusivity to the market.</p>
+          </div>
+          <div class="preview-card" style="--accent:#7ccea8">
+            <div class="preview-bar"></div>
+            <div class="preview-head">
+              <span class="preview-role">Finance</span>
+              <span class="preview-tag">Independent response</span>
+            </div>
+            <p class="preview-text">Payback clears inside two quarters at conservative attach. Margin profile improves once distribution kicks in.</p>
+          </div>
+          <div class="preview-card" style="--accent:#7ca8e8">
+            <div class="preview-bar"></div>
+            <div class="preview-head">
+              <span class="preview-role">Technology</span>
+              <span class="preview-tag">Independent response</span>
+            </div>
+            <p class="preview-text">Integration is a two-week build with one shared schema. Negligible risk to the existing roadmap.</p>
+          </div>
+          <div class="preview-card" style="--accent:#e87c7c">
+            <div class="preview-bar"></div>
+            <div class="preview-head">
+              <span class="preview-role">Contrarian</span>
+              <span class="preview-tag">Independent response</span>
+            </div>
+            <p class="preview-text">What signal are we ignoring? If they need this deal more than we do, the price should reflect it.</p>
+          </div>
+        </div>
+
+        <div class="preview-chair">
+          <div class="preview-chair-head">
+            <div class="chairman-orb" aria-hidden="true"></div>
+            <div>
+              <div class="preview-chair-title">Board Chair — final decision</div>
+              <div class="preview-chair-sub">Synthesis of the full debate</div>
+            </div>
+            <span class="conf-pill conf-high preview-chair-pill">High confidence</span>
+          </div>
+          <div class="preview-verdict">Proceed — with a narrow scope and a 30-day off-ramp clause.</div>
+          <div class="preview-cols">
+            <div class="preview-col">
+              <div class="preview-col-title">Key risks</div>
+              <ul><li>Channel cannibalization on adjacent segments</li><li>Brand dilution if co-marketing slips</li></ul>
+            </div>
+            <div class="preview-col">
+              <div class="preview-col-title">Opportunities</div>
+              <ul><li>Faster enterprise distribution</li><li>Reference logo before Series A</li></ul>
+            </div>
+            <div class="preview-col">
+              <div class="preview-col-title">Action steps</div>
+              <ul><li>Negotiate scope &amp; off-ramp</li><li>Stand up a 60-day pilot pod</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-cta">
+          <button type="button" class="btn-hero-primary" data-action="open-debate">Try the boardroom</button>
+          <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
+        </div>
       </div>
     </div>
   </section>
@@ -177,6 +302,22 @@
             <li>Priority support</li>
           </ul>
           <button type="button" class="btn-price" data-action="open-waitlist">Contact us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING CTA -->
+  <section class="section closing-cta reveal" aria-label="Get started">
+    <div class="closing-cta-card">
+      <div class="closing-cta-glow" aria-hidden="true"></div>
+      <div class="closing-cta-inner">
+        <div class="section-label">Ready to convene?</div>
+        <h2 class="section-title" style="margin-bottom:1rem">Bring a real board<br/><em>to your next call.</em></h2>
+        <p class="section-sub" style="margin:0 auto 2rem;max-width:540px;color:rgba(255,255,255,.7)">Join early access. We’ll email a secure link, set up your workspace, and get you to your first verdict in minutes.</p>
+        <div class="hero-actions" style="justify-content:center">
+          <button type="button" class="btn-hero-primary" data-action="open-waitlist">Get early access</button>
+          <button type="button" class="btn-hero-secondary" data-action="open-pricing">See pricing</button>
         </div>
       </div>
     </div>
