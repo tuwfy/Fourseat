@@ -50,7 +50,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 ALLOWED_UPLOAD_EXTS = {".pdf", ".txt", ".md"}
 MAX_UPLOAD_BYTES = 12 * 1024 * 1024          # 12 MB per file
 MAX_REQUEST_BYTES = 16 * 1024 * 1024         # 16 MB request body cap
-ALLOWED_FRONTEND_FILES = {"styles.css", "app.js"}
+ALLOWED_FRONTEND_FILES = {"styles.css", "app.js", "orb.png"}
 
 IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
 IS_PRODUCTION = os.getenv("VERCEL") or os.getenv("FOURSEAT_ENV", "").lower() == "production"

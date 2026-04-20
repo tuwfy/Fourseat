@@ -261,27 +261,26 @@ nav.open .nav-toggle .icon-close{display:block}
 .hero-card-title{font-size:.95rem;font-weight:600;color:#fff}
 .hero-card-sub{font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:.04em;text-transform:uppercase;margin-top:.15rem}
 .hero-orb{
-  width:42px;height:42px;
+  width:48px;height:48px;
   border-radius:50%;
-  background:conic-gradient(
-    rgba(217,141,56,1) 0deg 90deg,
-    rgba(125,72,23,1) 90deg 180deg,
-    rgba(255,215,160,1) 180deg 270deg,
-    rgba(47,23,4,1) 270deg 360deg
-  );
-  box-shadow:0 6px 20px rgba(217,141,56,.35),inset 0 1px 4px rgba(255,255,255,.45),inset -2px -4px 10px rgba(0,0,0,.6);
+  background:#1a120b url(/frontend/orb.png) center/cover no-repeat;
+  box-shadow:
+    0 8px 24px rgba(217,141,56,.35),
+    0 0 0 1px rgba(232,186,131,.25),
+    inset 0 1px 3px rgba(255,255,255,.25),
+    inset -2px -4px 10px rgba(0,0,0,.45);
   position:relative;flex-shrink:0;
-  animation:spinPie 22s linear infinite;
+  animation:spinOrb 30s linear infinite;
+  will-change:transform;
 }
-@keyframes spinPie{100%{transform:rotate(360deg)}}
 .hero-orb::after{
-  content:'';position:absolute;
-  top:15%;left:22%;
-  width:30%;height:22%;
-  background:rgba(255,255,255,.55);
-  border-radius:50%;
-  filter:blur(3px);
-  transform:rotate(-35deg);
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.35) 0%,transparent 35%);
+  pointer-events:none;
+}
+@keyframes spinOrb{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){
+  .hero-orb,.chairman-orb{animation:none}
 }
 
 .hero-snapshot{list-style:none;display:flex;flex-direction:column;gap:.55rem;position:relative;z-index:1}
@@ -667,9 +666,19 @@ select option{background:#1a1714;color:#fff}
 .chairman-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#ffd7a0,#d98d38 40%,#7d4817);
-  box-shadow:0 6px 20px rgba(0,0,0,.6);
-  flex-shrink:0;
+  background:#1a120b url(/frontend/orb.png) center/cover no-repeat;
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.55),
+    0 0 0 1px rgba(232,186,131,.2),
+    inset 0 1px 3px rgba(255,255,255,.2);
+  flex-shrink:0;position:relative;
+  animation:spinOrb 30s linear infinite;
+  will-change:transform;
+}
+.chairman-orb::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.3) 0%,transparent 35%);
+  pointer-events:none;
 }
 .chairman-title{font-size:1.15rem;font-weight:600;color:#fff}
 .chairman-sub{font-size:.82rem;color:rgba(255,255,255,.5)}
