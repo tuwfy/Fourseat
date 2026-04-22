@@ -93,6 +93,24 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     closeMobileNav();
     if (id === 'memory') loadDocs();
+    if (id === 'waitlist') loadWaitlistCount();
+  }
+
+  async function loadWaitlistCount() {
+    const el = $('#waitlist-count');
+    if (!el) return;
+    try {
+      const r = await fetch(API + '/api/waitlist/count');
+      if (!r.ok) return;
+      const data = await r.json();
+      const n = Number(data && data.count) || 0;
+      if (n > 0) {
+        const label = n === 1 ? 'founder has' : 'founders have';
+        el.innerHTML = '<strong>' + n.toLocaleString() + '</strong> ' + label + ' already joined';
+      } else {
+        el.textContent = 'Be one of the first to join';
+      }
+    } catch (_e) { /* offline: leave blank */ }
   }
 
   function closeMobileNav() {
@@ -135,6 +153,14 @@
         toast(waitlistData.error || 'Unable to join waitlist', 'err');
         return;
       }
+
+      loadWaitlistCount();
+      const posMsg = waitlistData.already_existed
+        ? "You're already on the list. We'll be in touch."
+        : (waitlistData.total
+          ? "You're in. You're #" + waitlistData.total + " on the list."
+          : "You're on the list. Check your inbox.");
+      toast(posMsg, 'ok');
 
       const checkoutRes = await fetch(API + '/api/billing/checkout-session', {
         method: 'POST',

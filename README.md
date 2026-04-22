@@ -85,6 +85,7 @@ boardroom_ai/
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/waitlist` | POST | Add a waitlist entry and send confirmation emails |
+| `/api/waitlist/count` | GET | Public signup count (used on the waitlist page) |
 | `/api/billing/checkout-session` | POST | Create Stripe Checkout session when `STRIPE_SECRET_KEY` + `STRIPE_PRICE_ID` are set; otherwise returns success with `billing_available: false` (waitlist-only) |
 | `/api/debate` | POST | Run a board debate |
 | `/api/memory/upload` | POST | Upload document to BoardMind |
@@ -92,6 +93,52 @@ boardroom_ai/
 | `/api/memory/documents` | GET | List ingested documents |
 | `/api/brief/generate` | POST | Generate board deck |
 | `/api/brief/download/<file>` | GET | Download generated deck |
+| `/api/sentinel/run` | POST | Fetch inbound, triage with the 4-advisor panel, persist verdicts |
+| `/api/sentinel/queue` | GET | Open triage queue + counts per priority |
+| `/api/sentinel/brief` | GET | Markdown Daily Decision Briefing |
+| `/api/sentinel/resolve` | POST | Mark a triage row resolved |
+| `/api/admin/waitlist` | GET | Admin dashboard data (Bearer `FOURSEAT_ADMIN_TOKEN`) |
+| `/api/admin/waitlist.csv` | GET | CSV export of all signups |
+
+---
+
+## Waitlist emails (real delivery)
+
+The waitlist supports two delivery paths; the first one configured wins.
+
+### Option A: Resend (recommended on Vercel)
+
+```
+RESEND_API_KEY=re_...
+SMTP_FROM_EMAIL=hello@yourdomain.com      # verified sender in Resend
+SMTP_FROM_NAME=Fourseat
+WAITLIST_OWNER_EMAIL=you@yourdomain.com   # owner gets a ping on every new signup
+```
+
+### Option B: SMTP (Gmail, Postmark, SES, Mailgun, etc.)
+
+```
+SMTP_HOST=smtp.resend.com                 # or smtp.gmail.com, email-smtp.us-east-1.amazonaws.com, ...
+SMTP_PORT=587
+SMTP_USERNAME=apikey                      # provider-specific
+SMTP_PASSWORD=***
+SMTP_USE_TLS=true
+SMTP_FROM_EMAIL=hello@yourdomain.com
+SMTP_FROM_NAME=Fourseat
+WAITLIST_OWNER_EMAIL=you@yourdomain.com
+```
+
+## Tracking signups
+
+- Every signup is appended to `data/waitlist/waitlist.jsonl` locally and mirrored to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set (so the list survives cold starts on serverless).
+- Public signup counter: `GET /api/waitlist/count`.
+- Admin dashboard: `/admin` — set `FOURSEAT_ADMIN_TOKEN` and visit `/admin?token=...` to see live signups + CSV export.
+
+## Sentinel setup
+
+- **Demo mode (default when `GMAIL_CREDS_PATH` is not present):** uses seeded demo emails so you can click **Run Sentinel** on the live site and see a full briefing.
+- **Gmail OAuth:** drop `gmail_credentials.json` (OAuth desktop client) into `data/sentinel/` and run the CLI once to authorize: `python -m backend.sentinel`.
+- **AI verdicts:** at least one of `NIA_API_KEY`, `ANTHROPIC_API_KEY`, `CEREBRAS_API_KEY`, `OPENAI_API_KEY`, `NVIDIA_API_KEY`, `GOOGLE_API_KEY` enables live LLM verdicts. Without any keys the pipeline still completes with a safe fallback verdict so the dashboard keeps working.
 
 ---
 

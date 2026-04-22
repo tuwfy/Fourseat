@@ -21,6 +21,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+import logging
 import os
 import re
 import sqlite3
@@ -32,11 +33,11 @@ from typing import Any, Iterable, Optional
 
 from dotenv import load_dotenv
 
-from backend.board_mind import collection as memory_collection
-from backend.board_mind import query_memory
 from backend.debate_engine import run_debate
 
 load_dotenv()
+
+log = logging.getLogger("fourseat.sentinel")
 
 # ── Paths & config ────────────────────────────────────────────────────────────
 
@@ -381,21 +382,46 @@ def _gmail_configured() -> bool:
 
 # ── Memory integration ────────────────────────────────────────────────────────
 
+def _memory_collection():
+    """Lazy-load the vector memory collection.
+
+    ChromaDB pulls in heavy deps (onnxruntime, sentence-transformers) that can
+    blow up cold starts or be missing entirely. We import on demand so the
+    Sentinel pipeline still works even when Memory is offline.
+    """
+    try:
+        from backend.board_mind import collection  # type: ignore
+        return collection
+    except Exception as exc:  # pragma: no cover - depends on env
+        log.warning("memory collection unavailable: %s", exc)
+        return None
+
+
 def _ingest_into_memory(msg: Message) -> list[str]:
-    """Store the message in Fourseat Memory (ChromaDB) with sentinel metadata."""
+    """Store the message in Fourseat Memory (ChromaDB) with sentinel metadata.
+
+    Never raises: returns [] if the memory layer is unavailable.
+    """
+    collection = _memory_collection()
+    if collection is None:
+        return []
     doc_id = f"sentinel_{msg.fingerprint()}"
-    memory_collection.upsert(
-        ids=[doc_id],
-        documents=[f"[{msg.source.upper()} from {msg.sender}] {msg.subject}\n\n{msg.body}"],
-        metadatas=[{
-            "source": f"sentinel:{msg.source}",
-            "doc_type": "inbound_comm",
-            "sender": msg.sender,
-            "subject": msg.subject[:120],
-            "received_at": msg.received_at,
-        }],
-    )
-    return [doc_id]
+    try:
+        collection.upsert(
+            ids=[doc_id],
+            documents=[f"[{msg.source.upper()} from {msg.sender}] {msg.subject}\n\n{msg.body}"],
+            metadatas=[{
+                "source": f"sentinel:{msg.source}",
+                "doc_type": "inbound_comm",
+                "sender": msg.sender,
+                "subject": msg.subject[:120],
+                "received_at": msg.received_at,
+            }],
+        )
+        return [doc_id]
+    except Exception as exc:
+        log.warning("memory ingest failed: %s", exc)
+        return []
 
 
 _UPSTREAM_ERROR_PREFIXES = (
@@ -431,8 +457,10 @@ def _detect_blind_spots(msg: Message) -> list[str]:
         f"Return a short bullet list. If none, return exactly: NONE."
     )
     try:
+        from backend.board_mind import query_memory  # lazy: optional dep
         result = query_memory(probe, top_k=6)
-    except Exception:
+    except Exception as exc:
+        log.debug("blind-spot probe skipped: %s", exc)
         return []
 
     if not result.get("has_memory"):
@@ -587,11 +615,26 @@ def triage_message(msg: Message, *, skip_if_seen: bool = True) -> Optional[dict]
         return None
 
     memory_ids = _ingest_into_memory(msg)
-    blind_spots = _detect_blind_spots(msg)
+
+    try:
+        blind_spots = _detect_blind_spots(msg)
+    except Exception as exc:
+        log.warning("blind-spot detection failed for %s: %s", msg.external_id, exc)
+        blind_spots = []
+
     question, context = _build_debate_question(msg, blind_spots)
 
-    debate = run_debate(question=question, context=context)
-    verdict = _synthesize_verdict(msg, debate, blind_spots)
+    try:
+        debate = run_debate(question=question, context=context)
+    except Exception as exc:
+        log.warning("debate failed for %s: %s", msg.external_id, exc)
+        debate = {"chairman": {}, "round2": {}, "round1": {}}
+
+    try:
+        verdict = _synthesize_verdict(msg, debate, blind_spots)
+    except Exception as exc:
+        log.warning("verdict synth failed for %s: %s", msg.external_id, exc)
+        verdict = _fallback_verdict(msg, blind_spots)
 
     row_id = _insert_triage(msg, verdict, memory_ids)
     return {"id": row_id, "message": asdict(msg), "verdict": asdict(verdict)}
@@ -601,10 +644,31 @@ def triage_batch(messages: Iterable[Message]) -> list[dict]:
     init_db()
     out: list[dict] = []
     for m in messages:
-        result = triage_message(m)
+        try:
+            result = triage_message(m)
+        except Exception as exc:
+            log.exception("triage pipeline crashed on %s: %s", m.external_id, exc)
+            continue
         if result:
             out.append(result)
     return out
+
+
+def _fallback_verdict(msg: Message, blind_spots: list[str]) -> Verdict:
+    """Safe, deterministic verdict used when AI providers are unavailable."""
+    return Verdict(
+        priority="P2",
+        category="Ops",
+        action="Schedule",
+        one_liner=f"Review inbound from {msg.sender}: {msg.subject[:120]}",
+        strategy_view="Strategy advisor offline. Review message against current quarterly priorities.",
+        finance_view="Finance advisor offline. Check whether an amount, invoice, or commitment is involved.",
+        tech_view="Technology advisor offline. Check whether a system, integration, or security action is required.",
+        contrarian_view="Contrarian advisor offline. Ask what signal you would ignore if this were obvious.",
+        blind_spots=blind_spots,
+        confidence="Low",
+        reasoning="AI providers unavailable; fell back to a safe triage placeholder. Configure NIA_API_KEY / ANTHROPIC_API_KEY / CEREBRAS_API_KEY to enable live verdicts.",
+    )
 
 
 # ── Briefing renderer ─────────────────────────────────────────────────────────
@@ -700,30 +764,40 @@ def run_daily_brief(limit: int = 10, *, demo: Optional[bool] = None) -> dict:
         demo = os.getenv("SENTINEL_DEMO_MODE", "").strip() == "1" or not _gmail_configured()
 
     source = "demo" if demo else "gmail"
+    fetch_error: Optional[str] = None
+    msgs: list[Message] = []
     try:
         if demo:
             msgs = fetch_demo_messages(limit=limit)
         else:
             msgs = fetch_important_emails(limit=limit)
     except Exception as e:
-        return {
-            "processed": 0,
-            "fetched": 0,
-            "source": source,
-            "error": f"fetch failed: {e}",
-            "brief_markdown": render_daily_brief(limit=limit),
-            "generated_at": datetime.now(timezone.utc).isoformat(),
-        }
+        fetch_error = f"fetch failed: {e}"
+        log.warning(fetch_error)
+        # Fall through with no messages; the triage batch just returns []
 
-    triaged = triage_batch(msgs)
-    brief = render_daily_brief(limit=limit)
-    return {
+    try:
+        triaged = triage_batch(msgs)
+    except Exception as e:
+        log.exception("triage batch failed: %s", e)
+        triaged = []
+
+    try:
+        brief = render_daily_brief(limit=limit)
+    except Exception as e:
+        log.exception("brief render failed: %s", e)
+        brief = f"# Fourseat Daily Decision Briefing\n\n_Brief unavailable: {e}_\n"
+
+    payload = {
         "processed": len(triaged),
         "fetched": len(msgs),
         "source": source,
         "brief_markdown": brief,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
+    if fetch_error:
+        payload["error"] = fetch_error
+    return payload
 
 
 # ── Read APIs for the dashboard ───────────────────────────────────────────────

@@ -7,3 +7,4 @@ data/outputs/
 data/sentinel/
 data/memory/
 .DS_Store
+.vercel

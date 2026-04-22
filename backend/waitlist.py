@@ -180,12 +180,88 @@ def _build_email(subject: str, to_email: str, text: str, html: Optional[str] = N
     return msg
 
 
-def _send_email(msg: EmailMessage) -> bool:
+def _extract_parts(msg: EmailMessage) -> tuple[str, str]:
+    """Return (plaintext, html) parts of the email."""
+    text_part = ""
+    html_part = ""
+    if msg.is_multipart():
+        for part in msg.walk():
+            ctype = part.get_content_type()
+            if ctype == "text/plain" and not text_part:
+                text_part = part.get_content()
+            elif ctype == "text/html" and not html_part:
+                html_part = part.get_content()
+    else:
+        content = msg.get_content()
+        if msg.get_content_type() == "text/html":
+            html_part = content
+        else:
+            text_part = content
+    return text_part, html_part
+
+
+def _send_via_resend(msg: EmailMessage) -> Optional[bool]:
+    """
+    Send via the Resend API when RESEND_API_KEY is configured.
+    Returns True on success, False on confirmed failure, or None when not configured
+    so the caller can fall back to SMTP.
+    """
+    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    if not api_key:
+        return None
+
+    try:
+        import requests  # already in requirements
+    except Exception as exc:  # pragma: no cover
+        log.warning("requests unavailable, cannot send via Resend: %s", exc)
+        return False
+
+    text_part, html_part = _extract_parts(msg)
+    payload = {
+        "from": msg["From"],
+        "to": [msg["To"]],
+        "subject": msg["Subject"],
+    }
+    if html_part:
+        payload["html"] = html_part
+    if text_part:
+        payload["text"] = text_part
+    reply_to = msg.get("Reply-To")
+    if reply_to:
+        payload["reply_to"] = reply_to
+
+    try:
+        r = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=15,
+        )
+    except Exception as e:
+        log.warning("Resend request to %s failed: %s", msg.get("To"), e)
+        return False
+
+    if r.status_code in (200, 201, 202):
+        log.info("Resend delivered to %s", msg.get("To"))
+        return True
+
+    # Surface the actual Resend error so the operator can fix the config.
+    try:
+        body = r.json()
+    except Exception:
+        body = r.text
+    log.warning("Resend rejected send to %s: %s %s", msg.get("To"), r.status_code, body)
+    return False
+
+
+def _send_via_smtp(msg: EmailMessage) -> bool:
     host = os.getenv("SMTP_HOST", "").strip()
     username = os.getenv("SMTP_USERNAME", "").strip()
     password = os.getenv("SMTP_PASSWORD", "").strip()
     if not host or not username or not password:
-        log.info("SMTP not configured; skipping email to %s", msg.get("To"))
         return False
 
     port = int(os.getenv("SMTP_PORT", "587"))
@@ -204,10 +280,38 @@ def _send_email(msg: EmailMessage) -> bool:
                     server.ehlo()
                 server.login(username, password)
                 server.send_message(msg)
+        log.info("SMTP delivered to %s", msg.get("To"))
         return True
     except Exception as e:
         log.warning("SMTP send to %s failed: %s", msg.get("To"), e)
         return False
+
+
+def _send_email(msg: EmailMessage) -> bool:
+    """Try Resend first (preferred on Vercel), then SMTP."""
+    via_resend = _send_via_resend(msg)
+    if via_resend is True:
+        return True
+    if via_resend is False:
+        # Resend was configured but failed; don't swallow silently
+        return False
+
+    # No Resend configured: try SMTP.
+    if _send_via_smtp(msg):
+        return True
+
+    log.info("No email provider configured; skipping email to %s", msg.get("To"))
+    return False
+
+
+def email_configured() -> bool:
+    """True when either Resend or SMTP is configured."""
+    if (os.getenv("RESEND_API_KEY") or "").strip():
+        return True
+    return all(
+        (os.getenv(k) or "").strip()
+        for k in ("SMTP_HOST", "SMTP_USERNAME", "SMTP_PASSWORD")
+    )
 
 
 # ─── Email templates ────────────────────────────────────────────────────────

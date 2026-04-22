@@ -34,6 +34,7 @@ from backend.debate_engine import run_debate
 from backend.waitlist import (
     add_waitlist_entry,
     count_waitlist,
+    email_configured,
     load_waitlist,
 )
 from backend.billing import create_checkout_session
@@ -284,8 +285,15 @@ def waitlist_join():
     )
     if not result.get("success"):
         return jsonify({"error": result.get("error", "unable to add waitlist entry")}), 400
-    # Don't leak per-recipient SMTP success/failure to the browser.
+    # Don't leak per-recipient provider success/failure to the browser.
     return jsonify({k: v for k, v in result.items() if k != "email_notifications"})
+
+
+@app.route("/api/waitlist/count", methods=["GET"])
+@rate_limited("waitlist_count", limit=60, window_s=60)
+def waitlist_count_endpoint():
+    """Public counter so the site can show 'X founders already joined'."""
+    return jsonify({"count": count_waitlist()})
 
 
 # ── Admin (waitlist dashboard) ──────────────────────────────────────────────
@@ -337,6 +345,8 @@ def admin_waitlist():
             "owner_email_configured": bool(
                 (os.getenv("WAITLIST_OWNER_EMAIL") or "").strip()
             ),
+            "email_configured": email_configured(),
+            "resend_configured": bool((os.getenv("RESEND_API_KEY") or "").strip()),
             "smtp_configured": bool((os.getenv("SMTP_HOST") or "").strip())
             and bool((os.getenv("SMTP_USERNAME") or "").strip())
             and bool((os.getenv("SMTP_PASSWORD") or "").strip()),

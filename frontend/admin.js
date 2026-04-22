@@ -86,6 +86,8 @@
 
   function renderMeta(data) {
     const items = [
+      { label: 'Email', ok: !!data.email_configured },
+      { label: 'Resend', ok: !!data.resend_configured },
       { label: 'SMTP', ok: !!data.smtp_configured },
       { label: 'Owner email', ok: !!data.owner_email_configured },
       { label: 'Blob mirror', ok: !!data.blob_configured }

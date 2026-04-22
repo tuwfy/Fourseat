@@ -17,24 +17,32 @@
     lastSource: null,
   };
 
+  async function readError(resp, fallback) {
+    try {
+      const data = await resp.json();
+      if (data && typeof data.error === 'string' && data.error.trim()) return data.error.trim();
+    } catch (_e) { /* body wasn't json */ }
+    return `${fallback} (HTTP ${resp.status})`;
+  }
+
   const api = {
     async queue() {
       const r = await fetch('/api/sentinel/queue?limit=100');
-      if (!r.ok) throw new Error('queue fetch failed');
+      if (!r.ok) throw new Error(await readError(r, 'queue fetch failed'));
       return r.json();
     },
-    async run(limit = 10) {
+    async run(limit = 5) {
       const r = await fetch('/api/sentinel/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ limit }),
       });
-      if (!r.ok) throw new Error('run failed');
+      if (!r.ok) throw new Error(await readError(r, 'Sentinel run failed'));
       return r.json();
     },
     async brief() {
       const r = await fetch('/api/sentinel/brief?limit=25');
-      if (!r.ok) throw new Error('brief fetch failed');
+      if (!r.ok) throw new Error(await readError(r, 'brief fetch failed'));
       return r.json();
     },
     async resolve(id, resolved = true) {
@@ -43,7 +51,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, resolved }),
       });
-      if (!r.ok) throw new Error('resolve failed');
+      if (!r.ok) throw new Error(await readError(r, 'resolve failed'));
       return r.json();
     },
   };
@@ -215,14 +223,18 @@
   async function run() {
     if (state.busy) return;
     setBusy(true);
-    toast('Running Sentinel panel (this can take 30-60s)...', 3500);
+    toast('Running Sentinel panel (this can take 20-45s)...', 3500);
     $('#sx-sub').textContent = 'Boardroom analyzing inbound messages...';
     try {
-      const res = await api.run(10);
+      const res = await api.run(5);
       state.lastSource = res.source;
       if (res.source === 'demo') $('#sx-banner').classList.add('show');
       else $('#sx-banner').classList.remove('show');
-      toast(`Processed ${res.processed} new items (${res.fetched} fetched, ${res.source})`);
+      if (res.error) {
+        toast('Sentinel: ' + res.error);
+      } else {
+        toast(`Processed ${res.processed} new items (${res.fetched} fetched, ${res.source})`);
+      }
       await refresh();
     } catch (e) {
       toast('Run failed: ' + e.message);
