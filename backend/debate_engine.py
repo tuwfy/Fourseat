@@ -168,7 +168,7 @@ BOARD_PERSONAS = {
         "system": (
             "You are a contrarian independent board member known for stress-testing ideas. "
             "Your job is to find the fatal flaw, challenge consensus, and voice the uncomfortable truth. "
-            "You are not cynical for sport — you genuinely protect founders from blind spots. "
+            "You are not cynical for sport. You genuinely protect founders from blind spots. "
             "Be bold, provocative, and concise. Max 200 words."
         ),
     },
@@ -186,7 +186,8 @@ Structure your response EXACTLY as valid JSON with these keys:
   "dissenting_view": "the strongest counterargument to your recommendation",
   "best_board_member": "name of board member who gave the most valuable insight and why"
 }
-Return ONLY the JSON object, no markdown, no extra text."""
+Return ONLY the JSON object, no markdown, no extra text.
+Never use em dashes (—) in any field. Use commas, periods, or colons instead."""
 
 
 def _free_role_response(role: str, focus: str, question: str, context: str, debate_view: str = "") -> str:
@@ -266,7 +267,7 @@ def run_debate(
         round1["gemini"] = ask_gemini(round1_prompt, personas["gemini"]["system"])
         round1["contrarian"] = ask_claude(round1_prompt, personas["contrarian"]["system"])
 
-    # ── Round 2: Debate — each sees the others' responses ────────────────────
+    # ── Round 2: Debate (each sees the others' responses) ───────────────────
     debate_context = "\n\n".join([
         f"{personas['claude']['role']}: {round1['claude']}",
         f"{personas['gpt4']['role']}: {round1['gpt4']}",

@@ -197,7 +197,7 @@ def rate_limited(key: str, limit: int, window_s: int):
         @wraps(fn)
         def wrapper(*args, **kwargs):
             if not _check_rate_limit(key, limit, window_s):
-                return jsonify({"error": "rate limit exceeded — please slow down"}), 429
+                return jsonify({"error": "rate limit exceeded. Please slow down."}), 429
             return fn(*args, **kwargs)
 
         return wrapper

@@ -217,15 +217,15 @@ def _customer_text(name: str) -> str:
     return (
         f"{greet}\n\n"
         f"Thanks for joining the {BRAND_NAME} waitlist.\n\n"
-        f"{BRAND_NAME} is a decision workspace for founders and operators — a panel "
-        "of strategy, finance, technology, and contrarian advisors that pressure-tests "
+        f"{BRAND_NAME} is a decision workspace for founders and operators. A panel "
+        "of strategy, finance, technology, and contrarian advisors pressure-tests "
         "every important call before you commit.\n\n"
         "What happens next:\n"
         "  1. We email you a secure link when your workspace is ready.\n"
         "  2. You sign in and convene your first board.\n"
-        "  3. First verdict in under a minute — structured by a Board Chair.\n\n"
+        "  3. First verdict in under a minute, structured by a Board Chair.\n\n"
         "Reply to this email any time; it reaches us directly.\n\n"
-        f"— Team {BRAND_NAME}\n"
+        f"Team {BRAND_NAME}\n"
         f"{BRAND_TAGLINE}\n"
     )
 
@@ -252,7 +252,7 @@ def _customer_html(name: str) -> str:
           </p>
           <p style="font-size:15px;line-height:1.65;color:rgba(255,255,255,.78);margin:0 0 16px 0;">
             We'll email you a secure link the moment your workspace is ready. Reply to
-            this email any time — it reaches us directly.
+            this email any time; it reaches us directly.
           </p>
         </td></tr>
         <tr><td style="padding:8px 32px 28px 32px;">
@@ -281,7 +281,7 @@ def _customer_html(name: str) -> str:
 
 def _owner_text(entry: dict, total: int) -> str:
     return (
-        f"New {BRAND_NAME} waitlist signup — total so far: {total}\n\n"
+        f"New {BRAND_NAME} waitlist signup. Total so far: {total}\n\n"
         f"Name:    {entry.get('name') or '-'}\n"
         f"Email:   {entry.get('email')}\n"
         f"Company: {entry.get('company') or '-'}\n"
@@ -294,7 +294,7 @@ def _owner_html(entry: dict, total: int) -> str:
         return (
             f"<tr>"
             f"<td style='padding:6px 12px 6px 0;font-size:12px;color:#8a8377;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;'>{label}</td>"
-            f"<td style='padding:6px 0;font-size:14px;color:#1a1613;'>{value or '—'}</td>"
+            f"<td style='padding:6px 0;font-size:14px;color:#1a1613;'>{value or '-'}</td>"
             f"</tr>"
         )
 
@@ -373,7 +373,7 @@ def add_waitlist_entry(email: str, name: str = "", company: str = "") -> dict:
 
     total = len(entries)
 
-    # Customer confirmation (idempotent — resend on repeat signup is fine).
+    # Customer confirmation (idempotent; resend on repeat signup is fine).
     customer_sent = _send_email(
         _build_email(
             subject=f"You're on the {BRAND_NAME} waitlist",

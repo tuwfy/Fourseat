@@ -165,6 +165,20 @@ nav.open .nav-toggle .icon-close{display:block}
   backdrop-filter:blur(12px);
 }
 .hero-badge svg{width:14px;height:14px;color:#e8ba83}
+a.hero-badge{
+  color:rgba(255,255,255,.85);
+  transition:background .25s ease,border-color .25s ease,transform .25s ease;
+}
+a.hero-badge:hover{
+  background:rgba(232,186,131,.12);
+  border-color:rgba(232,186,131,.4);
+  transform:translateY(-1px);
+}
+.hero-badge-arrow{
+  color:#e8ba83;margin-left:.25rem;font-weight:500;
+  transition:transform .25s ease;display:inline-block;
+}
+a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
 .hero-title{
   font-family:'Instrument Serif',serif;
   font-size:clamp(2.6rem,6vw,5.5rem);
@@ -437,7 +451,7 @@ nav.open .nav-toggle .icon-close{display:block}
 /* ─── FEATURES GRID ───────────────────────────────────────────────────────── */
 .features-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:1.25rem;
   margin-top:3rem;
 }
@@ -473,6 +487,43 @@ nav.open .nav-toggle .icon-close{display:block}
 .feature-icon svg{width:22px;height:22px;stroke:#e8ba83;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .feature-name{font-size:1.1rem;font-weight:500;color:#fff;margin-bottom:.7rem}
 .feature-desc{font-size:.92rem;color:rgba(255,255,255,.5);line-height:1.6}
+
+/* Feature card acting as a link (for Sentinel) */
+a.feature-card{text-decoration:none;display:block}
+
+/* "New" highlight on the Sentinel card */
+.feature-card-new{
+  position:relative;
+  background:linear-gradient(180deg,rgba(232,186,131,.09),rgba(232,186,131,.02));
+  border-color:rgba(232,186,131,.25);
+}
+.feature-card-new:hover{
+  background:linear-gradient(180deg,rgba(232,186,131,.14),rgba(232,186,131,.04));
+  border-color:rgba(232,186,131,.45);
+}
+.feature-card-new .feature-icon{
+  background:rgba(232,186,131,.12);
+  border-color:rgba(232,186,131,.3);
+}
+.feature-badge{
+  position:absolute;top:1.1rem;right:1.1rem;
+  font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:#110f0d;background:#e8ba83;
+  padding:.25rem .55rem;border-radius:999px;
+  box-shadow:0 2px 8px rgba(232,186,131,.3);
+}
+
+/* "New" badge pill inside nav link */
+.nav-link-new{
+  display:inline-flex;align-items:center;gap:.45rem;
+  text-decoration:none;
+}
+.nav-link-badge{
+  font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:#110f0d;background:#e8ba83;
+  padding:.12rem .4rem;border-radius:999px;
+  line-height:1;
+}
 
 /* ─── TESTIMONIALS ────────────────────────────────────────────────────────── */
 .testimonials-grid{
@@ -793,20 +844,35 @@ footer{
 .footer-meta{font-size:.8rem;color:rgba(255,255,255,.35)}
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
-@media (max-width:1080px){
-  .hero-card{width:300px;padding:1.25rem}
+/* Half-screen desktop (roughly 960 to 1200 CSS pixels). Keep the two-column
+   hero but trim the card and padding so nothing feels cramped. */
+@media (max-width:1200px){
+  .hero-content{padding:0 2.25rem;gap:3.25rem}
+  .hero-card{width:320px;padding:1.35rem}
   .hero-snapshot li{grid-template-columns:3px 76px 1fr}
+  .preview-grid{grid-template-columns:repeat(2,1fr)}
+  .preview-cols{grid-template-columns:repeat(3,1fr)}
 }
 
+@media (max-width:1080px){
+  .hero-title{font-size:clamp(2.4rem,5.5vw,4.2rem)}
+  .hero-sub{font-size:1rem;max-width:100%}
+  .hero-card{width:300px;padding:1.25rem}
+  .preview-q-text{font-size:1.05rem}
+  .preview-verdict{font-size:1.25rem}
+}
+
+/* Stack hero, collapse to fully single-column content. */
 @media (max-width:960px){
   .hero-content{grid-template-columns:1fr;gap:2.25rem;padding:0 1.5rem}
-  .hero-card{width:100%;max-width:460px;justify-self:start;animation:none}
-  .preview-grid{grid-template-columns:repeat(2,1fr)}
-  .features-grid,
+  .hero-card{width:100%;max-width:480px;justify-self:start;animation:none}
+  .features-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
   .testimonials-grid,
   .pricing-grid,
-  .ch-grid,
-  .preview-cols{grid-template-columns:1fr 1fr}
+  .ch-grid{grid-template-columns:1fr 1fr}
+  .preview-grid{grid-template-columns:repeat(2,1fr)}
+  .preview-cols{grid-template-columns:repeat(3,1fr);gap:.75rem}
+  .preview-col{padding:.9rem}
   .pricing-grid{gap:1rem}
   .price-card.featured::after{top:-10px}
   .section-inner{padding:0 1.5rem}
@@ -814,6 +880,11 @@ footer{
   .trust-inner{padding:1.25rem 1.5rem;gap:1.25rem}
   .closing-cta-card{padding:3rem 1.75rem;border-radius:26px}
   footer{padding:2rem 1.5rem;margin-top:3rem}
+}
+
+/* Tablet portrait. Collapse the chair columns so "Action steps" never orphans. */
+@media (max-width:860px){
+  .preview-cols{grid-template-columns:1fr;gap:.85rem}
 }
 
 @media (max-width:768px){

@@ -1,4 +1,4 @@
-/* Fourseat — frontend behavior
+/* Fourseat · frontend behavior
  * No inline event handlers, no eval, no innerHTML for untrusted data.
  */
 (function () {
@@ -208,7 +208,7 @@
       renderDebate(data);
     } catch (e) {
       clearInterval(iv);
-      toast('Network issue — please try again', 'err');
+      toast('Network issue. Please try again.', 'err');
     } finally {
       if (L) L.classList.remove('active');
       if (btn) btn.disabled = false;
@@ -259,7 +259,7 @@
       el('div', { class: 'chairman-hdr' }, [
         el('div', { class: 'chairman-orb' }),
         el('div', {}, [
-          el('div', { class: 'chairman-title' }, [leader + ' — final decision']),
+          el('div', { class: 'chairman-title' }, [leader + ' · final decision']),
           el('div', { class: 'chairman-sub' }, ['Synthesis of the full debate']),
         ]),
       ])
@@ -468,7 +468,7 @@
         ]));
       }
     } catch (e) {
-      toast('Network issue — please try again', 'err');
+      toast('Network issue. Please try again.', 'err');
     } finally {
       if (btn) btn.disabled = false;
       if (L) L.classList.remove('active');
