@@ -62,6 +62,8 @@ ALLOWED_FRONTEND_FILES = {
     "favicon-180.png",
     "admin.html",
     "admin.js",
+    "sentinel.html",
+    "sentinel.js",
 }
 
 IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
@@ -496,6 +498,86 @@ def brief_download(filename):
         download_name=safe,
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation",
     )
+
+
+# ── Module 4: Sentinel (proactive triage) ───────────────────────────────────
+
+@app.route("/sentinel")
+def sentinel_page():
+    return send_from_directory("frontend", "sentinel.html")
+
+
+@app.route("/api/sentinel/run", methods=["POST"])
+@rate_limited("sentinel_run", limit=6, window_s=60)
+def sentinel_run():
+    from backend.sentinel import run_daily_brief
+
+    body = request.get_json(silent=True) or {}
+    try:
+        limit = max(1, min(int(body.get("limit", 10)), 25))
+    except (TypeError, ValueError):
+        limit = 10
+    demo = body.get("demo")
+    if isinstance(demo, str):
+        demo = demo.lower() in ("1", "true", "yes")
+    elif demo is not None:
+        demo = bool(demo)
+
+    try:
+        result = run_daily_brief(limit=limit, demo=demo)
+        return jsonify(result)
+    except Exception as e:
+        return _server_error("sentinel run failed", e)
+
+
+@app.route("/api/sentinel/queue", methods=["GET"])
+@rate_limited("sentinel_queue", limit=60, window_s=60)
+def sentinel_queue():
+    from backend.sentinel import list_queue, queue_stats
+
+    try:
+        limit = max(1, min(int(request.args.get("limit", "50")), 200))
+    except ValueError:
+        limit = 50
+    include_resolved = request.args.get("include_resolved", "0").lower() in ("1", "true", "yes")
+    try:
+        rows = list_queue(limit=limit, include_resolved=include_resolved)
+        return jsonify({"queue": rows, "stats": queue_stats()})
+    except Exception as e:
+        return _server_error("sentinel queue failed", e)
+
+
+@app.route("/api/sentinel/brief", methods=["GET"])
+@rate_limited("sentinel_brief", limit=30, window_s=60)
+def sentinel_brief():
+    from backend.sentinel import render_daily_brief, queue_stats
+
+    try:
+        limit = max(1, min(int(request.args.get("limit", "10")), 50))
+    except ValueError:
+        limit = 10
+    try:
+        md = render_daily_brief(limit=limit)
+        return jsonify({"markdown": md, "stats": queue_stats()})
+    except Exception as e:
+        return _server_error("sentinel brief failed", e)
+
+
+@app.route("/api/sentinel/resolve", methods=["POST"])
+@rate_limited("sentinel_resolve", limit=60, window_s=60)
+def sentinel_resolve():
+    from backend.sentinel import mark_resolved
+
+    body = request.get_json(silent=True) or {}
+    try:
+        triage_id = int(body.get("id"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "id is required"}), 400
+    resolved = bool(body.get("resolved", True))
+    ok = mark_resolved(triage_id, resolved=resolved)
+    if not ok:
+        return jsonify({"error": "triage row not found"}), 404
+    return jsonify({"success": True, "id": triage_id, "resolved": resolved})
 
 
 if __name__ == "__main__":

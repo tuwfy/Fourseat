@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#110f0d"/>
+<meta name="color-scheme" content="dark"/>
+<meta name="description" content="Fourseat Sentinel - Daily Decision Briefing from the advisor panel."/>
+<title>Fourseat Sentinel - Daily Briefing</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/frontend/styles.css"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/frontend/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="180x180" href="/frontend/favicon-180.png"/>
+
+<style>
+  :root{
+    --bg:#110f0d; --bg-2:#1a1612; --bg-3:#221c16;
+    --fg:#f5f1ea; --muted:#a59a8a; --dim:#6b6459;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
+    --accent:#e8a87c; --accent-2:#e8ba83;
+    --p0:#e87c7c; --p1:#e8a87c; --p2:#e8d27c; --p3:#7ccea8;
+  }
+  body{background:var(--bg);color:var(--fg)}
+  .sx-shell{max-width:1280px;margin:0 auto;padding:92px 24px 72px}
+  .sx-header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+  .sx-title{font-family:'Instrument Serif',serif;font-size:3rem;line-height:1;letter-spacing:-.02em}
+  .sx-title em{color:var(--accent);font-style:italic}
+  .sx-sub{color:var(--muted);margin-top:10px;font-size:.95rem}
+  .sx-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .sx-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:.65rem 1.2rem;border-radius:999px;
+    font-size:.85rem;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:rgba(255,255,255,.04);color:var(--fg);
+    transition:background .2s,transform .2s,border-color .2s;
+  }
+  .sx-btn:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+  .sx-btn.primary{background:var(--fg);color:#110f0d;border-color:var(--fg)}
+  .sx-btn.primary:hover{background:#fff}
+  .sx-btn[disabled]{opacity:.55;cursor:wait;transform:none}
+
+  .sx-counters{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+  .sx-counter{
+    background:linear-gradient(180deg,var(--bg-2),var(--bg));
+    border:1px solid var(--line);border-radius:16px;padding:16px 18px;
+  }
+  .sx-counter .n{font-family:'Instrument Serif',serif;font-size:2.2rem;line-height:1;letter-spacing:-.02em}
+  .sx-counter .lbl{color:var(--muted);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+  .sx-counter.p0 .n{color:var(--p0)}
+  .sx-counter.p1 .n{color:var(--p1)}
+  .sx-counter.p2 .n{color:var(--p2)}
+  .sx-counter.p3 .n{color:var(--p3)}
+  .sx-counter.total .n{color:var(--fg)}
+
+  .sx-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+  .sx-filter{display:inline-flex;gap:4px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:4px}
+  .sx-filter button{
+    border:none;background:none;color:var(--muted);
+    padding:.45rem 1rem;border-radius:999px;font-size:.8rem;font-weight:500;cursor:pointer;
+  }
+  .sx-filter button.on{background:rgba(255,255,255,.10);color:var(--fg)}
+  .sx-status{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim)}
+
+  .sx-table-wrap{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  table.sx-table{width:100%;border-collapse:collapse;font-size:.88rem}
+  .sx-table thead th{
+    text-align:left;font-weight:500;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);padding:14px 14px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.18);
+  }
+  .sx-table tbody tr{border-bottom:1px solid var(--line);transition:background .2s}
+  .sx-table tbody tr:hover{background:rgba(255,255,255,.025)}
+  .sx-table tbody tr.open{background:rgba(232,168,124,.06)}
+  .sx-table td{padding:14px 14px;vertical-align:top}
+  .sx-pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:3px 10px;border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.04em;
+    background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--line-2);
+  }
+  .sx-pill.p0{background:rgba(232,124,124,.14);color:var(--p0);border-color:rgba(232,124,124,.3)}
+  .sx-pill.p1{background:rgba(232,168,124,.14);color:var(--p1);border-color:rgba(232,168,124,.3)}
+  .sx-pill.p2{background:rgba(232,210,124,.12);color:var(--p2);border-color:rgba(232,210,124,.28)}
+  .sx-pill.p3{background:rgba(124,206,168,.12);color:var(--p3);border-color:rgba(124,206,168,.28)}
+  .sx-pill.action{background:rgba(255,255,255,.04);color:var(--muted)}
+  .sx-pill.conf-High{color:var(--p3)}
+  .sx-pill.conf-Medium{color:var(--p2)}
+  .sx-pill.conf-Low{color:var(--p0)}
+  .sx-sender{color:var(--muted);font-size:.8rem;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+  .sx-subject{color:var(--fg);font-weight:500}
+  .sx-oneliner{color:var(--muted);font-size:.82rem;margin-top:4px;line-height:1.5}
+  .sx-row-toggle{
+    background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:6px;
+    font-size:1.1rem;line-height:1;
+  }
+  .sx-row-toggle:hover{background:rgba(255,255,255,.06);color:var(--fg)}
+  .sx-drawer{display:none;background:var(--bg-3);border-top:1px solid var(--line)}
+  .sx-drawer.open{display:table-row}
+  .sx-drawer td{padding:18px 18px 22px}
+  .sx-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .sx-panel{
+    background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  }
+  .sx-panel h4{
+    margin:0 0 8px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;
+  }
+  .sx-panel p{margin:0;font-size:.85rem;color:var(--fg);line-height:1.55}
+  .sx-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:.75rem;color:var(--muted)}
+  .sx-blind{margin-top:14px;padding:10px 12px;border-left:2px solid var(--accent);background:rgba(232,168,124,.05);border-radius:0 8px 8px 0}
+  .sx-blind h4{margin:0 0 6px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .sx-blind ul{margin:0;padding-left:18px;font-size:.82rem;color:var(--fg)}
+  .sx-empty{padding:80px 20px;text-align:center;color:var(--muted)}
+  .sx-empty .sx-orb{width:48px;height:48px;border-radius:50%;margin:0 auto 16px;
+    background:radial-gradient(circle at 30% 30%,var(--accent),#a8724f 60%,transparent 75%)}
+  .sx-empty h3{font-family:'Instrument Serif',serif;font-size:1.6rem;color:var(--fg);margin-bottom:8px}
+
+  .sx-toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--bg-3);border:1px solid var(--line-2);border-radius:12px;
+    padding:10px 18px;font-size:.85rem;color:var(--fg);
+    box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:400;
+    opacity:0;transition:opacity .2s ease;pointer-events:none;
+  }
+  .sx-toast.show{opacity:1}
+
+  .sx-banner{
+    background:linear-gradient(90deg,rgba(232,168,124,.08),rgba(232,168,124,.02));
+    border:1px solid rgba(232,168,124,.25);border-radius:12px;
+    padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--muted);
+    display:none;
+  }
+  .sx-banner.show{display:block}
+  .sx-banner strong{color:var(--accent)}
+
+  @media (max-width:860px){
+    .sx-counters{grid-template-columns:repeat(2,1fr)}
+    .sx-table thead{display:none}
+    .sx-table tr{display:block;padding:12px 14px}
+    .sx-table td{display:block;padding:4px 0;border:none}
+    .sx-panels{grid-template-columns:1fr}
+    .sx-title{font-size:2.2rem}
+  }
+</style>
+</head>
+<body>
+
+<nav aria-label="Primary">
+  <a class="nav-logo" href="/" aria-label="Fourseat home" style="text-decoration:none">
+    Fourseat <sup>AI</sup>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link active" href="/sentinel">Sentinel</a>
+  </div>
+  <a class="nav-cta" href="/" style="text-decoration:none">Back to app</a>
+</nav>
+
+<main class="sx-shell">
+
+  <header class="sx-header">
+    <div>
+      <h1 class="sx-title">Daily <em>Decision Briefing</em></h1>
+      <p class="sx-sub" id="sx-sub">Loading queue</p>
+    </div>
+    <div class="sx-actions">
+      <button class="sx-btn" id="sx-refresh" title="Refresh queue">Refresh</button>
+      <button class="sx-btn" id="sx-markdown" title="Copy Markdown brief">Copy Markdown</button>
+      <button class="sx-btn primary" id="sx-run">Run Sentinel</button>
+    </div>
+  </header>
+
+  <div class="sx-banner" id="sx-banner">
+    <strong>Demo mode.</strong>
+    Sentinel is running on seeded messages because Gmail OAuth is not configured.
+    To connect your inbox, drop <code>gmail_credentials.json</code> into
+    <code>data/sentinel/</code> and run the CLI once to authorize.
+  </div>
+
+  <section class="sx-counters" aria-label="Queue counters">
+    <div class="sx-counter total"><div class="n" id="sx-c-total">0</div><div class="lbl">Open items</div></div>
+    <div class="sx-counter p0"><div class="n" id="sx-c-p0">0</div><div class="lbl">P0 - critical</div></div>
+    <div class="sx-counter p1"><div class="n" id="sx-c-p1">0</div><div class="lbl">P1 - important</div></div>
+    <div class="sx-counter p2"><div class="n" id="sx-c-p2">0</div><div class="lbl">P2 - batch</div></div>
+    <div class="sx-counter p3"><div class="n" id="sx-c-p3">0</div><div class="lbl">P3 - archive</div></div>
+  </section>
+
+  <div class="sx-toolbar">
+    <div class="sx-filter" role="tablist" aria-label="Filter by priority">
+      <button class="on" data-filter="all">All</button>
+      <button data-filter="P0">P0</button>
+      <button data-filter="P1">P1</button>
+      <button data-filter="P2">P2</button>
+      <button data-filter="P3">P3</button>
+    </div>
+    <div class="sx-status" id="sx-status"></div>
+  </div>
+
+  <div class="sx-table-wrap">
+    <table class="sx-table" aria-label="Triage queue">
+      <thead>
+        <tr>
+          <th style="width:56px"></th>
+          <th style="width:72px">Pri</th>
+          <th style="width:110px">Category</th>
+          <th style="width:130px">Action</th>
+          <th>Subject</th>
+          <th style="width:180px">From</th>
+          <th style="width:100px">Conf</th>
+          <th style="width:90px"></th>
+        </tr>
+      </thead>
+      <tbody id="sx-tbody">
+        <tr><td colspan="8" class="sx-empty">
+          <div class="sx-orb"></div>
+          <h3>Queue is empty</h3>
+          <p>Hit <strong>Run Sentinel</strong> to fetch and triage messages.</p>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<div class="sx-toast" id="sx-toast" role="status" aria-live="polite"></div>
+
+<script src="/frontend/sentinel.js" defer></script>
+</body>
+</html>
