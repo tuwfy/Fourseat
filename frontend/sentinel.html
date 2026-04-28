@@ -30,6 +30,22 @@
     --accent:#b77242; --accent-2:#bd8251;
   }
   body{background:var(--bg);color:var(--fg)}
+  body[data-theme='light']{
+    background:
+      radial-gradient(1200px 700px at 10% -10%,rgba(223,188,145,.45),transparent 60%),
+      radial-gradient(900px 700px at 90% 15%,rgba(197,170,132,.32),transparent 58%),
+      linear-gradient(180deg,#f8f4ed 0%,#f3ecdf 45%,#ede2d1 100%);
+  }
+  body[data-theme='light']::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+    background:
+      radial-gradient(900px 500px at 20% 35%,rgba(255,255,255,.35),transparent 70%),
+      radial-gradient(1000px 560px at 80% 75%,rgba(212,177,133,.2),transparent 72%);
+  }
 
   .sx-shell{max-width:1180px;margin:0 auto;padding:120px 24px 72px}
 

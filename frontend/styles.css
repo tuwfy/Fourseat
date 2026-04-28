@@ -1168,8 +1168,21 @@ footer{
 
 /* ─── LIGHT THEME OVERRIDES ─────────────────────────────────────────────── */
 body[data-theme='light']{
-  background:#f6f2ea;
+  background:
+    radial-gradient(1200px 700px at 10% -10%,rgba(223,188,145,.45),transparent 60%),
+    radial-gradient(900px 700px at 90% 15%,rgba(197,170,132,.32),transparent 58%),
+    linear-gradient(180deg,#f8f4ed 0%,#f3ecdf 45%,#ede2d1 100%);
   color:#211d17;
+}
+body[data-theme='light']::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    radial-gradient(900px 500px at 20% 35%,rgba(255,255,255,.35),transparent 70%),
+    radial-gradient(1000px 560px at 80% 75%,rgba(212,177,133,.2),transparent 72%);
 }
 body[data-theme='light'] nav{
   background:rgba(255,255,255,.75);
@@ -1233,6 +1246,16 @@ body[data-theme='light'] .preview-text,
 body[data-theme='light'] .preview-col li,
 body[data-theme='light'] .hero-stat-lbl,
 body[data-theme='light'] .snap-text,
+body[data-theme='light'] .sentinel-bullets li,
+body[data-theme='light'] .sentinel-row-meta,
+body[data-theme='light'] .preview-tag,
+body[data-theme='light'] .hero-card-sub,
+body[data-theme='light'] .chairman-sub,
+body[data-theme='light'] .ch-col-title,
+body[data-theme='light'] .round-tag,
+body[data-theme='light'] .input-label,
+body[data-theme='light'] .status-bar,
+body[data-theme='light'] .doc-meta,
 body[data-theme='light'] .footer-tagline,
 body[data-theme='light'] .footer-meta{color:rgba(31,26,20,.72)}
 body[data-theme='light'] .hero-badge,
@@ -1299,4 +1322,14 @@ body[data-theme='light'] .toast{
   background:rgba(255,255,255,.95);
   color:#1f1a14;
   border-color:rgba(31,26,20,.18);
+}
+body[data-theme='light'] .section,
+body[data-theme='light'] .page,
+body[data-theme='light'] footer{background:transparent}
+body[data-theme='light'] [style*="color:rgba(255,255,255"]{
+  color:rgba(31,26,20,.76) !important;
+}
+body[data-theme='light'] [style*="color:#fff"],
+body[data-theme='light'] [style*="color: #fff"]{
+  color:#1f1a14 !important;
 }
