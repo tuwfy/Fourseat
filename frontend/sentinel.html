@@ -116,8 +116,9 @@
   }
   .sx-orb{
     width:40px;height:40px;border-radius:50%;flex-shrink:0;
-    background:transparent url(/frontend/logo-circle.png) center/contain no-repeat;
-    box-shadow:0 6px 14px rgba(132,84,35,.24);
+    background:radial-gradient(circle at 30% 30%,var(--accent),#a8724f 60%,#3b2515 85%);
+    box-shadow:0 8px 24px rgba(217,141,56,.35);
+    animation:sxSpin 30s linear infinite;
   }
   @keyframes sxSpin{to{transform:rotate(360deg)}}
   .sx-demo-title{font-size:.95rem;font-weight:600;color:#fff}

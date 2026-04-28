@@ -314,6 +314,7 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
   background:transparent url(/frontend/logo-circle.png) center/contain no-repeat;
   filter:drop-shadow(0 6px 16px rgba(132,84,35,.28));
   position:relative;flex-shrink:0;
+  animation:spinOrb 30s linear infinite;
   will-change:transform;
 }
 @keyframes spinOrb{to{transform:rotate(360deg)}}
@@ -860,6 +861,7 @@ select option{background:#1a1714;color:#fff}
   background:transparent url(/frontend/logo-circle.png) center/contain no-repeat;
   filter:drop-shadow(0 6px 14px rgba(132,84,35,.25));
   flex-shrink:0;position:relative;
+  animation:spinOrb 30s linear infinite;
   will-change:transform;
 }
 .chairman-title{font-size:1.15rem;font-weight:600;color:#fff}

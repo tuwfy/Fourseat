@@ -567,6 +567,7 @@
     'open-home': function () { showPage('home'); },
     'open-how': function () { showPage('how'); },
     'open-about': function () { showPage('about'); },
+    'open-sentinel': function () { window.location.assign('/sentinel'); },
     'open-terms': function () { showPage('terms'); },
     'open-privacy': function () { showPage('privacy'); },
     'toggle-nav': function () { toggleMobileNav(); },

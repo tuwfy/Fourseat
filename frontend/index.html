@@ -29,7 +29,7 @@
   <div class="nav-links" id="nav-links">
     <button type="button" class="nav-link" data-page="how" data-action="show-page">How it works</button>
     <button type="button" class="nav-link" data-page="pricing" data-action="show-page">Pricing</button>
-    <a class="nav-link nav-link-new" href="/sentinel" target="_self">Sentinel <span class="nav-link-badge">New</span></a>
+    <a class="nav-link nav-link-new" href="/sentinel" data-action="open-sentinel">Sentinel <span class="nav-link-badge">New</span></a>
     <button type="button" class="nav-link" data-page="about" data-action="show-page">About</button>
   </div>
   <button type="button" class="theme-toggle" data-action="toggle-theme" data-theme-toggle aria-label="Switch to light mode" title="Switch theme">
@@ -55,7 +55,7 @@
     </div>
     <div class="hero-content">
       <div>
-        <a class="hero-badge" href="/sentinel" target="_self">
+        <a class="hero-badge" href="/sentinel" data-action="open-sentinel">
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
           Introducing Fourseat Sentinel &middot; live inbox triage
           <span class="hero-badge-arrow">&rarr;</span>
@@ -124,7 +124,7 @@
           <li><span class="sentinel-bullet-dot"></span> Markdown brief you can forward, archive, or paste into Slack</li>
         </ul>
         <div class="hero-actions" style="margin-top:2rem">
-          <a class="btn-hero-primary" href="/sentinel" target="_self">Open the Sentinel dashboard</a>
+          <a class="btn-hero-primary" href="/sentinel" data-action="open-sentinel">Open the Sentinel dashboard</a>
           <button type="button" class="btn-hero-secondary" data-action="open-waitlist">Get early access</button>
         </div>
       </div>
@@ -228,7 +228,7 @@
           <div class="feature-name">Fourseat Decks</div>
           <div class="feature-desc">Enter your metrics, wins and risks. Get a polished, board-ready PowerPoint draft you can hand to your investors in minutes.</div>
         </button>
-        <a class="feature-card feature-card-new" href="/sentinel" target="_self">
+        <a class="feature-card feature-card-new" href="/sentinel" data-action="open-sentinel">
           <div class="feature-badge">New</div>
           <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
           <div class="feature-name">Fourseat Sentinel</div>
@@ -462,7 +462,7 @@
           <strong>Fourseat Sentinel:</strong> A proactive triage layer that pulls important inbound from Gmail and Slack, runs it through the four-advisor panel, and returns a daily decision briefing with priority, category, and action for every item.
         </p>
         <div style="margin-top:1.5rem">
-          <a class="btn-hero-secondary" href="/sentinel" target="_self">Open Sentinel dashboard</a>
+          <a class="btn-hero-secondary" href="/sentinel" data-action="open-sentinel">Open Sentinel dashboard</a>
         </div>
       </div>
     </div>
@@ -772,7 +772,7 @@
         <h4>Product</h4>
         <button type="button" data-action="open-how">Get started</button>
         <button type="button" data-action="open-pricing">Pricing</button>
-        <a href="/sentinel" target="_self">Sentinel</a>
+        <a href="/sentinel" data-action="open-sentinel">Sentinel</a>
         <button type="button" data-action="open-debate">API</button>
       </div>
       <div>

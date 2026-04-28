@@ -66,6 +66,8 @@ ALLOWED_FRONTEND_FILES = {
     "favicon-180.png",
     "icon-192.png",
     "icon-512.png",
+    "logo-wordmark.png",
+    "logo-circle.png",
     "admin.html",
     "admin.js",
     "sentinel.html",
