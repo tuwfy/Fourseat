@@ -39,6 +39,7 @@ from backend.waitlist import (
     public_waitlist_count,
 )
 from backend.billing import create_checkout_session
+from backend.sentinel import connector_status
 
 
 # ── Configuration ────────────────────────────────────────────────────────────
@@ -580,6 +581,15 @@ def sentinel_queue():
         return jsonify({"queue": rows, "stats": queue_stats()})
     except Exception as e:
         return _server_error("sentinel queue failed", e)
+
+
+@app.route("/api/sentinel/connectors", methods=["GET"])
+@rate_limited("sentinel_connectors", limit=60, window_s=60)
+def sentinel_connectors():
+    try:
+        return jsonify({"connectors": connector_status()})
+    except Exception as e:
+        return _server_error("sentinel connector status failed", e)
 
 
 @app.route("/api/sentinel/brief", methods=["GET"])

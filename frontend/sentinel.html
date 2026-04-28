@@ -85,6 +85,19 @@
     margin-bottom:2rem;
   }
   .sx-cta-row{display:flex;gap:1rem;flex-wrap:wrap}
+  .sx-connectors{display:flex;gap:.55rem;flex-wrap:wrap;margin:0 0 1.2rem}
+  .sx-connector{
+    font-size:.74rem;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.8);
+    border-radius:999px;
+    padding:.35rem .75rem;
+  }
+  .sx-connector.ok{border-color:rgba(124,206,168,.35);color:#7ccea8;background:rgba(124,206,168,.1)}
+  .sx-connector.off{border-color:rgba(232,124,124,.3);color:#e8a7a7;background:rgba(232,124,124,.08)}
+  .sx-connector.pending{border-color:rgba(232,186,131,.3);color:#e8ba83;background:rgba(232,186,131,.1)}
+  .sx-connector-preview{border-color:rgba(232,186,131,.34);color:#e8ba83;background:rgba(232,186,131,.12)}
   .sx-btn-primary{
     display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
     padding:.85rem 1.6rem;background:#fff;color:#110f0d;
@@ -400,6 +413,17 @@
   body[data-theme='light'] .sx-btn-primary:hover{box-shadow:0 8px 24px rgba(31,26,20,.25)}
   body[data-theme='light'] .sx-btn-ghost{background:rgba(31,26,20,.04);color:var(--fg);border-color:rgba(31,26,20,.2)}
   body[data-theme='light'] .sx-btn-ghost:hover{background:rgba(31,26,20,.08);border-color:rgba(31,26,20,.3)}
+  body[data-theme='light'] .sx-connector{
+    border-color:rgba(139,92,50,.2);
+    background:rgba(248,241,231,.9);
+    color:rgba(31,26,20,.8);
+  }
+  body[data-theme='light'] .sx-connector.pending,
+  body[data-theme='light'] .sx-connector-preview{
+    border-color:rgba(139,92,50,.28);
+    color:#8f5a2f;
+    background:rgba(248,241,231,.98);
+  }
   body[data-theme='light'] .sx-demo,
   body[data-theme='light'] .sx-stat,
   body[data-theme='light'] .sx-step,
@@ -481,8 +505,14 @@
       </div>
       <h1 class="sx-title">Your inbox,<br/><em>triaged by the board.</em></h1>
       <p class="sx-lede">
-        Sentinel is the proactive layer of Fourseat. Every morning it reads your inbound, prioritises what matters, and delivers a single Daily Decision Briefing with a board-level verdict on every item worth your time.
+        Sentinel is the proactive decision summarizer for founders. It ingests Google email, Slack, and Teams messages, prioritises what matters, and delivers one Daily Decision Briefing with clear actions.
       </p>
+      <div class="sx-connectors" aria-label="Connected sources">
+        <div class="sx-connector" id="sx-gmail">Gmail · coming soon</div>
+        <div class="sx-connector" id="sx-slack">Slack · coming soon</div>
+        <div class="sx-connector" id="sx-teams">Teams · coming soon</div>
+        <div class="sx-connector sx-connector-preview">Preview mode · join waitlist for connector rollout</div>
+      </div>
       <div class="sx-cta-row">
         <a class="sx-btn-primary" href="/waitlist">Get early access</a>
         <a class="sx-btn-ghost" href="#how">See how it works</a>
@@ -560,7 +590,7 @@
       <div class="sx-step">
         <div class="sx-step-num">01</div>
         <div class="sx-step-title">Ingest</div>
-        <div class="sx-step-desc">Connect Gmail and (soon) Slack. Sentinel only reads inbound threads you haven&rsquo;t archived — never sends on your behalf.</div>
+        <div class="sx-step-desc">Connector rollout starts with waitlist users. Gmail, Slack, and Teams onboarding happens in phases — Sentinel never sends on your behalf.</div>
       </div>
       <div class="sx-step">
         <div class="sx-step-num">02</div>

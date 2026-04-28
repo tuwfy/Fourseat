@@ -177,6 +177,11 @@
   const dateEl = document.getElementById('sx-date');
   const demo = document.querySelector('.sx-demo');
   const themeToggle = document.getElementById('sentinel-theme-toggle');
+  const connectorEls = {
+    gmail: document.getElementById('sx-gmail'),
+    slack: document.getElementById('sx-slack'),
+    teams: document.getElementById('sx-teams'),
+  };
 
   function getPreferredTheme() {
     const saved = window.localStorage.getItem(THEME_KEY);
@@ -207,6 +212,35 @@
     const next = current === 'dark' ? 'light' : 'dark';
     applyTheme(next);
     window.localStorage.setItem(THEME_KEY, next);
+  }
+
+  async function loadConnectorStatus() {
+    try {
+      const resp = await fetch('/api/sentinel/connectors');
+      const data = await resp.json();
+      const connectors = (data && data.connectors) || {};
+      ['gmail', 'slack', 'teams'].forEach(function (key) {
+        const el = connectorEls[key];
+        if (!el) return;
+        const ok = Boolean(connectors[key] && connectors[key].configured);
+        el.classList.remove('ok', 'off', 'pending');
+        if (ok) {
+          el.classList.add('ok');
+          el.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ' · connected';
+        } else {
+          el.classList.add('pending');
+          el.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ' · coming soon';
+        }
+      });
+    } catch (_e) {
+      ['gmail', 'slack', 'teams'].forEach(function (key) {
+        const el = connectorEls[key];
+        if (!el) return;
+        el.classList.remove('ok', 'off');
+        el.classList.add('pending');
+        el.textContent = key.charAt(0).toUpperCase() + key.slice(1) + ' · coming soon';
+      });
+    }
   }
 
   if (dateEl) {
@@ -351,6 +385,7 @@
   if (nextBtn) nextBtn.addEventListener('click', goNext);
   if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
   applyTheme(getPreferredTheme());
+  loadConnectorStatus();
 
   if (!demo) return;
 

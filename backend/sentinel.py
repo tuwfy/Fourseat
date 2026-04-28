@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import html
 import json
 import logging
 import os
@@ -51,13 +52,17 @@ DB_URL = os.getenv("SENTINEL_DB_URL", f"sqlite:///{SENTINEL_DIR / 'sentinel.db'}
 GMAIL_TOKEN_PATH = Path(os.getenv("GMAIL_TOKEN_PATH", str(SENTINEL_DIR / "gmail_token.json")))
 GMAIL_CREDS_PATH = Path(os.getenv("GMAIL_CREDS_PATH", str(SENTINEL_DIR / "gmail_credentials.json")))
 GMAIL_SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "").strip()
+SLACK_CHANNEL_IDS = [c.strip() for c in os.getenv("SLACK_CHANNEL_IDS", "").split(",") if c.strip()]
+TEAMS_GRAPH_TOKEN = os.getenv("TEAMS_GRAPH_TOKEN", "").strip()
+TEAMS_CHAT_IDS = [c.strip() for c in os.getenv("TEAMS_CHAT_IDS", "").split(",") if c.strip()]
 
 
 # ── Data models ───────────────────────────────────────────────────────────────
 
 @dataclass
 class Message:
-    source: str           # "gmail" | "slack"
+    source: str           # "gmail" | "slack" | "teams"
     external_id: str      # provider message id (idempotency key)
     sender: str
     subject: str
@@ -268,6 +273,101 @@ def fetch_important_emails(limit: int = 10, query: str = "is:important -category
     return messages
 
 
+def _slack_configured() -> bool:
+    return bool(SLACK_BOT_TOKEN) and bool(SLACK_CHANNEL_IDS)
+
+
+def _teams_configured() -> bool:
+    return bool(TEAMS_GRAPH_TOKEN) and bool(TEAMS_CHAT_IDS)
+
+
+def _strip_html(text: str) -> str:
+    cleaned = re.sub(r"<[^>]+>", " ", text or "")
+    return html.unescape(re.sub(r"\s+", " ", cleaned)).strip()
+
+
+def fetch_slack_messages(limit: int = 10) -> list[Message]:
+    """Fetch recent messages from configured Slack channels."""
+    if not _slack_configured():
+        return []
+    import requests
+
+    per_channel = max(1, int(limit / max(1, len(SLACK_CHANNEL_IDS))))
+    messages: list[Message] = []
+    headers = {"Authorization": f"Bearer {SLACK_BOT_TOKEN}"}
+    for channel_id in SLACK_CHANNEL_IDS:
+        try:
+            resp = requests.get(
+                "https://slack.com/api/conversations.history",
+                headers=headers,
+                params={"channel": channel_id, "limit": per_channel},
+                timeout=12,
+            )
+            data = resp.json()
+        except Exception as exc:
+            log.warning("slack fetch failed for channel %s: %s", channel_id, exc)
+            continue
+        if not data.get("ok"):
+            log.warning("slack api error for channel %s: %s", channel_id, data.get("error"))
+            continue
+        for row in data.get("messages", []):
+            text = (row.get("text") or "").strip()
+            if not text:
+                continue
+            ts = str(row.get("ts") or "")
+            try:
+                ts_float = float(ts)
+                received_at = datetime.fromtimestamp(ts_float, tz=timezone.utc).isoformat()
+            except Exception:
+                received_at = datetime.now(timezone.utc).isoformat()
+            messages.append(
+                Message(
+                    source="slack",
+                    external_id=f"{channel_id}:{ts}",
+                    sender=f"slack:{row.get('user') or row.get('bot_id') or 'unknown'}",
+                    subject=f"Slack message in {channel_id}",
+                    body=text[:8000],
+                    received_at=received_at,
+                )
+            )
+    return messages[:limit]
+
+
+def fetch_teams_messages(limit: int = 10) -> list[Message]:
+    """Fetch recent messages from configured Microsoft Teams chats via Graph API."""
+    if not _teams_configured():
+        return []
+    import requests
+
+    per_chat = max(1, int(limit / max(1, len(TEAMS_CHAT_IDS))))
+    messages: list[Message] = []
+    headers = {"Authorization": f"Bearer {TEAMS_GRAPH_TOKEN}"}
+    for chat_id in TEAMS_CHAT_IDS:
+        url = f"https://graph.microsoft.com/v1.0/chats/{chat_id}/messages"
+        try:
+            resp = requests.get(url, headers=headers, params={"$top": per_chat}, timeout=12)
+            data = resp.json()
+        except Exception as exc:
+            log.warning("teams fetch failed for chat %s: %s", chat_id, exc)
+            continue
+        for row in data.get("value", []):
+            content = _strip_html(((row.get("body") or {}).get("content") or ""))
+            if not content:
+                continue
+            sender = (((row.get("from") or {}).get("user") or {}).get("displayName") or "teams-user")
+            messages.append(
+                Message(
+                    source="teams",
+                    external_id=f"{chat_id}:{row.get('id')}",
+                    sender=f"teams:{sender}",
+                    subject=f"Teams message in {chat_id}",
+                    body=content[:8000],
+                    received_at=row.get("createdDateTime") or datetime.now(timezone.utc).isoformat(),
+                )
+            )
+    return messages[:limit]
+
+
 # ── Demo / seed messages (works without Gmail OAuth) ──────────────────────────
 
 DEMO_EMAILS: list[dict] = [
@@ -378,6 +478,14 @@ def fetch_demo_messages(limit: int = 10) -> list[Message]:
 
 def _gmail_configured() -> bool:
     return GMAIL_CREDS_PATH.exists() or GMAIL_TOKEN_PATH.exists()
+
+
+def connector_status() -> dict[str, Any]:
+    return {
+        "gmail": {"configured": _gmail_configured()},
+        "slack": {"configured": _slack_configured(), "channels": len(SLACK_CHANNEL_IDS)},
+        "teams": {"configured": _teams_configured(), "chats": len(TEAMS_CHAT_IDS)},
+    }
 
 
 # ── Memory integration ────────────────────────────────────────────────────────
@@ -760,21 +868,32 @@ def run_daily_brief(limit: int = 10, *, demo: Optional[bool] = None) -> dict:
     """
     init_db()
 
+    status = connector_status()
+    live_sources = [k for k, v in status.items() if v.get("configured")]
     if demo is None:
-        demo = os.getenv("SENTINEL_DEMO_MODE", "").strip() == "1" or not _gmail_configured()
+        demo = os.getenv("SENTINEL_DEMO_MODE", "").strip() == "1" or not live_sources
 
-    source = "demo" if demo else "gmail"
-    fetch_error: Optional[str] = None
+    source = "demo" if demo else ",".join(live_sources)
+    fetch_errors: list[str] = []
     msgs: list[Message] = []
-    try:
-        if demo:
-            msgs = fetch_demo_messages(limit=limit)
-        else:
-            msgs = fetch_important_emails(limit=limit)
-    except Exception as e:
-        fetch_error = f"fetch failed: {e}"
-        log.warning(fetch_error)
-        # Fall through with no messages; the triage batch just returns []
+    if demo:
+        msgs = fetch_demo_messages(limit=limit)
+    else:
+        for source_name, fn in (
+            ("gmail", fetch_important_emails),
+            ("slack", fetch_slack_messages),
+            ("teams", fetch_teams_messages),
+        ):
+            if not status[source_name]["configured"]:
+                continue
+            try:
+                msgs.extend(fn(limit=limit))
+            except Exception as e:
+                err = f"{source_name} fetch failed: {e}"
+                fetch_errors.append(err)
+                log.warning(err)
+        msgs.sort(key=lambda m: m.received_at, reverse=True)
+        msgs = msgs[:limit]
 
     try:
         triaged = triage_batch(msgs)
@@ -792,11 +911,13 @@ def run_daily_brief(limit: int = 10, *, demo: Optional[bool] = None) -> dict:
         "processed": len(triaged),
         "fetched": len(msgs),
         "source": source,
+        "sources_used": [m.source for m in msgs[:limit]],
+        "connectors": status,
         "brief_markdown": brief,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
-    if fetch_error:
-        payload["error"] = fetch_error
+    if fetch_errors:
+        payload["error"] = "; ".join(fetch_errors)
     return payload
 
 
