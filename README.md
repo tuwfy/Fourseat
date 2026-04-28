@@ -140,6 +140,26 @@ WAITLIST_OWNER_EMAIL=you@yourdomain.com
 - **Gmail OAuth:** drop `gmail_credentials.json` (OAuth desktop client) into `data/sentinel/` and run the CLI once to authorize: `python -m backend.sentinel`.
 - **AI verdicts:** at least one of `NIA_API_KEY`, `ANTHROPIC_API_KEY`, `CEREBRAS_API_KEY`, `OPENAI_API_KEY`, `NVIDIA_API_KEY`, `GOOGLE_API_KEY` enables live LLM verdicts. Without any keys the pipeline still completes with a safe fallback verdict so the dashboard keeps working.
 
+## Legal pages
+
+- Terms of service: `/terms` (or `/tos`)
+- Privacy policy: `/privacy`
+- Footer links now expose Product / Resources / Company columns for public trust and store-review checks.
+
+## App Store / Google Play readiness
+
+This release includes web installability basics:
+- `manifest.webmanifest` with standalone display mode and app icons
+- `icon-192.png` and `icon-512.png` assets
+- `sw.js` service worker registration (minimal installability worker)
+- Hardened production headers (CSP, HSTS, frame deny, permissions policy, origin agent cluster)
+
+Manual steps still required for **native store submission**:
+- Wrap the web app in Capacitor/React Native/Flutter shell for iOS/Android binaries
+- Add native app screenshots, age rating, content declarations, and support URL
+- Provide App Store Connect and Play Console metadata + review credentials
+- Configure Apple Sign In / Google Sign In if account auth is required
+
 ---
 
 ## Pricing Ideas (if you ship this)
@@ -153,3 +173,7 @@ WAITLIST_OWNER_EMAIL=you@yourdomain.com
 ---
 
 Built with Flask · Anthropic · OpenAI · Google AI · ChromaDB · python-pptx
+
+## Launch Readiness
+
+- For multi-channel launch execution, use `LAUNCH_DAY_PLAYBOOK.md` (Product Hunt, Hacker News, Indie Hackers, AppSumo, G2, and Capterra).

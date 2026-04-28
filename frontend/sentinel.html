@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#110f0d"/>
 <meta name="color-scheme" content="dark"/>
-<meta name="description" content="Fourseat Sentinel - Daily Decision Briefing from the advisor panel."/>
-<title>Fourseat Sentinel - Daily Briefing</title>
+<meta name="description" content="Fourseat Sentinel · how it works. A daily decision briefing from your board, built on top of your inbox."/>
+<title>Fourseat Sentinel · How it works</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -23,207 +23,711 @@
     --accent:#e8a87c; --accent-2:#e8ba83;
     --p0:#e87c7c; --p1:#e8a87c; --p2:#e8d27c; --p3:#7ccea8;
   }
+  body[data-theme='light']{
+    --bg:#f6f2ea; --bg-2:#f0e8db; --bg-3:#e8dcc8;
+    --fg:#1f1a14; --muted:#6b604f; --dim:#847866;
+    --line:rgba(31,26,20,.12); --line-2:rgba(31,26,20,.18);
+    --accent:#b77242; --accent-2:#bd8251;
+  }
   body{background:var(--bg);color:var(--fg)}
-  .sx-shell{max-width:1280px;margin:0 auto;padding:92px 24px 72px}
-  .sx-header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:28px}
-  .sx-title{font-family:'Instrument Serif',serif;font-size:3rem;line-height:1;letter-spacing:-.02em}
-  .sx-title em{color:var(--accent);font-style:italic}
-  .sx-sub{color:var(--muted);margin-top:10px;font-size:.95rem}
-  .sx-actions{display:flex;gap:10px;flex-wrap:wrap}
-  .sx-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:.65rem 1.2rem;border-radius:999px;
-    font-size:.85rem;font-weight:500;cursor:pointer;
-    border:1px solid var(--line-2);background:rgba(255,255,255,.04);color:var(--fg);
-    transition:background .2s,transform .2s,border-color .2s;
-  }
-  .sx-btn:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
-  .sx-btn.primary{background:var(--fg);color:#110f0d;border-color:var(--fg)}
-  .sx-btn.primary:hover{background:#fff}
-  .sx-btn[disabled]{opacity:.55;cursor:wait;transform:none}
 
-  .sx-counters{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
-  .sx-counter{
-    background:linear-gradient(180deg,var(--bg-2),var(--bg));
-    border:1px solid var(--line);border-radius:16px;padding:16px 18px;
-  }
-  .sx-counter .n{font-family:'Instrument Serif',serif;font-size:2.2rem;line-height:1;letter-spacing:-.02em}
-  .sx-counter .lbl{color:var(--muted);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
-  .sx-counter.p0 .n{color:var(--p0)}
-  .sx-counter.p1 .n{color:var(--p1)}
-  .sx-counter.p2 .n{color:var(--p2)}
-  .sx-counter.p3 .n{color:var(--p3)}
-  .sx-counter.total .n{color:var(--fg)}
+  .sx-shell{max-width:1180px;margin:0 auto;padding:120px 24px 72px}
 
-  .sx-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
-  .sx-filter{display:inline-flex;gap:4px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:4px}
-  .sx-filter button{
-    border:none;background:none;color:var(--muted);
-    padding:.45rem 1rem;border-radius:999px;font-size:.8rem;font-weight:500;cursor:pointer;
+  /* ── HERO ───────────────────────────────────────── */
+  .sx-hero{
+    display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+    gap:3rem;align-items:center;margin-bottom:5rem;
   }
-  .sx-filter button.on{background:rgba(255,255,255,.10);color:var(--fg)}
-  .sx-status{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dim)}
+  .sx-eyebrow{
+    display:inline-flex;align-items:center;gap:.55rem;
+    font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);
+    background:rgba(232,168,124,.1);
+    border:1px solid rgba(232,168,124,.28);
+    padding:.4rem .9rem;border-radius:999px;margin-bottom:1.5rem;
+  }
+  .sx-pulse{
+    width:8px;height:8px;border-radius:50%;background:var(--p0);
+    box-shadow:0 0 0 0 rgba(232,124,124,.7);
+    animation:sxPulse 1.6s infinite;
+  }
+  @keyframes sxPulse{
+    0%{box-shadow:0 0 0 0 rgba(232,124,124,.7)}
+    70%{box-shadow:0 0 0 10px rgba(232,124,124,0)}
+    100%{box-shadow:0 0 0 0 rgba(232,124,124,0)}
+  }
+  .sx-title{
+    font-family:'Instrument Serif',serif;
+    font-size:clamp(2.4rem,5vw,4.2rem);
+    line-height:1.05;letter-spacing:-.02em;
+    margin-bottom:1.25rem;
+  }
+  .sx-title em{color:rgba(255,255,255,.55);font-style:italic}
+  .sx-lede{
+    font-size:clamp(1rem,1.4vw,1.12rem);
+    color:rgba(255,255,255,.7);line-height:1.65;max-width:540px;
+    margin-bottom:2rem;
+  }
+  .sx-cta-row{display:flex;gap:1rem;flex-wrap:wrap}
+  .sx-btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    padding:.85rem 1.6rem;background:#fff;color:#110f0d;
+    border-radius:999px;font-size:.95rem;font-weight:600;
+    border:none;cursor:pointer;text-decoration:none;
+    transition:transform .2s,box-shadow .2s;
+    box-shadow:0 4px 16px rgba(255,255,255,.12);
+  }
+  .sx-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.22)}
+  .sx-btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    padding:.85rem 1.6rem;background:rgba(255,255,255,.05);color:#fff;
+    border-radius:999px;font-size:.95rem;font-weight:500;
+    border:1px solid rgba(255,255,255,.15);cursor:pointer;text-decoration:none;
+    transition:background .2s,border-color .2s;
+  }
+  .sx-btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
 
-  .sx-table-wrap{background:var(--bg-2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-  table.sx-table{width:100%;border-collapse:collapse;font-size:.88rem}
-  .sx-table thead th{
-    text-align:left;font-weight:500;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--muted);padding:14px 14px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.18);
+  /* ── ANIMATED DEMO CARD ─────────────────────────── */
+  .sx-demo{
+    position:relative;background:linear-gradient(180deg,rgba(28,24,20,.78),rgba(18,15,13,.78));
+    border:1px solid rgba(255,255,255,.1);border-radius:22px;
+    padding:1.4rem;box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+    overflow:hidden;
   }
-  .sx-table tbody tr{border-bottom:1px solid var(--line);transition:background .2s}
-  .sx-table tbody tr:hover{background:rgba(255,255,255,.025)}
-  .sx-table tbody tr.open{background:rgba(232,168,124,.06)}
-  .sx-table td{padding:14px 14px;vertical-align:top}
-  .sx-pill{
-    display:inline-flex;align-items:center;gap:6px;
-    padding:3px 10px;border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.04em;
-    background:rgba(255,255,255,.06);color:var(--fg);border:1px solid var(--line-2);
+  .sx-demo-head{
+    display:flex;align-items:center;gap:.9rem;padding-bottom:1rem;
+    border-bottom:1px solid rgba(255,255,255,.06);
   }
-  .sx-pill.p0{background:rgba(232,124,124,.14);color:var(--p0);border-color:rgba(232,124,124,.3)}
-  .sx-pill.p1{background:rgba(232,168,124,.14);color:var(--p1);border-color:rgba(232,168,124,.3)}
-  .sx-pill.p2{background:rgba(232,210,124,.12);color:var(--p2);border-color:rgba(232,210,124,.28)}
-  .sx-pill.p3{background:rgba(124,206,168,.12);color:var(--p3);border-color:rgba(124,206,168,.28)}
-  .sx-pill.action{background:rgba(255,255,255,.04);color:var(--muted)}
-  .sx-pill.conf-High{color:var(--p3)}
-  .sx-pill.conf-Medium{color:var(--p2)}
-  .sx-pill.conf-Low{color:var(--p0)}
-  .sx-sender{color:var(--muted);font-size:.8rem;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
-  .sx-subject{color:var(--fg);font-weight:500}
-  .sx-oneliner{color:var(--muted);font-size:.82rem;margin-top:4px;line-height:1.5}
-  .sx-row-toggle{
-    background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:6px;
-    font-size:1.1rem;line-height:1;
+  .sx-orb{
+    width:40px;height:40px;border-radius:50%;flex-shrink:0;
+    background:radial-gradient(circle at 30% 30%,var(--accent),#a8724f 60%,#3b2515 85%);
+    box-shadow:0 8px 24px rgba(217,141,56,.35);
+    animation:sxSpin 30s linear infinite;
   }
-  .sx-row-toggle:hover{background:rgba(255,255,255,.06);color:var(--fg)}
-  .sx-drawer{display:none;background:var(--bg-3);border-top:1px solid var(--line)}
-  .sx-drawer.open{display:table-row}
-  .sx-drawer td{padding:18px 18px 22px}
-  .sx-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  .sx-panel{
-    background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  @keyframes sxSpin{to{transform:rotate(360deg)}}
+  .sx-demo-title{font-size:.95rem;font-weight:600;color:#fff}
+  .sx-demo-sub{font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.15rem}
+  .sx-live-tag{
+    margin-left:auto;font-size:.62rem;font-weight:700;letter-spacing:.14em;
+    color:var(--p0);background:rgba(232,124,124,.12);
+    border:1px solid rgba(232,124,124,.3);
+    padding:.22rem .5rem;border-radius:6px;
   }
-  .sx-panel h4{
-    margin:0 0 8px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--accent);font-weight:600;
-  }
-  .sx-panel p{margin:0;font-size:.85rem;color:var(--fg);line-height:1.55}
-  .sx-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:.75rem;color:var(--muted)}
-  .sx-blind{margin-top:14px;padding:10px 12px;border-left:2px solid var(--accent);background:rgba(232,168,124,.05);border-radius:0 8px 8px 0}
-  .sx-blind h4{margin:0 0 6px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
-  .sx-blind ul{margin:0;padding-left:18px;font-size:.82rem;color:var(--fg)}
-  .sx-empty{padding:80px 20px;text-align:center;color:var(--muted)}
-  .sx-empty .sx-orb{width:48px;height:48px;border-radius:50%;margin:0 auto 16px;
-    background:radial-gradient(circle at 30% 30%,var(--accent),#a8724f 60%,transparent 75%)}
-  .sx-empty h3{font-family:'Instrument Serif',serif;font-size:1.6rem;color:var(--fg);margin-bottom:8px}
 
-  .sx-toast{
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    background:var(--bg-3);border:1px solid var(--line-2);border-radius:12px;
-    padding:10px 18px;font-size:.85rem;color:var(--fg);
-    box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:400;
-    opacity:0;transition:opacity .2s ease;pointer-events:none;
+  .sx-stage{padding:.9rem 0 .2rem}
+  .sx-stage-label{
+    display:flex;align-items:center;gap:.5rem;
+    font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:.9rem;
+    min-height:20px;
   }
-  .sx-toast.show{opacity:1}
-
-  .sx-banner{
-    background:linear-gradient(90deg,rgba(232,168,124,.08),rgba(232,168,124,.02));
-    border:1px solid rgba(232,168,124,.25);border-radius:12px;
-    padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:var(--muted);
-    display:none;
+  .sx-stage-label .num{
+    width:20px;height:20px;border-radius:50%;
+    background:rgba(232,168,124,.15);border:1px solid rgba(232,168,124,.4);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:.68rem;color:var(--accent);
   }
-  .sx-banner.show{display:block}
-  .sx-banner strong{color:var(--accent)}
 
-  @media (max-width:860px){
-    .sx-counters{grid-template-columns:repeat(2,1fr)}
-    .sx-table thead{display:none}
-    .sx-table tr{display:block;padding:12px 14px}
-    .sx-table td{display:block;padding:4px 0;border:none}
-    .sx-panels{grid-template-columns:1fr}
-    .sx-title{font-size:2.2rem}
+  .sx-msg-list{display:flex;flex-direction:column;gap:.5rem;position:relative;list-style:none;padding:0;margin:0}
+  .sx-msg{
+    display:grid;grid-template-columns:44px 1fr;gap:.7rem;align-items:center;
+    padding:.7rem .85rem;border-radius:12px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+    opacity:0;transform:translateY(8px);
+    transition:opacity .45s ease,transform .45s ease,border-color .3s ease,background .3s ease;
+  }
+  .sx-msg.in{opacity:1;transform:translateY(0)}
+  .sx-msg.scanning{
+    border-color:rgba(232,168,124,.35);
+    background:linear-gradient(90deg,rgba(232,168,124,.1),rgba(232,168,124,0),rgba(232,168,124,.1));
+    background-size:200% 100%;
+    animation:scanShimmer 1.4s linear infinite;
+  }
+  @keyframes scanShimmer{
+    0%{background-position:200% 0}
+    100%{background-position:-200% 0}
+  }
+  .sx-msg.tagged{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03)}
+  .sx-pri{
+    font-size:.7rem;font-weight:700;letter-spacing:.06em;
+    text-align:center;padding:.28rem 0;border-radius:6px;
+    background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);
+    border:1px solid rgba(255,255,255,.08);
+    transition:all .3s ease;
+  }
+  .sx-msg .sx-pri.p0{color:var(--p0);background:rgba(232,124,124,.12);border-color:rgba(232,124,124,.28)}
+  .sx-msg .sx-pri.p1{color:var(--p1);background:rgba(232,168,124,.12);border-color:rgba(232,168,124,.28)}
+  .sx-msg .sx-pri.p2{color:var(--p2);background:rgba(232,210,124,.1);border-color:rgba(232,210,124,.24)}
+  .sx-msg .sx-pri.p3{color:var(--p3);background:rgba(124,206,168,.1);border-color:rgba(124,206,168,.24)}
+  .sx-msg-subject{font-size:.88rem;color:#fff;font-weight:500}
+  .sx-msg-meta{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:.2rem;letter-spacing:.02em}
+
+  .sx-verdict{
+    margin-top:1rem;padding:1rem 1.15rem;border-radius:14px;
+    background:linear-gradient(180deg,rgba(232,168,124,.1),rgba(232,168,124,.02));
+    border:1px solid rgba(232,168,124,.28);
+    opacity:0;transform:translateY(8px);
+    transition:opacity .5s ease,transform .5s ease;
+  }
+  .sx-verdict.in{opacity:1;transform:translateY(0)}
+  .sx-verdict-head{
+    display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+    font-size:.7rem;font-weight:600;letter-spacing:.08em;
+    color:var(--accent);text-transform:uppercase;margin-bottom:.5rem;
+  }
+  .sx-verdict-body{
+    font-family:'Instrument Serif',serif;font-size:1.05rem;color:#fff;line-height:1.45;
+  }
+  .sx-conf{
+    font-family:'Inter',sans-serif;font-size:.65rem;font-weight:600;
+    color:var(--p3);background:rgba(124,206,168,.14);
+    border:1px solid rgba(124,206,168,.3);
+    padding:.2rem .55rem;border-radius:999px;
+  }
+
+  .sx-replay{
+    display:inline-flex;align-items:center;gap:.4rem;
+    margin-top:.9rem;padding:.45rem .9rem;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+    border-radius:999px;color:rgba(255,255,255,.7);
+    font-size:.75rem;cursor:pointer;
+    transition:background .2s,color .2s;
+  }
+  .sx-replay:hover{background:rgba(255,255,255,.08);color:#fff}
+  .sx-replay-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem}
+
+  /* ── STATS STRIP ─────────────────────────────────── */
+  .sx-stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:5rem;
+  }
+  .sx-stat{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;padding:1.4rem 1.5rem;
+  }
+  .sx-stat-num{
+    font-family:'Instrument Serif',serif;
+    font-size:2.2rem;line-height:1;letter-spacing:-.02em;
+    color:#fff;margin-bottom:.4rem;
+  }
+  .sx-stat-num em{color:var(--accent);font-style:normal}
+  .sx-stat-lbl{font-size:.75rem;color:rgba(255,255,255,.55);letter-spacing:.04em}
+
+  /* ── SECTIONS ───────────────────────────────────── */
+  .sx-section{margin-bottom:5rem}
+  .sx-section-label{
+    font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1rem;
+  }
+  .sx-section-title{
+    font-family:'Instrument Serif',serif;
+    font-size:clamp(1.8rem,3.5vw,2.8rem);
+    line-height:1.15;letter-spacing:-.02em;margin-bottom:.75rem;
+  }
+  .sx-section-title em{color:rgba(255,255,255,.55);font-style:italic}
+  .sx-section-sub{color:rgba(255,255,255,.6);max-width:600px;line-height:1.65;font-size:1rem}
+
+  .sx-steps{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;
+  }
+  .sx-step{
+    position:relative;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:1.6rem 1.4rem;
+    transition:background .3s,border-color .3s,transform .3s;
+  }
+  .sx-step:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);transform:translateY(-2px)}
+  .sx-step-num{
+    font-family:'Instrument Serif',serif;font-size:2rem;color:var(--accent);
+    line-height:1;margin-bottom:1rem;opacity:.7;
+  }
+  .sx-step-title{font-size:1.02rem;font-weight:500;color:#fff;margin-bottom:.5rem}
+  .sx-step-desc{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.55}
+
+  /* ── BEFORE/AFTER ───────────────────────────────── */
+  .sx-compare{
+    display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;
+  }
+  .sx-compare-card{
+    padding:1.8rem;border-radius:18px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);
+  }
+  .sx-compare-card.good{
+    background:linear-gradient(180deg,rgba(232,168,124,.08),rgba(232,168,124,.01));
+    border-color:rgba(232,168,124,.28);
+  }
+  .sx-compare-tag{
+    display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.9rem;
+  }
+  .sx-compare-card.good .sx-compare-tag{color:var(--accent)}
+  .sx-compare h3{
+    font-family:'Instrument Serif',serif;font-size:1.5rem;color:#fff;
+    margin:0 0 1rem;line-height:1.2;
+  }
+  .sx-compare ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.55rem}
+  .sx-compare li{font-size:.9rem;color:rgba(255,255,255,.72);line-height:1.5;display:flex;gap:.6rem;align-items:flex-start}
+  .sx-compare li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;margin-top:.55rem;background:rgba(255,255,255,.25)}
+  .sx-compare-card.good li::before{background:var(--accent)}
+
+  /* ── SAMPLE BRIEFING ────────────────────────────── */
+  .sx-briefing{
+    background:linear-gradient(180deg,rgba(28,24,20,.78),rgba(18,15,13,.78));
+    border:1px solid rgba(255,255,255,.1);border-radius:22px;
+    padding:2rem;margin-top:2.5rem;
+    box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .sx-briefing-head{
+    display:flex;align-items:center;gap:1rem;padding-bottom:1.25rem;
+    border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:1.5rem;flex-wrap:wrap;
+  }
+  .sx-briefing-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    color:rgba(255,255,255,.5);margin-left:auto;
+  }
+  .sx-brief-counters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+  .sx-brief-counter{
+    display:inline-flex;align-items:center;gap:.45rem;
+    padding:.4rem .85rem;border-radius:999px;
+    font-size:.75rem;font-weight:500;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  }
+  .sx-brief-counter .n{font-weight:700;color:#fff}
+  .sx-brief-counter.p0 .n{color:var(--p0)}
+  .sx-brief-counter.p1 .n{color:var(--p1)}
+  .sx-brief-counter.p2 .n{color:var(--p2)}
+  .sx-brief-counter.p3 .n{color:var(--p3)}
+
+  .sx-brief-rows{display:flex;flex-direction:column;gap:.6rem}
+  .sx-brief-row{
+    display:grid;grid-template-columns:56px 1fr auto;gap:1rem;align-items:center;
+    padding:.9rem 1.1rem;border-radius:12px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+  }
+  .sx-pri-chip{
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:.7rem;font-weight:700;padding:.32rem .5rem;border-radius:6px;
+    letter-spacing:.04em;
+  }
+  .sx-pri-chip.p0{background:rgba(232,124,124,.14);color:var(--p0);border:1px solid rgba(232,124,124,.3)}
+  .sx-pri-chip.p1{background:rgba(232,168,124,.14);color:var(--p1);border:1px solid rgba(232,168,124,.3)}
+  .sx-pri-chip.p2{background:rgba(232,210,124,.12);color:var(--p2);border:1px solid rgba(232,210,124,.24)}
+  .sx-pri-chip.p3{background:rgba(124,206,168,.1);color:var(--p3);border:1px solid rgba(124,206,168,.24)}
+  .sx-brief-subject{font-size:.92rem;color:#fff;font-weight:500}
+  .sx-brief-meta{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:.25rem}
+  .sx-brief-action{
+    font-size:.72rem;font-weight:600;letter-spacing:.04em;
+    color:rgba(255,255,255,.7);
+    padding:.3rem .7rem;border-radius:999px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+    white-space:nowrap;
+  }
+
+  /* ── ADVISOR PANEL ──────────────────────────────── */
+  .sx-panel-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-top:2.5rem;
+  }
+  .sx-panel-card{
+    position:relative;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;padding:1.4rem;
+  }
+  .sx-panel-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--c,var(--accent));border-radius:18px 18px 0 0;
+  }
+  .sx-panel-role{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--c,var(--accent));margin-bottom:.75rem}
+  .sx-panel-text{font-size:.88rem;line-height:1.55;color:rgba(255,255,255,.78)}
+
+  /* ── FAQ ─────────────────────────────────────────── */
+  .sx-faq{display:flex;flex-direction:column;gap:.8rem;margin-top:2.5rem;max-width:780px}
+  .sx-faq details{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:1rem 1.25rem;
+  }
+  .sx-faq details[open]{background:rgba(255,255,255,.05)}
+  .sx-faq summary{
+    cursor:pointer;font-size:.98rem;color:#fff;font-weight:500;
+    display:flex;justify-content:space-between;align-items:center;gap:1rem;
+    list-style:none;
+  }
+  .sx-faq summary::-webkit-details-marker{display:none}
+  .sx-faq summary::after{content:'+';color:var(--accent);font-size:1.3rem;line-height:1}
+  .sx-faq details[open] summary::after{content:'–'}
+  .sx-faq p{margin:.8rem 0 0;font-size:.88rem;line-height:1.6;color:rgba(255,255,255,.65)}
+
+  /* ── CTA ─────────────────────────────────────────── */
+  .sx-final-cta{
+    text-align:center;padding:3.5rem 2rem;
+    background:linear-gradient(180deg,rgba(232,168,124,.06),rgba(232,168,124,.01));
+    border:1px solid rgba(232,168,124,.22);border-radius:24px;
+    margin-top:4rem;
+  }
+  .sx-final-cta h2{
+    font-family:'Instrument Serif',serif;
+    font-size:clamp(1.8rem,3.5vw,2.6rem);
+    margin-bottom:.75rem;line-height:1.15;
+  }
+  .sx-final-cta em{color:var(--accent);font-style:italic}
+  .sx-final-cta p{color:rgba(255,255,255,.65);max-width:520px;margin:0 auto 2rem;line-height:1.6}
+  .sx-final-cta .sx-cta-row{justify-content:center}
+
+  body[data-theme='light'] .sx-title em{color:rgba(31,26,20,.55)}
+  body[data-theme='light'] .sx-lede{color:rgba(31,26,20,.75)}
+  body[data-theme='light'] .sx-btn-primary{background:#1f1a14;color:#fff;box-shadow:0 4px 16px rgba(31,26,20,.15)}
+  body[data-theme='light'] .sx-btn-primary:hover{box-shadow:0 8px 24px rgba(31,26,20,.25)}
+  body[data-theme='light'] .sx-btn-ghost{background:rgba(31,26,20,.04);color:var(--fg);border-color:rgba(31,26,20,.2)}
+  body[data-theme='light'] .sx-btn-ghost:hover{background:rgba(31,26,20,.08);border-color:rgba(31,26,20,.3)}
+  body[data-theme='light'] .sx-demo,
+  body[data-theme='light'] .sx-stat,
+  body[data-theme='light'] .sx-step,
+  body[data-theme='light'] .sx-compare-card,
+  body[data-theme='light'] .sx-briefing,
+  body[data-theme='light'] .sx-brief-row,
+  body[data-theme='light'] .sx-panel-card,
+  body[data-theme='light'] .sx-faq details,
+  body[data-theme='light'] .sx-final-cta{
+    background:rgba(255,255,255,.74);
+    border-color:rgba(31,26,20,.12);
+    box-shadow:none;
+  }
+  body[data-theme='light'] .sx-demo-title,
+  body[data-theme='light'] .sx-msg-subject,
+  body[data-theme='light'] .sx-verdict-body,
+  body[data-theme='light'] .sx-step-title,
+  body[data-theme='light'] .sx-compare h3,
+  body[data-theme='light'] .sx-brief-subject,
+  body[data-theme='light'] .sx-panel-text,
+  body[data-theme='light'] .sx-faq summary,
+  body[data-theme='light'] .sx-final-cta h2{color:var(--fg)}
+  body[data-theme='light'] .sx-demo-sub,
+  body[data-theme='light'] .sx-msg-meta,
+  body[data-theme='light'] .sx-stat-lbl,
+  body[data-theme='light'] .sx-section-sub,
+  body[data-theme='light'] .sx-step-desc,
+  body[data-theme='light'] .sx-compare li,
+  body[data-theme='light'] .sx-brief-meta,
+  body[data-theme='light'] .sx-faq p,
+  body[data-theme='light'] .sx-final-cta p{color:rgba(31,26,20,.72)}
+
+  /* ── RESPONSIVE ─────────────────────────────────── */
+  @media (max-width:960px){
+    .sx-hero{grid-template-columns:1fr;gap:2.5rem}
+    .sx-stats{grid-template-columns:repeat(2,1fr)}
+    .sx-steps,.sx-panel-grid{grid-template-columns:repeat(2,1fr)}
+    .sx-compare{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    .sx-shell{padding-top:100px}
+    .sx-stats,.sx-steps,.sx-panel-grid{grid-template-columns:1fr}
+    .sx-brief-row{grid-template-columns:48px 1fr}
+    .sx-brief-action{grid-column:1 / -1;justify-self:flex-start;margin-top:.2rem}
+    .sx-briefing{padding:1.3rem}
+    .sx-final-cta{padding:2.5rem 1.25rem}
   }
 </style>
 </head>
 <body>
 
 <nav aria-label="Primary">
-  <a class="nav-logo" href="/" aria-label="Fourseat home" style="text-decoration:none">
+  <a class="nav-logo" href="/" aria-label="Fourseat home">
     Fourseat <sup>AI</sup>
   </a>
   <div class="nav-links">
     <a class="nav-link" href="/">Home</a>
     <a class="nav-link active" href="/sentinel">Sentinel</a>
   </div>
-  <a class="nav-cta" href="/" style="text-decoration:none">Back to app</a>
+  <button type="button" class="theme-toggle" id="sentinel-theme-toggle" data-theme-toggle aria-label="Switch to light mode" title="Switch theme">
+    <span class="theme-toggle-icon" aria-hidden="true">
+      <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" role="presentation"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" role="presentation"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.9 4.9l1.4 1.4"/><path d="M17.7 17.7l1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.9 19.1l1.4-1.4"/><path d="M17.7 6.3l1.4-1.4"/></svg>
+    </span>
+    <span class="theme-toggle-label">Dark</span>
+  </button>
+  <a class="nav-cta" href="/waitlist">Get early access</a>
 </nav>
 
 <main class="sx-shell">
 
-  <header class="sx-header">
+  <!-- HERO + ANIMATED DEMO -->
+  <section class="sx-hero">
     <div>
-      <h1 class="sx-title">Daily <em>Decision Briefing</em></h1>
-      <p class="sx-sub" id="sx-sub">Loading queue</p>
+      <div class="sx-eyebrow">
+        <span class="sx-pulse" aria-hidden="true"></span>
+        Fourseat Sentinel
+      </div>
+      <h1 class="sx-title">Your inbox,<br/><em>triaged by the board.</em></h1>
+      <p class="sx-lede">
+        Sentinel is the proactive layer of Fourseat. Every morning it reads your inbound, prioritises what matters, and delivers a single Daily Decision Briefing with a board-level verdict on every item worth your time.
+      </p>
+      <div class="sx-cta-row">
+        <a class="sx-btn-primary" href="/waitlist">Get early access</a>
+        <a class="sx-btn-ghost" href="#how">See how it works</a>
+      </div>
     </div>
-    <div class="sx-actions">
-      <button class="sx-btn" id="sx-refresh" title="Refresh queue">Refresh</button>
-      <button class="sx-btn" id="sx-markdown" title="Copy Markdown brief">Copy Markdown</button>
-      <button class="sx-btn primary" id="sx-run">Run Sentinel</button>
-    </div>
-  </header>
 
-  <div class="sx-banner" id="sx-banner">
-    <strong>Demo mode.</strong>
-    Sentinel is running on seeded messages because Gmail OAuth is not configured.
-    To connect your inbox, drop <code>gmail_credentials.json</code> into
-    <code>data/sentinel/</code> and run the CLI once to authorize.
-  </div>
+    <!-- Animated demo card -->
+    <aside class="sx-demo" aria-label="Sentinel walkthrough">
+      <div class="sx-demo-head">
+        <div class="sx-orb" aria-hidden="true"></div>
+        <div>
+          <div class="sx-demo-title" id="sx-scenario-title">Daily Decision Briefing</div>
+          <div class="sx-demo-sub" id="sx-scenario-sub">Auto-playing walkthrough</div>
+        </div>
+        <span class="sx-live-tag" id="sx-scenario-counter">1 / 10</span>
+      </div>
 
-  <section class="sx-counters" aria-label="Queue counters">
-    <div class="sx-counter total"><div class="n" id="sx-c-total">0</div><div class="lbl">Open items</div></div>
-    <div class="sx-counter p0"><div class="n" id="sx-c-p0">0</div><div class="lbl">P0 - critical</div></div>
-    <div class="sx-counter p1"><div class="n" id="sx-c-p1">0</div><div class="lbl">P1 - important</div></div>
-    <div class="sx-counter p2"><div class="n" id="sx-c-p2">0</div><div class="lbl">P2 - batch</div></div>
-    <div class="sx-counter p3"><div class="n" id="sx-c-p3">0</div><div class="lbl">P3 - archive</div></div>
+      <div class="sx-stage">
+        <div class="sx-stage-label" id="sx-stage-label">
+          <span class="num">1</span>
+          <span>Scanning inbound</span>
+        </div>
+
+        <ul class="sx-msg-list" id="sx-msg-list" aria-live="polite"></ul>
+
+        <div class="sx-verdict" id="sx-verdict">
+          <div class="sx-verdict-head">
+            <span id="sx-verdict-head">Chair verdict</span>
+            <span class="sx-conf" id="sx-verdict-conf">High confidence</span>
+          </div>
+          <div class="sx-verdict-body" id="sx-verdict-body">&nbsp;</div>
+        </div>
+      </div>
+
+      <div class="sx-replay-row">
+        <button type="button" class="sx-replay" id="sx-replay">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          Replay
+        </button>
+        <button type="button" class="sx-replay" id="sx-next" aria-label="Next scenario">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          Next scenario
+        </button>
+      </div>
+    </aside>
   </section>
 
-  <div class="sx-toolbar">
-    <div class="sx-filter" role="tablist" aria-label="Filter by priority">
-      <button class="on" data-filter="all">All</button>
-      <button data-filter="P0">P0</button>
-      <button data-filter="P1">P1</button>
-      <button data-filter="P2">P2</button>
-      <button data-filter="P3">P3</button>
+  <!-- STATS STRIP -->
+  <section class="sx-stats" aria-label="Sentinel impact">
+    <div class="sx-stat">
+      <div class="sx-stat-num"><em>127</em> min</div>
+      <div class="sx-stat-lbl">saved every week, per founder</div>
     </div>
-    <div class="sx-status" id="sx-status"></div>
-  </div>
+    <div class="sx-stat">
+      <div class="sx-stat-num"><em>94%</em></div>
+      <div class="sx-stat-lbl">noise filtered from the morning inbox</div>
+    </div>
+    <div class="sx-stat">
+      <div class="sx-stat-num"><em>0</em></div>
+      <div class="sx-stat-lbl">outbound messages sent on your behalf</div>
+    </div>
+    <div class="sx-stat">
+      <div class="sx-stat-num"><em>~42s</em></div>
+      <div class="sx-stat-lbl">from ingest to briefing on your desk</div>
+    </div>
+  </section>
 
-  <div class="sx-table-wrap">
-    <table class="sx-table" aria-label="Triage queue">
-      <thead>
-        <tr>
-          <th style="width:56px"></th>
-          <th style="width:72px">Pri</th>
-          <th style="width:110px">Category</th>
-          <th style="width:130px">Action</th>
-          <th>Subject</th>
-          <th style="width:180px">From</th>
-          <th style="width:100px">Conf</th>
-          <th style="width:90px"></th>
-        </tr>
-      </thead>
-      <tbody id="sx-tbody">
-        <tr><td colspan="8" class="sx-empty">
-          <div class="sx-orb"></div>
-          <h3>Queue is empty</h3>
-          <p>Hit <strong>Run Sentinel</strong> to fetch and triage messages.</p>
-        </td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- HOW IT WORKS -->
+  <section class="sx-section" id="how">
+    <div class="sx-section-label">How it works</div>
+    <h2 class="sx-section-title">Four steps from inbox<br/><em>to decided.</em></h2>
+    <p class="sx-section-sub">Sentinel runs once a day (or on demand). Every inbound is scored, routed, and pressure-tested by the four-advisor panel. You wake up to a brief, not a backlog.</p>
+
+    <div class="sx-steps">
+      <div class="sx-step">
+        <div class="sx-step-num">01</div>
+        <div class="sx-step-title">Ingest</div>
+        <div class="sx-step-desc">Connect Gmail and (soon) Slack. Sentinel only reads inbound threads you haven&rsquo;t archived — never sends on your behalf.</div>
+      </div>
+      <div class="sx-step">
+        <div class="sx-step-num">02</div>
+        <div class="sx-step-title">Score</div>
+        <div class="sx-step-desc">Every message gets a priority (P0–P3), a category (Legal, Finance, Ops&hellip;), and a recommended action (Reply, Schedule, Archive).</div>
+      </div>
+      <div class="sx-step">
+        <div class="sx-step-num">03</div>
+        <div class="sx-step-title">Debate</div>
+        <div class="sx-step-desc">Strategy, Finance, Technology and a Contrarian advisor each weigh in. Blind spots are surfaced from your Fourseat Memory.</div>
+      </div>
+      <div class="sx-step">
+        <div class="sx-step-num">04</div>
+        <div class="sx-step-title">Brief</div>
+        <div class="sx-step-desc">One clean Markdown brief lands in your inbox. Forward it, paste it into Slack, or archive it. That&rsquo;s the whole ritual.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <section class="sx-section">
+    <div class="sx-section-label">Why it matters</div>
+    <h2 class="sx-section-title">Your Monday morning,<br/><em>rewritten.</em></h2>
+    <div class="sx-compare">
+      <div class="sx-compare-card">
+        <span class="sx-compare-tag">Before Sentinel</span>
+        <h3>One hour scrolling, nothing decided.</h3>
+        <ul>
+          <li>312 unread threads, 11 actually urgent.</li>
+          <li>Three context switches before your first coffee.</li>
+          <li>A term sheet buried under a cold sales pitch.</li>
+          <li>Silence on things that actually need a reply.</li>
+          <li>You end up replying from the gut, not the board.</li>
+        </ul>
+      </div>
+      <div class="sx-compare-card good">
+        <span class="sx-compare-tag">With Sentinel</span>
+        <h3>One brief, five decisions, done.</h3>
+        <ul>
+          <li>Top 5 items, ranked P0 to P3, with context.</li>
+          <li>A Chair verdict with risks and next steps.</li>
+          <li>Blind spots surfaced from your own Memory.</li>
+          <li>Archive noise with one tap, forward briefs to your team.</li>
+          <li>You decide before 9am, not during lunch.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAMPLE BRIEFING -->
+  <section class="sx-section">
+    <div class="sx-section-label">Sample output</div>
+    <h2 class="sx-section-title">What you&rsquo;ll actually<br/><em>get each morning.</em></h2>
+    <p class="sx-section-sub">A board-style briefing with the items you need to act on, the ones to batch, and the noise filtered out.</p>
+
+    <div class="sx-briefing" aria-label="Sample Sentinel briefing">
+      <div class="sx-briefing-head">
+        <div class="sx-orb" aria-hidden="true" style="width:36px;height:36px"></div>
+        <div>
+          <div class="sx-demo-title">Fourseat Daily Decision Briefing</div>
+          <div class="sx-demo-sub">5 items analysed by the advisor panel</div>
+        </div>
+        <div class="sx-briefing-date" id="sx-date">2026-04-22</div>
+      </div>
+
+      <div class="sx-brief-counters">
+        <span class="sx-brief-counter total"><span class="n">5</span> open</span>
+        <span class="sx-brief-counter p0"><span class="n">2</span> P0</span>
+        <span class="sx-brief-counter p1"><span class="n">1</span> P1</span>
+        <span class="sx-brief-counter p2"><span class="n">1</span> P2</span>
+        <span class="sx-brief-counter p3"><span class="n">1</span> P3</span>
+      </div>
+
+      <div class="sx-brief-rows">
+        <div class="sx-brief-row">
+          <span class="sx-pri-chip p0">P0</span>
+          <div>
+            <div class="sx-brief-subject">Term sheet v3 · sign-off by Friday</div>
+            <div class="sx-brief-meta">Finance · sarah.lin@acme-capital.com</div>
+          </div>
+          <span class="sx-brief-action">Reply now</span>
+        </div>
+        <div class="sx-brief-row">
+          <span class="sx-pri-chip p0">P0</span>
+          <div>
+            <div class="sx-brief-subject">Cease and desist · trademark claim</div>
+            <div class="sx-brief-meta">Legal · legal@outbound-firm.com</div>
+          </div>
+          <span class="sx-brief-action">Reply now</span>
+        </div>
+        <div class="sx-brief-row">
+          <span class="sx-pri-chip p1">P1</span>
+          <div>
+            <div class="sx-brief-subject">Pilot · 50 seats for portfolio founders</div>
+            <div class="sx-brief-meta">Strategy · andre@prospect-enterprise.com</div>
+          </div>
+          <span class="sx-brief-action">Schedule</span>
+        </div>
+        <div class="sx-brief-row">
+          <span class="sx-pri-chip p2">P2</span>
+          <div>
+            <div class="sx-brief-subject">TechCrunch interview request</div>
+            <div class="sx-brief-meta">Ops · jenna@techcrunch.com</div>
+          </div>
+          <span class="sx-brief-action">Schedule</span>
+        </div>
+        <div class="sx-brief-row">
+          <span class="sx-pri-chip p3">P3</span>
+          <div>
+            <div class="sx-brief-subject">50% off web hosting this weekend</div>
+            <div class="sx-brief-meta">Noise · deals@newsletter.com</div>
+          </div>
+          <span class="sx-brief-action">Archive</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVISOR PANEL -->
+  <section class="sx-section">
+    <div class="sx-section-label">The four advisors</div>
+    <h2 class="sx-section-title">Every P0 gets a<br/><em>four-way debate.</em></h2>
+    <p class="sx-section-sub">Each advisor reads the thread independently, then reconvenes for a final Chair verdict. Here&rsquo;s what they said about the Acme Capital term sheet.</p>
+
+    <div class="sx-panel-grid">
+      <div class="sx-panel-card" style="--c:#e8a87c">
+        <div class="sx-panel-role">Strategy</div>
+        <div class="sx-panel-text">Strong strategic fit. Acme&rsquo;s network unlocks enterprise distribution we can&rsquo;t build in 12 months. Tighten board rights before counter.</div>
+      </div>
+      <div class="sx-panel-card" style="--c:#7ccea8">
+        <div class="sx-panel-role">Finance</div>
+        <div class="sx-panel-text">$20M pre implies 4x of trailing ARR — defensible. Decline the ratchet, keep 1x non-participating preferred, negotiate pro rata.</div>
+      </div>
+      <div class="sx-panel-card" style="--c:#7ca8e8">
+        <div class="sx-panel-role">Technology</div>
+        <div class="sx-panel-text">No integration or IP commitments in the draft. Safe from a product roadmap standpoint. Flag: data-handling clause needs SOC 2 language.</div>
+      </div>
+      <div class="sx-panel-card" style="--c:#e87c7c">
+        <div class="sx-panel-role">Contrarian</div>
+        <div class="sx-panel-text">Why is the IC closing Friday? Urgency is a negotiation tactic. You have leverage — a quieter competing offer from last month is still warm.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sx-section">
+    <div class="sx-section-label">Questions</div>
+    <h2 class="sx-section-title">The honest<br/><em>answers.</em></h2>
+
+    <div class="sx-faq">
+      <details>
+        <summary>Does Sentinel read all my email?</summary>
+        <p>Only the inbound you haven&rsquo;t archived. It ignores sent mail, drafts, and anything in folders you exclude. You can revoke access any time from Google or your workspace admin.</p>
+      </details>
+      <details>
+        <summary>Can Sentinel reply or send messages?</summary>
+        <p>No. Sentinel is read-only by design. It surfaces what needs a reply and drafts suggested language — you stay the sender.</p>
+      </details>
+      <details>
+        <summary>Where does the data live?</summary>
+        <p>Threads are processed in-session and summaries are stored encrypted in your Fourseat workspace. Nothing is used for training and nothing leaves your workspace unless you forward it.</p>
+      </details>
+      <details>
+        <summary>What if the AI gets it wrong?</summary>
+        <p>Every verdict ships with a confidence score and the full advisor debate. You can one-tap reprioritise or mark items resolved. Corrections feed your Memory so next week&rsquo;s brief is sharper.</p>
+      </details>
+      <details>
+        <summary>When does Sentinel launch for everyone?</summary>
+        <p>Rolling out with Fourseat early access. Gmail first, Slack next, Microsoft 365 on the roadmap. Join the waitlist and we&rsquo;ll open your seat as capacity unlocks.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="sx-final-cta">
+    <h2>Stop triaging. <em>Start deciding.</em></h2>
+    <p>Sentinel is rolling out with Fourseat early access. Join the waitlist and we&rsquo;ll set you up the day your seat opens.</p>
+    <div class="sx-cta-row">
+      <a class="sx-btn-primary" href="/waitlist">Get early access</a>
+      <a class="sx-btn-ghost" href="/">Back to Fourseat</a>
+    </div>
+  </section>
 
 </main>
-
-<div class="sx-toast" id="sx-toast" role="status" aria-live="polite"></div>
 
 <script src="/frontend/sentinel.js" defer></script>
 </body>

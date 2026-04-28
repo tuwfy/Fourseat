@@ -5,6 +5,7 @@
   'use strict';
 
   const API = '';
+  const THEME_KEY = 'fourseat-theme';
 
   const COLORS = {
     claude: '#e8a87c',
@@ -53,6 +54,37 @@
     el.textContent = text == null ? '' : String(text);
   }
 
+  function getPreferredTheme() {
+    const saved = window.localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme) {
+    const nextTheme = (theme === 'light') ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', nextTheme);
+    document.documentElement.style.colorScheme = nextTheme;
+
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', nextTheme === 'light' ? '#f6f2ea' : '#110f0d');
+
+    $$('[data-theme-toggle]').forEach(function (btn) {
+      const label = btn.querySelector('.theme-toggle-label');
+      const goingTo = nextTheme === 'dark' ? 'light' : 'dark';
+      btn.setAttribute('aria-label', 'Switch to ' + goingTo + ' mode');
+      btn.setAttribute('aria-pressed', nextTheme === 'dark' ? 'true' : 'false');
+      btn.setAttribute('data-theme', nextTheme);
+      if (label) label.textContent = nextTheme === 'dark' ? 'Dark' : 'Light';
+    });
+  }
+
+  function toggleTheme() {
+    const current = document.body.getAttribute('data-theme') || getPreferredTheme();
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    window.localStorage.setItem(THEME_KEY, next);
+  }
+
   function clearChildren(el) {
     if (!el) return;
     while (el.firstChild) el.removeChild(el.firstChild);
@@ -85,10 +117,11 @@
     $$('.nav-link[data-page]').forEach(function (b) { b.classList.remove('active'); });
     const activeBtn = document.querySelector('.nav-link[data-page="' + id + '"]');
     if (activeBtn) activeBtn.classList.add('active');
+    // Keep the URL clean — no #hash pollution as the user navigates the SPA.
     if (history && history.replaceState) {
-      history.replaceState(null, '', '#' + id);
-    } else {
-      window.location.hash = id;
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (_e) { /* noop */ }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
     closeMobileNav();
@@ -106,11 +139,17 @@
       const n = Number(data && data.count) || 0;
       if (n > 0) {
         const label = n === 1 ? 'founder has' : 'founders have';
-        el.innerHTML = '<strong>' + n.toLocaleString() + '</strong> ' + label + ' already joined';
+        clearChildren(el);
+        el.appendChild(elmStrong(n.toLocaleString()));
+        el.appendChild(document.createTextNode(' ' + label + ' already joined'));
       } else {
         el.textContent = 'Be one of the first to join';
       }
     } catch (_e) { /* offline: leave blank */ }
+  }
+
+  function elmStrong(text) {
+    return el('strong', {}, [text]);
   }
 
   function closeMobileNav() {
@@ -155,10 +194,11 @@
       }
 
       loadWaitlistCount();
+      const pos = waitlistData.public_total || waitlistData.total;
       const posMsg = waitlistData.already_existed
         ? "You're already on the list. We'll be in touch."
-        : (waitlistData.total
-          ? "You're in. You're #" + waitlistData.total + " on the list."
+        : (pos
+          ? "You're in. You're #" + pos + " on the list."
           : "You're on the list. Check your inbox.");
       toast(posMsg, 'ok');
 
@@ -527,7 +567,10 @@
     'open-home': function () { showPage('home'); },
     'open-how': function () { showPage('how'); },
     'open-about': function () { showPage('about'); },
+    'open-terms': function () { showPage('terms'); },
+    'open-privacy': function () { showPage('privacy'); },
     'toggle-nav': function () { toggleMobileNav(); },
+    'toggle-theme': function () { toggleTheme(); },
     'open-file': function () { const f = $('#file-in'); if (f) f.click(); },
     'start-signup': function () { startSignup(); },
     'run-debate': function () { runDebate(); },
@@ -550,6 +593,7 @@
 
   // ─── Boot ───────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
+    applyTheme(getPreferredTheme());
     bindActions(document);
 
     const fileIn = $('#file-in');
@@ -576,15 +620,32 @@
     buildMetrics();
     startPhraseCycle();
 
-    const hashPage = (window.location.hash || '').replace('#', '');
-    if (hashPage && document.getElementById('page-' + hashPage)) {
+    const hashPage = (window.location.hash || '').replace('#', '').trim();
+    const pathPage = (window.location.pathname || '').replace(/^\/+/, '').trim();
+    if ((pathPage === 'terms' || pathPage === 'tos') && document.getElementById('page-terms')) {
+      showPage('terms');
+    } else if (pathPage === 'privacy' && document.getElementById('page-privacy')) {
+      showPage('privacy');
+    } else if (pathPage === 'waitlist' && document.getElementById('page-waitlist')) {
+      showPage('waitlist');
+    } else if (hashPage && document.getElementById('page-' + hashPage)) {
       showPage(hashPage);
+    }
+    // Always strip any existing hash from the address bar so nothing like "#home" sticks around.
+    if (window.location.hash && history && history.replaceState) {
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (_e) { /* noop */ }
     }
 
     const params = new URLSearchParams(window.location.search);
     if (params.get('trial') === '1') {
       showPage('debate');
       toast('Trial access enabled. Welcome to Fourseat.', 'ok');
+    }
+
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+      navigator.serviceWorker.register('/frontend/sw.js').catch(function () { /* noop */ });
     }
   });
 })();

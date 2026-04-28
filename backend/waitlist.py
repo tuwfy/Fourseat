@@ -47,31 +47,67 @@ def _blob_pathname() -> str:
     return os.getenv("FOURSEAT_WAITLIST_BLOB", "fourseat/waitlist.jsonl").strip()
 
 
+# Vercel Blob public HTTP API:
+#   LIST:   GET  https://blob.vercel-storage.com/?prefix=<prefix>&limit=<n>
+#   PUT:    PUT  https://blob.vercel-storage.com/<pathname>?addRandomSuffix=0&allowOverwrite=1
+#   DELETE: POST https://blob.vercel-storage.com/delete  { urls: [...] }
+# All requests require: `Authorization: Bearer <token>` and `x-api-version: 7`.
+# Public stores always suffix the returned URL with a random token for obscurity,
+# so we identify "our" blob by its stable `pathname` field, and pick whichever
+# row in LIST was uploaded most recently.
+_BLOB_API_BASE = "https://blob.vercel-storage.com"
+_BLOB_API_VERSION = "7"
+
+
+def _blob_headers(token: str) -> dict:
+    return {
+        "Authorization": f"Bearer {token}",
+        "x-api-version": _BLOB_API_VERSION,
+    }
+
+
+def _list_waitlist_blobs(token: str) -> List[dict]:
+    """Return every blob whose pathname matches our waitlist target."""
+    try:
+        import requests
+        target = _blob_pathname()
+        r = requests.get(
+            _BLOB_API_BASE + "/",
+            params={"prefix": target, "limit": "100"},
+            headers=_blob_headers(token),
+            timeout=10,
+        )
+        if r.status_code != 200:
+            log.warning("blob list non-200: %s %s", r.status_code, r.text[:200])
+            return []
+        data = r.json()
+        blobs = [b for b in (data.get("blobs") or []) if b.get("pathname") == target]
+        # Newest first.
+        blobs.sort(key=lambda b: b.get("uploadedAt") or "", reverse=True)
+        return blobs
+    except Exception as e:  # pragma: no cover
+        log.warning("waitlist blob list failed: %s", e)
+        return []
+
+
 def _load_from_blob() -> Optional[List[dict]]:
-    """Best-effort pull of the waitlist file from Vercel Blob."""
+    """Best-effort pull of the latest waitlist file from Vercel Blob."""
     token = _blob_token()
     if not token:
         return None
     try:
-        import requests  # already in requirements
-        # List blobs with prefix to discover current URL (Blob stores can vary).
-        list_url = "https://blob.vercel-storage.com"
-        params = {"prefix": _blob_pathname(), "limit": "1"}
-        headers = {"Authorization": f"Bearer {token}"}
-        r = requests.get(list_url, params=params, headers=headers, timeout=8)
-        if r.status_code != 200:
-            return None
-        data = r.json()
-        blobs = data.get("blobs") or []
+        import requests
+        blobs = _list_waitlist_blobs(token)
         if not blobs:
             return []
         url = blobs[0].get("url")
         if not url:
             return []
-        rr = requests.get(url, timeout=8)
+        rr = requests.get(url, timeout=10)
         if rr.status_code != 200:
+            log.warning("blob content fetch non-200: %s", rr.status_code)
             return None
-        entries = []
+        entries: List[dict] = []
         for line in rr.text.splitlines():
             line = line.strip()
             if not line:
@@ -86,23 +122,51 @@ def _load_from_blob() -> Optional[List[dict]]:
         return None
 
 
+def _delete_blobs(token: str, urls: List[str]) -> None:
+    if not urls:
+        return
+    try:
+        import requests
+        requests.post(
+            _BLOB_API_BASE + "/delete",
+            headers={**_blob_headers(token), "Content-Type": "application/json"},
+            json={"urls": urls},
+            timeout=10,
+        )
+    except Exception as e:  # pragma: no cover
+        log.warning("waitlist blob delete failed: %s", e)
+
+
 def _save_to_blob(jsonl_text: str) -> bool:
-    """Best-effort upload of the waitlist file to Vercel Blob."""
+    """
+    Best-effort upload of the waitlist file to Vercel Blob.
+
+    Public stores always append a random suffix to the returned URL, so each
+    PUT at the same pathname creates a new blob. We clean up older versions
+    after a successful upload so the store doesn't bloat.
+    """
     token = _blob_token()
     if not token:
         return False
     try:
         import requests
         pathname = _blob_pathname()
-        url = f"https://blob.vercel-storage.com/{pathname}"
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "text/plain; charset=utf-8",
-            "x-add-random-suffix": "0",
-            "x-allow-overwrite": "1",
-        }
-        r = requests.put(url, data=jsonl_text.encode("utf-8"), headers=headers, timeout=12)
-        return r.status_code in (200, 201)
+        existing = _list_waitlist_blobs(token)
+        r = requests.put(
+            f"{_BLOB_API_BASE}/{pathname}",
+            params={"addRandomSuffix": "0", "allowOverwrite": "1"},
+            headers={**_blob_headers(token), "Content-Type": "text/plain; charset=utf-8"},
+            data=jsonl_text.encode("utf-8"),
+            timeout=15,
+        )
+        if r.status_code not in (200, 201):
+            log.warning("blob put non-200: %s %s", r.status_code, r.text[:200])
+            return False
+        new_url = (r.json() or {}).get("url")
+        stale = [b["url"] for b in existing if b.get("url") and b.get("url") != new_url]
+        if stale:
+            _delete_blobs(token, stale)
+        return True
     except Exception as e:  # pragma: no cover
         log.warning("waitlist blob save failed: %s", e)
         return False
@@ -156,6 +220,20 @@ def load_waitlist() -> List[dict]:
 
 def count_waitlist() -> int:
     return len(load_waitlist())
+
+
+def public_waitlist_count() -> int:
+    """
+    Count shown to visitors. We honor a `WAITLIST_DISPLAY_BASE` offset so the
+    public number can reflect signups from before the persistent-store fix.
+    """
+    try:
+        base = int(os.getenv("WAITLIST_DISPLAY_BASE", "0") or "0")
+    except ValueError:
+        base = 0
+    if base < 0:
+        base = 0
+    return max(base, count_waitlist() + base)
 
 
 # ─── Email plumbing ─────────────────────────────────────────────────────────
@@ -500,11 +578,18 @@ def add_waitlist_entry(email: str, name: str = "", company: str = "") -> dict:
             )
         )
 
+    try:
+        base = int(os.getenv("WAITLIST_DISPLAY_BASE", "0") or "0")
+    except ValueError:
+        base = 0
+    public_total = max(total + max(base, 0), max(base, 0))
+
     return {
         "success": True,
         "entry": entry,
         "already_existed": already_existed,
         "total": total,
+        "public_total": public_total,
         "email_notifications": {
             "customer_confirmation_sent": customer_sent,
             "owner_confirmation_sent": owner_sent,

@@ -1,280 +1,373 @@
-// Fourseat Sentinel - dashboard controller
-// Reads /api/sentinel/queue, triggers /api/sentinel/run, resolves rows, and
-// copies the rendered Markdown brief.
-
+/* Fourseat Sentinel - walkthrough controller
+ * Pure client-side animation, no API calls.
+ * Lives as an external file because our strict CSP disallows inline <script>.
+ */
 (function () {
   'use strict';
+  const THEME_KEY = 'fourseat-theme';
 
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+  // ── Scenarios: 10 hand-written decision briefings, each with 5 inbound items
+  // and a Chair verdict. Priorities (P0–P3) are assigned from "data-pri" on
+  // each row during stage 2 of the walkthrough.
+  const scenarios = [
+    {
+      title: 'Acme Capital term sheet',
+      sub: 'Series A · sign-off by Friday 5pm ET',
+      rows: [
+        { pri: 'P0', subject: 'Term sheet v3 · sign-off by Friday', meta: 'sarah.lin@acme-capital.com · 2h ago' },
+        { pri: 'P0', subject: 'Cease and desist · trademark claim', meta: 'legal@outbound-firm.com · 4h ago' },
+        { pri: 'P1', subject: 'Pilot · 50 seats for portfolio founders', meta: 'andre@prospect-enterprise.com · 6h ago' },
+        { pri: 'P2', subject: 'TechCrunch interview request', meta: 'jenna@techcrunch.com · 1d ago' },
+        { pri: 'P3', subject: '50% off web hosting this weekend', meta: 'deals@newsletter.com · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Term sheet v3',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Counter to $20M pre, keep 1x non-participating. Decline the ratchet. Reply before IC closes Friday 5pm ET.',
+    },
+    {
+      title: 'Lead engineer resignation risk',
+      sub: 'Retention · Maya Patel (Staff, Platform)',
+      rows: [
+        { pri: 'P0', subject: '"Can we talk 1:1 this afternoon?"', meta: 'maya.patel@fourseat.dev · 25m ago' },
+        { pri: 'P1', subject: 'Recruiter · Staff role at Stripe, $420k OTE', meta: 'kim@sterling-talent.com · 3h ago' },
+        { pri: 'P1', subject: 'On-call rotation feedback · sprint review', meta: 'ops@fourseat.dev · 5h ago' },
+        { pri: 'P2', subject: 'All-hands deck draft · v2', meta: 'hr@fourseat.dev · 1d ago' },
+        { pri: 'P3', subject: 'Office snack preferences survey', meta: 'operations@fourseat.dev · 2d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Retention risk',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Hold the 1:1 today, not Friday. Lead with scope, not comp. Line up a retention grant option before you walk in.',
+    },
+    {
+      title: 'Q2 board meeting prep',
+      sub: 'Tuesday 9am PT · 5 directors',
+      rows: [
+        { pri: 'P0', subject: 'Board deck · final review requested', meta: 'chair@fourseat-board.com · 1h ago' },
+        { pri: 'P1', subject: 'Independent director · pre-read questions', meta: 'helena.ro@partner-group.com · 4h ago' },
+        { pri: 'P1', subject: 'CFO · churn cohort numbers don\'t match', meta: 'david@fourseat.dev · 6h ago' },
+        { pri: 'P2', subject: 'Legal · updated equity plan for board', meta: 'counsel@outside-firm.com · 12h ago' },
+        { pri: 'P3', subject: 'Catering for Tuesday · vegan options?', meta: 'admin@fourseat.dev · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Board deck',
+      verdictConf: 'Medium confidence',
+      verdictBody:
+        'Lead with the churn cohort mismatch, not the ARR number. Board will ask anyway — surface it on slide 4 with the fix plan.',
+    },
+    {
+      title: 'Inbound acquisition interest',
+      sub: 'Strategic buyer · M&A · NDA pending',
+      rows: [
+        { pri: 'P0', subject: 'Exploratory · acquisition conversation', meta: 'corp.dev@strategic-buyer.com · 45m ago' },
+        { pri: 'P1', subject: 'Lead investor · "heard chatter, call me"', meta: 'partner@lead-vc.com · 2h ago' },
+        { pri: 'P1', subject: 'Banker intro · Goldman TMT team', meta: 'michael.wong@gs.com · 5h ago' },
+        { pri: 'P2', subject: 'Press leak risk · reporter reaching out', meta: 'reporter@wsj.com · 8h ago' },
+        { pri: 'P3', subject: 'Office party photos from last Friday', meta: 'team@fourseat.dev · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · M&A inquiry',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Don\'t engage bilaterally. Sign NDA, tell your lead investor today, and loop in a banker before any number is discussed.',
+    },
+    {
+      title: 'AWS bill surprise',
+      sub: 'Infra cost · 3.2x last month',
+      rows: [
+        { pri: 'P0', subject: 'AWS bill · $148,204 this month (was $46k)', meta: 'billing@amazon.com · 1h ago' },
+        { pri: 'P0', subject: 'PagerDuty · prod DB CPU 97% sustained', meta: 'alerts@pagerduty.com · 3h ago' },
+        { pri: 'P1', subject: 'Eng · rollout plan for vector index rebuild', meta: 'platform@fourseat.dev · 6h ago' },
+        { pri: 'P2', subject: 'Vendor · Pinecone discount if annual', meta: 'sales@pinecone.io · 10h ago' },
+        { pri: 'P3', subject: 'Company offsite hotel block reminder', meta: 'travel@fourseat.dev · 2d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · AWS overrun',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Pause the background embedding job, cap concurrency at 4, move cold vectors to S3. Savings plan review Thursday.',
+    },
+    {
+      title: 'Customer data incident',
+      sub: 'Security · 1 enterprise tenant affected',
+      rows: [
+        { pri: 'P0', subject: 'URGENT · logs show cross-tenant read', meta: 'security@fourseat.dev · 18m ago' },
+        { pri: 'P0', subject: 'Enterprise customer · "are we impacted?"', meta: 'ciso@fortune500-customer.com · 32m ago' },
+        { pri: 'P1', subject: 'Legal · 72-hour breach notice deadline', meta: 'counsel@outside-firm.com · 2h ago' },
+        { pri: 'P2', subject: 'Support · customer asking for SOC 2 report', meta: 'support@fourseat.dev · 5h ago' },
+        { pri: 'P3', subject: 'LinkedIn post · someone liked your article', meta: 'notifications@linkedin.com · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Security incident',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Rotate keys, freeze the feature flag, call the affected CISO personally within the hour. Start the GDPR 72-hour clock now.',
+    },
+    {
+      title: 'Launch slip decision',
+      sub: 'Product · GA date vs. quality',
+      rows: [
+        { pri: 'P0', subject: 'QA · 3 P0 bugs still open, launch is Wed', meta: 'qa@fourseat.dev · 1h ago' },
+        { pri: 'P1', subject: 'Marketing · press embargo lifts 9am Wed', meta: 'comms@fourseat.dev · 4h ago' },
+        { pri: 'P1', subject: 'Design partner · blocking on new API', meta: 'cto@design-partner.com · 6h ago' },
+        { pri: 'P2', subject: 'Sales · 4 deals waiting on launch', meta: 'sales@fourseat.dev · 12h ago' },
+        { pri: 'P3', subject: 'Your flight to SF has been upgraded', meta: 'united@united.com · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Launch slip',
+      verdictConf: 'Medium confidence',
+      verdictBody:
+        'Ship to design partners Wed, public GA Fri after P0 fixes. Tell comms today — embargo-extend is a 30-minute email, not a crisis.',
+    },
+    {
+      title: 'Co-founder conflict',
+      sub: 'CEO · CTO · product vs. platform split',
+      rows: [
+        { pri: 'P0', subject: 'We need to align. Today. — J', meta: 'julian@fourseat.dev · 12m ago' },
+        { pri: 'P1', subject: 'HR · team sensing tension, morale dip', meta: 'people@fourseat.dev · 4h ago' },
+        { pri: 'P1', subject: 'Board · "anything we should know?"', meta: 'chair@fourseat-board.com · 6h ago' },
+        { pri: 'P2', subject: 'Exec coach · Tuesday session confirmed', meta: 'booking@exec-coach.com · 1d ago' },
+        { pri: 'P3', subject: 'Weekly newsletter · founder burnout edition', meta: 'hello@founder-digest.com · 2d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Co-founder sync',
+      verdictConf: 'Medium confidence',
+      verdictBody:
+        'Meet today. No deck, no notes. Align on one sentence: who owns what for the next 90 days. Then tell the team, not the board.',
+    },
+    {
+      title: 'Layoff decision',
+      sub: 'People · 18 months of runway at stake',
+      rows: [
+        { pri: 'P0', subject: 'CFO · burn model, 3 scenarios attached', meta: 'david@fourseat.dev · 30m ago' },
+        { pri: 'P1', subject: 'Legal · WARN Act thresholds memo', meta: 'counsel@outside-firm.com · 3h ago' },
+        { pri: 'P1', subject: 'Head of People · severance policy draft', meta: 'people@fourseat.dev · 5h ago' },
+        { pri: 'P2', subject: 'Board · requested all-hands talking points', meta: 'chair@fourseat-board.com · 10h ago' },
+        { pri: 'P3', subject: 'Re: coffee next week?', meta: 'old-friend@gmail.com · 2d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Workforce reduction',
+      verdictConf: 'Medium confidence',
+      verdictBody:
+        'Scenario B: 14% reduction, 2 months severance, 6 months extended healthcare. Announce in one all-hands, same day, no rumors.',
+    },
+    {
+      title: 'Strategic vs. financial round',
+      sub: 'Fundraise · $25M Series B',
+      rows: [
+        { pri: 'P0', subject: 'Strategic · Oracle wants to lead, 30-day exclusive', meta: 'corpdev@oracle.com · 1h ago' },
+        { pri: 'P0', subject: 'Lead fund · "don\'t sign exclusivity"', meta: 'partner@lead-vc.com · 2h ago' },
+        { pri: 'P1', subject: 'Ex-CEO mentor · strategic $ comes with strings', meta: 'rachel@former-unicorn.com · 5h ago' },
+        { pri: 'P2', subject: 'PR · strategic lead = acquisition signal?', meta: 'pr@fourseat.dev · 11h ago' },
+        { pri: 'P3', subject: 'Amazon · your package was delivered', meta: 'auto-confirm@amazon.com · 1d ago' },
+      ],
+      verdictHead: 'Chair verdict · P0 · Lead investor choice',
+      verdictConf: 'High confidence',
+      verdictBody:
+        'Take the financial lead. Bring Oracle in as a strategic LP at <20%, no board seat, no ROFR. Don\'t sign exclusivity with either.',
+    },
+  ];
 
-  const state = {
-    queue: [],
-    stats: { total_open: 0, by_priority: { P0: 0, P1: 0, P2: 0, P3: 0 } },
-    filter: 'all',
-    openIds: new Set(),
-    busy: false,
-    lastSource: null,
-  };
+  // ── DOM refs ──────────────────────────────────────────────────────────────
+  const stageLabel = document.getElementById('sx-stage-label');
+  const msgList = document.getElementById('sx-msg-list');
+  const verdict = document.getElementById('sx-verdict');
+  const verdictHead = document.getElementById('sx-verdict-head');
+  const verdictConf = document.getElementById('sx-verdict-conf');
+  const verdictBody = document.getElementById('sx-verdict-body');
+  const scenarioTitle = document.getElementById('sx-scenario-title');
+  const scenarioSub = document.getElementById('sx-scenario-sub');
+  const scenarioCounter = document.getElementById('sx-scenario-counter');
+  const replay = document.getElementById('sx-replay');
+  const nextBtn = document.getElementById('sx-next');
+  const dateEl = document.getElementById('sx-date');
+  const demo = document.querySelector('.sx-demo');
+  const themeToggle = document.getElementById('sentinel-theme-toggle');
 
-  async function readError(resp, fallback) {
-    try {
-      const data = await resp.json();
-      if (data && typeof data.error === 'string' && data.error.trim()) return data.error.trim();
-    } catch (_e) { /* body wasn't json */ }
-    return `${fallback} (HTTP ${resp.status})`;
+  function getPreferredTheme() {
+    const saved = window.localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
   }
 
-  const api = {
-    async queue() {
-      const r = await fetch('/api/sentinel/queue?limit=100');
-      if (!r.ok) throw new Error(await readError(r, 'queue fetch failed'));
-      return r.json();
-    },
-    async run(limit = 5) {
-      const r = await fetch('/api/sentinel/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limit }),
-      });
-      if (!r.ok) throw new Error(await readError(r, 'Sentinel run failed'));
-      return r.json();
-    },
-    async brief() {
-      const r = await fetch('/api/sentinel/brief?limit=25');
-      if (!r.ok) throw new Error(await readError(r, 'brief fetch failed'));
-      return r.json();
-    },
-    async resolve(id, resolved = true) {
-      const r = await fetch('/api/sentinel/resolve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, resolved }),
-      });
-      if (!r.ok) throw new Error(await readError(r, 'resolve failed'));
-      return r.json();
-    },
-  };
+  function applyTheme(theme) {
+    const nextTheme = (theme === 'light') ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', nextTheme);
+    document.documentElement.style.colorScheme = nextTheme;
 
-  function toast(msg, ms = 2200) {
-    const el = $('#sx-toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => el.classList.remove('show'), ms);
-  }
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', nextTheme === 'light' ? '#f6f2ea' : '#110f0d');
 
-  function setBusy(b) {
-    state.busy = b;
-    $('#sx-run').disabled = b;
-    $('#sx-refresh').disabled = b;
-  }
-
-  function fmtWhen(iso) {
-    if (!iso) return '';
-    try {
-      const d = new Date(iso);
-      const diff = (Date.now() - d.getTime()) / 1000;
-      if (diff < 60) return 'just now';
-      if (diff < 3600) return `${Math.round(diff / 60)}m ago`;
-      if (diff < 86400) return `${Math.round(diff / 3600)}h ago`;
-      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    } catch (_e) {
-      return iso;
+    if (themeToggle) {
+      const label = themeToggle.querySelector('.theme-toggle-label');
+      const goingTo = nextTheme === 'dark' ? 'light' : 'dark';
+      themeToggle.setAttribute('aria-label', 'Switch to ' + goingTo + ' mode');
+      themeToggle.setAttribute('aria-pressed', nextTheme === 'dark' ? 'true' : 'false');
+      themeToggle.setAttribute('data-theme', nextTheme);
+      if (label) label.textContent = nextTheme === 'dark' ? 'Dark' : 'Light';
     }
   }
 
-  function esc(s) {
-    return String(s || '').replace(/[&<>"']/g, (c) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    }[c]));
+  function toggleTheme() {
+    const current = document.body.getAttribute('data-theme') || getPreferredTheme();
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    window.localStorage.setItem(THEME_KEY, next);
   }
 
-  function prioClass(p) {
-    return { P0: 'p0', P1: 'p1', P2: 'p2', P3: 'p3' }[p] || '';
+  if (dateEl) {
+    const d = new Date();
+    dateEl.textContent = d.toISOString().slice(0, 10);
   }
 
-  function renderCounters() {
-    $('#sx-c-total').textContent = state.stats.total_open;
-    $('#sx-c-p0').textContent = state.stats.by_priority.P0 || 0;
-    $('#sx-c-p1').textContent = state.stats.by_priority.P1 || 0;
-    $('#sx-c-p2').textContent = state.stats.by_priority.P2 || 0;
-    $('#sx-c-p3').textContent = state.stats.by_priority.P3 || 0;
+  const reduced =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let index = 0;
+  let playing = false;
+  let cancelToken = 0;
+
+  function clearChildren(node) {
+    while (node && node.firstChild) node.removeChild(node.firstChild);
   }
 
-  function renderStatus() {
-    const source = state.lastSource ? ` · source: ${state.lastSource}` : '';
-    $('#sx-status').textContent = `${state.queue.length} items loaded${source}`;
-    const sub = $('#sx-sub');
-    if (!state.queue.length) {
-      sub.textContent = 'No open items. Run Sentinel to triage your inbox.';
-    } else {
-      const top = state.queue[0];
-      sub.textContent = `Top priority: ${top.priority} ${top.category} - ${top.one_liner || top.subject}`;
-    }
-  }
-
-  function rowHtml(row, idx) {
-    const p = prioClass(row.priority);
-    const isOpen = state.openIds.has(row.id);
-    const blind = (row.blind_spots || []).filter(Boolean);
-    return `
-      <tr data-id="${row.id}" class="${isOpen ? 'open' : ''}">
-        <td>
-          <button class="sx-row-toggle" data-toggle="${row.id}" aria-label="Toggle details">
-            ${isOpen ? '\u2212' : '+'}
-          </button>
-        </td>
-        <td><span class="sx-pill ${p}">${esc(row.priority)}</span></td>
-        <td>${esc(row.category)}</td>
-        <td><span class="sx-pill action">${esc(row.action)}</span></td>
-        <td>
-          <div class="sx-subject">${esc(row.subject)}</div>
-          <div class="sx-oneliner">${esc(row.one_liner || '')}</div>
-        </td>
-        <td class="sx-sender" title="${esc(row.sender)}">${esc(row.sender)}</td>
-        <td><span class="sx-pill conf-${esc(row.confidence)}">${esc(row.confidence)}</span></td>
-        <td>
-          <button class="sx-btn" data-resolve="${row.id}" style="padding:.35rem .75rem;font-size:.75rem">Done</button>
-        </td>
-      </tr>
-      <tr class="sx-drawer ${isOpen ? 'open' : ''}" data-drawer="${row.id}">
-        <td colspan="8">
-          <div class="sx-panels">
-            <div class="sx-panel"><h4>Strategy</h4><p>${esc(row.strategy_view) || '<span style="color:var(--dim)">no data</span>'}</p></div>
-            <div class="sx-panel"><h4>Finance</h4><p>${esc(row.finance_view) || '<span style="color:var(--dim)">no data</span>'}</p></div>
-            <div class="sx-panel"><h4>Technology</h4><p>${esc(row.tech_view) || '<span style="color:var(--dim)">no data</span>'}</p></div>
-            <div class="sx-panel"><h4>Contrarian</h4><p>${esc(row.contrarian_view) || '<span style="color:var(--dim)">no data</span>'}</p></div>
-          </div>
-          ${blind.length ? `
-            <div class="sx-blind">
-              <h4>Memory blind spots</h4>
-              <ul>${blind.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
-            </div>
-          ` : ''}
-          <div class="sx-meta">
-            <span>Received ${fmtWhen(row.received_at)}</span>
-            <span>Processed ${fmtWhen(row.processed_at)}</span>
-            <span>Source: ${esc(row.source)}</span>
-            <span>ID #${row.id}</span>
-          </div>
-          ${row.reasoning ? `<div class="sx-meta"><span><strong style="color:var(--muted)">Why:</strong> ${esc(row.reasoning)}</span></div>` : ''}
-        </td>
-      </tr>
-    `;
-  }
-
-  function renderTable() {
-    const tbody = $('#sx-tbody');
-    const filtered = state.filter === 'all'
-      ? state.queue
-      : state.queue.filter((r) => r.priority === state.filter);
-
-    if (!filtered.length) {
-      tbody.innerHTML = `
-        <tr><td colspan="8" class="sx-empty">
-          <div class="sx-orb"></div>
-          <h3>${state.queue.length ? 'No items match this filter' : 'Queue is empty'}</h3>
-          <p>${state.queue.length ? 'Try a different priority.' : 'Hit <strong>Run Sentinel</strong> to triage your inbox.'}</p>
-        </td></tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(rowHtml).join('');
-
-    tbody.querySelectorAll('[data-toggle]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = Number(btn.dataset.toggle);
-        if (state.openIds.has(id)) state.openIds.delete(id);
-        else state.openIds.add(id);
-        renderTable();
+  function el(tag, attrs, text) {
+    const node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        if (k === 'class') node.className = attrs[k];
+        else if (k === 'dataset') {
+          Object.keys(attrs[k]).forEach(function (dk) { node.dataset[dk] = attrs[k][dk]; });
+        } else node.setAttribute(k, attrs[k]);
       });
+    }
+    if (text != null) node.appendChild(document.createTextNode(text));
+    return node;
+  }
+
+  function renderScenario(sc) {
+    if (scenarioTitle) scenarioTitle.textContent = sc.title;
+    if (scenarioSub) scenarioSub.textContent = sc.sub;
+    if (scenarioCounter) scenarioCounter.textContent = (index + 1) + ' / ' + scenarios.length;
+
+    if (msgList) {
+      clearChildren(msgList);
+      sc.rows.forEach(function (row) {
+        const li = el('li', { class: 'sx-msg', dataset: { pri: row.pri } });
+        li.appendChild(el('span', { class: 'sx-pri' }, '—'));
+        const body = el('div');
+        body.appendChild(el('div', { class: 'sx-msg-subject' }, row.subject));
+        body.appendChild(el('div', { class: 'sx-msg-meta' }, row.meta));
+        li.appendChild(body);
+        msgList.appendChild(li);
+      });
+    }
+
+    if (verdictHead) verdictHead.textContent = sc.verdictHead;
+    if (verdictConf) verdictConf.textContent = sc.verdictConf;
+    if (verdictBody) verdictBody.textContent = sc.verdictBody;
+    if (verdict) verdict.classList.remove('in');
+  }
+
+  function setLabel(num, text) {
+    if (!stageLabel) return;
+    clearChildren(stageLabel);
+    const n = el('span', { class: 'num' }, String(num));
+    const t = el('span', null, text);
+    stageLabel.appendChild(n);
+    stageLabel.appendChild(t);
+  }
+
+  function wait(ms, token) {
+    return new Promise(function (resolve) {
+      const delay = reduced ? 0 : ms;
+      const id = setTimeout(function () {
+        if (token !== cancelToken) return;
+        resolve();
+      }, delay);
+      void id;
     });
-    tbody.querySelectorAll('[data-resolve]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const id = Number(btn.dataset.resolve);
-        btn.disabled = true;
-        try {
-          await api.resolve(id, true);
-          toast('Marked as resolved');
-          await refresh();
-        } catch (e) {
-          toast('Could not resolve: ' + e.message);
-          btn.disabled = false;
-        }
-      });
-    });
   }
 
-  async function refresh() {
-    try {
-      const data = await api.queue();
-      state.queue = data.queue || [];
-      state.stats = data.stats || state.stats;
-      renderCounters();
-      renderStatus();
-      renderTable();
-    } catch (e) {
-      toast('Refresh failed: ' + e.message);
+  async function play() {
+    if (playing) return;
+    playing = true;
+    cancelToken += 1;
+    const token = cancelToken;
+
+    const sc = scenarios[index];
+    renderScenario(sc);
+
+    setLabel('1', 'Scanning inbound');
+    const messages = Array.prototype.slice.call(document.querySelectorAll('#sx-msg-list .sx-msg'));
+    for (const m of messages) {
+      if (token !== cancelToken) { playing = false; return; }
+      m.classList.add('in', 'scanning');
+      await wait(240, token);
     }
-  }
+    await wait(420, token);
+    if (token !== cancelToken) { playing = false; return; }
+    messages.forEach(function (m) { m.classList.remove('scanning'); });
 
-  async function run() {
-    if (state.busy) return;
-    setBusy(true);
-    toast('Running Sentinel panel (this can take 20-45s)...', 3500);
-    $('#sx-sub').textContent = 'Boardroom analyzing inbound messages...';
-    try {
-      const res = await api.run(5);
-      state.lastSource = res.source;
-      if (res.source === 'demo') $('#sx-banner').classList.add('show');
-      else $('#sx-banner').classList.remove('show');
-      if (res.error) {
-        toast('Sentinel: ' + res.error);
-      } else {
-        toast(`Processed ${res.processed} new items (${res.fetched} fetched, ${res.source})`);
+    setLabel('2', 'Prioritising by urgency');
+    for (const m of messages) {
+      if (token !== cancelToken) { playing = false; return; }
+      const pri = m.dataset.pri;
+      const pill = m.querySelector('.sx-pri');
+      if (pill && pri) {
+        pill.classList.add(pri.toLowerCase());
+        pill.textContent = pri;
       }
-      await refresh();
-    } catch (e) {
-      toast('Run failed: ' + e.message);
-    } finally {
-      setBusy(false);
+      m.classList.add('tagged');
+      await wait(230, token);
+    }
+    await wait(520, token);
+    if (token !== cancelToken) { playing = false; return; }
+
+    setLabel('3', 'Board debate & chair verdict');
+    if (verdict) verdict.classList.add('in');
+    await wait(4600, token);
+    if (token !== cancelToken) { playing = false; return; }
+
+    playing = false;
+
+    index = (index + 1) % scenarios.length;
+    if (!reduced) {
+      await wait(900, token);
+      if (token !== cancelToken) return;
+      play();
     }
   }
 
-  async function copyMarkdown() {
-    try {
-      const data = await api.brief();
-      await navigator.clipboard.writeText(data.markdown || '');
-      toast('Markdown brief copied to clipboard');
-    } catch (e) {
-      toast('Copy failed: ' + e.message);
-    }
+  function goNext() {
+    cancelToken += 1;
+    playing = false;
+    index = (index + 1) % scenarios.length;
+    play();
   }
 
-  function bindFilters() {
-    $$('.sx-filter button').forEach((b) => {
-      b.addEventListener('click', () => {
-        $$('.sx-filter button').forEach((x) => x.classList.remove('on'));
-        b.classList.add('on');
-        state.filter = b.dataset.filter;
-        renderTable();
-      });
-    });
+  function goReplay() {
+    cancelToken += 1;
+    playing = false;
+    play();
   }
 
-  function init() {
-    bindFilters();
-    $('#sx-run').addEventListener('click', run);
-    $('#sx-refresh').addEventListener('click', refresh);
-    $('#sx-markdown').addEventListener('click', copyMarkdown);
-    refresh();
-  }
+  if (replay) replay.addEventListener('click', goReplay);
+  if (nextBtn) nextBtn.addEventListener('click', goNext);
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+  applyTheme(getPreferredTheme());
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  if (!demo) return;
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      function (entries, obs) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            play();
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    io.observe(demo);
   } else {
-    init();
+    play();
   }
 })();

@@ -8,3 +8,4 @@ data/sentinel/
 data/memory/
 .DS_Store
 .vercel
+.env*.local

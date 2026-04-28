@@ -36,6 +36,7 @@ from backend.waitlist import (
     count_waitlist,
     email_configured,
     load_waitlist,
+    public_waitlist_count,
 )
 from backend.billing import create_checkout_session
 
@@ -58,9 +59,13 @@ MAX_REQUEST_BYTES = 16 * 1024 * 1024         # 16 MB request body cap
 ALLOWED_FRONTEND_FILES = {
     "styles.css",
     "app.js",
+    "manifest.webmanifest",
+    "sw.js",
     "orb.png",
     "favicon-32.png",
     "favicon-180.png",
+    "icon-192.png",
+    "icon-512.png",
     "admin.html",
     "admin.js",
     "sentinel.html",
@@ -151,6 +156,8 @@ def apply_security_headers(response):
             "max-age=63072000; includeSubDomains; preload",
         )
     response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
+    response.headers.setdefault("X-XSS-Protection", "0")
+    response.headers.setdefault("Origin-Agent-Cluster", "?1")
     return response
 
 
@@ -237,6 +244,22 @@ def index():
     return send_from_directory("frontend", "index.html")
 
 
+@app.route("/terms")
+@app.route("/tos")
+def terms_page():
+    return send_from_directory("frontend", "index.html")
+
+
+@app.route("/privacy")
+def privacy_page():
+    return send_from_directory("frontend", "index.html")
+
+
+@app.route("/waitlist")
+def waitlist_page():
+    return send_from_directory("frontend", "index.html")
+
+
 @app.route("/frontend/<path:path>")
 def frontend_files(path):
     # Defense-in-depth: only serve known static assets, never traverse upward.
@@ -293,7 +316,7 @@ def waitlist_join():
 @rate_limited("waitlist_count", limit=60, window_s=60)
 def waitlist_count_endpoint():
     """Public counter so the site can show 'X founders already joined'."""
-    return jsonify({"count": count_waitlist()})
+    return jsonify({"count": public_waitlist_count()})
 
 
 # ── Admin (waitlist dashboard) ──────────────────────────────────────────────
