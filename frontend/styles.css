@@ -50,10 +50,12 @@ nav{
   background:none;border:none;cursor:pointer;padding:.25rem 0;
 }
 .brand-logo{
-  height:28px;
-  width:auto;
+  height:36px;
+  width:182px;
   display:block;
-  object-fit:contain;
+  object-fit:cover;
+  object-position:center;
+  border-radius:6px;
 }
 .nav-logo sup{
   font-family:'Inter',sans-serif;
@@ -311,8 +313,12 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
 .hero-orb{
   width:48px;height:48px;
   border-radius:50%;
-  background:transparent url(/frontend/logo-circle.png) center/contain no-repeat;
-  filter:drop-shadow(0 6px 16px rgba(132,84,35,.28));
+  background:
+    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%),
+    linear-gradient(145deg,#2f2011,#8f5e32 72%),
+    url(/frontend/logo-circle.png) center/72% no-repeat;
+  border:1px solid rgba(232,186,131,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 18px rgba(132,84,35,.32);
   position:relative;flex-shrink:0;
   animation:spinOrb 30s linear infinite;
   will-change:transform;
@@ -858,8 +864,12 @@ select option{background:#1a1714;color:#fff}
 .chairman-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
-  background:transparent url(/frontend/logo-circle.png) center/contain no-repeat;
-  filter:drop-shadow(0 6px 14px rgba(132,84,35,.25));
+  background:
+    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%),
+    linear-gradient(145deg,#2f2011,#8f5e32 72%),
+    url(/frontend/logo-circle.png) center/72% no-repeat;
+  border:1px solid rgba(232,186,131,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 16px rgba(132,84,35,.28);
   flex-shrink:0;position:relative;
   animation:spinOrb 30s linear infinite;
   will-change:transform;
@@ -1310,14 +1320,14 @@ body[data-theme='light'] .deck-done,
 body[data-theme='light'] .upload-zone,
 body[data-theme='light'] .closing-cta-card,
 body[data-theme='light'] .waitlist-count{
-  background:rgba(255,255,255,.72);
-  border-color:rgba(31,26,20,.12);
+  background:rgba(244,234,219,.88);
+  border-color:rgba(139,92,50,.18);
   box-shadow:none;
 }
 body[data-theme='light'] .sentinel-hero,
 body[data-theme='light'] .trust-strip{
-  background:rgba(255,255,255,.45);
-  border-color:rgba(31,26,20,.08);
+  background:rgba(244,234,219,.62);
+  border-color:rgba(139,92,50,.14);
 }
 body[data-theme='light'] .btn-hero-primary,
 body[data-theme='light'] .btn-primary,
@@ -1338,8 +1348,8 @@ body[data-theme='light'] input[type=text],
 body[data-theme='light'] input[type=email],
 body[data-theme='light'] input[type=number],
 body[data-theme='light'] select{
-  background:rgba(255,255,255,.92);
-  border-color:rgba(31,26,20,.18);
+  background:rgba(248,241,231,.96);
+  border-color:rgba(139,92,50,.2);
   color:#1f1a14;
 }
 body[data-theme='light'] textarea::placeholder,
@@ -1350,9 +1360,9 @@ body[data-theme='light'] .footer-brand{color:rgba(31,26,20,.78)}
 body[data-theme='light'] .footer-columns a:hover,
 body[data-theme='light'] .footer-columns button:hover{color:#1a1610}
 body[data-theme='light'] .toast{
-  background:rgba(255,255,255,.95);
+  background:rgba(248,241,231,.97);
   color:#1f1a14;
-  border-color:rgba(31,26,20,.18);
+  border-color:rgba(139,92,50,.2);
 }
 body[data-theme='light'] .section,
 body[data-theme='light'] .page,
