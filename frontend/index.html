@@ -24,7 +24,8 @@
 <!-- ══ NAV ══════════════════════════════════════════ -->
 <nav aria-label="Primary">
   <button type="button" class="nav-logo" data-action="open-home" aria-label="Fourseat home">
-    <img src="/frontend/logo-wordmark.png" alt="Fourseat" class="brand-logo" />
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-word">fourseat</span>
   </button>
   <div class="nav-links" id="nav-links">
     <button type="button" class="nav-link" data-page="how" data-action="show-page">How it works</button>
@@ -129,60 +130,31 @@
         </div>
       </div>
 
-      <aside class="sentinel-preview" aria-label="Sentinel sample queue">
-        <div class="sentinel-preview-head">
-          <div class="hero-orb" aria-hidden="true"></div>
-          <div>
-            <div class="hero-card-title">Daily Decision Briefing</div>
-            <div class="hero-card-sub">Homepage snapshot · preview only</div>
-          </div>
-          <span class="sentinel-live">LIVE</span>
+      <aside class="sentinel-glance" aria-label="Sentinel snapshot board">
+        <div class="sentinel-glance-top">
+          <div class="sentinel-glance-title">Daily Decision Briefing</div>
+          <div class="sentinel-glance-sub">Homepage snapshot · preview only</div>
         </div>
-        <ul class="sentinel-rows">
-          <li class="sentinel-row p0">
-            <span class="sentinel-pri">P0</span>
-            <div class="sentinel-row-body">
-              <div class="sentinel-row-subject">Term sheet v3 · sign-off by Friday</div>
-              <div class="sentinel-row-meta">Finance · Reply Now · sarah.lin@acme-capital.com</div>
-            </div>
-          </li>
-          <li class="sentinel-row p0">
-            <span class="sentinel-pri">P0</span>
-            <div class="sentinel-row-body">
-              <div class="sentinel-row-subject">Cease and desist · trademark claim</div>
-              <div class="sentinel-row-meta">Legal · Reply Now · legal@outbound-firm.com</div>
-            </div>
-          </li>
-          <li class="sentinel-row p1">
-            <span class="sentinel-pri">P1</span>
-            <div class="sentinel-row-body">
-              <div class="sentinel-row-subject">Pilot · 50 seats for portfolio founders</div>
-              <div class="sentinel-row-meta">Strategy · Schedule · andre@prospect-enterprise.com</div>
-            </div>
-          </li>
-          <li class="sentinel-row p2">
-            <span class="sentinel-pri">P2</span>
-            <div class="sentinel-row-body">
-              <div class="sentinel-row-subject">TechCrunch interview request</div>
-              <div class="sentinel-row-meta">Ops · Schedule · jenna@techcrunch.com</div>
-            </div>
-          </li>
-          <li class="sentinel-row p3">
-            <span class="sentinel-pri">P3</span>
-            <div class="sentinel-row-body">
-              <div class="sentinel-row-subject">50% off web hosting this weekend</div>
-              <div class="sentinel-row-meta">Noise · Archive · deals@newsletter.com</div>
-            </div>
-          </li>
-        </ul>
-        <div class="sentinel-verdict">
-          <div class="sentinel-verdict-head">
-            <span>Chair verdict · P0 · Term sheet v3</span>
-            <span class="conf-pill conf-high">High confidence</span>
-          </div>
-          <div class="sentinel-verdict-body">
-            Counter to $20M pre, keep 1x non-participating. Decline ratchet. Reply before IC cycle closes Friday 5pm ET.
-          </div>
+
+        <div class="sentinel-lanes">
+          <article class="sentinel-lane lane-now">
+            <div class="lane-head">Act now</div>
+            <div class="lane-item">Term sheet v3 · reply before Friday 5pm ET</div>
+            <div class="lane-item">Trademark claim · legal response required</div>
+          </article>
+          <article class="sentinel-lane lane-next">
+            <div class="lane-head">Schedule</div>
+            <div class="lane-item">Portfolio pilot · 50-seat proposal review</div>
+            <div class="lane-item">TechCrunch interview request</div>
+          </article>
+          <article class="sentinel-lane lane-later">
+            <div class="lane-head">Archive</div>
+            <div class="lane-item">Weekend hosting promo newsletter</div>
+          </article>
+        </div>
+
+        <div class="sentinel-chair-note">
+          Chair note: prioritize legal + financing first, then batch all scheduling requests into one decision block.
         </div>
       </aside>
     </div>
