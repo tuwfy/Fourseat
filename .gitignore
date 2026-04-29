@@ -6,6 +6,8 @@ data/uploads/
 data/outputs/
 data/sentinel/
 data/memory/
+data/oracle/
+.env.production
 .DS_Store
 .vercel
 .env*.local

@@ -6,6 +6,7 @@ Hardened with strict security headers, upload validation, request-size
 limits, basic per-IP rate limiting, and a same-origin CORS posture.
 """
 
+import json
 import os
 import secrets
 import threading
@@ -40,6 +41,19 @@ from backend.waitlist import (
 )
 from backend.billing import create_checkout_session
 from backend.sentinel import connector_status
+from backend.stripe_oracle import (
+    connector_status as oracle_connector_status,
+    ingest_stripe_event,
+    list_verdicts as oracle_list_verdicts,
+    mark_verdict_resolved,
+    attach_deck_filename,
+    run_oracle_scan,
+    snapshot_summary,
+    verdict_stats as oracle_verdict_stats,
+    verify_stripe_signature,
+    build_deck_payload,
+    STRIPE_WEBHOOK_SECRET,
+)
 
 
 # ── Configuration ────────────────────────────────────────────────────────────
@@ -73,6 +87,8 @@ ALLOWED_FRONTEND_FILES = {
     "admin.js",
     "sentinel.html",
     "sentinel.js",
+    "oracle.html",
+    "oracle.js",
 }
 
 IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
@@ -623,6 +639,146 @@ def sentinel_resolve():
     if not ok:
         return jsonify({"error": "triage row not found"}), 404
     return jsonify({"success": True, "id": triage_id, "resolved": resolved})
+
+
+# ── Module 5: Oracle (Stripe revenue intelligence) ──────────────────────────
+
+@app.route("/oracle")
+def oracle_page():
+    return send_from_directory("frontend", "oracle.html")
+
+
+@app.route("/api/oracle/connectors", methods=["GET"])
+@rate_limited("oracle_connectors", limit=60, window_s=60)
+def oracle_connectors():
+    try:
+        return jsonify({"connectors": oracle_connector_status()})
+    except Exception as e:
+        return _server_error("oracle connector status failed", e)
+
+
+@app.route("/api/oracle/scan", methods=["POST", "GET"])
+@rate_limited("oracle_scan", limit=12, window_s=60)
+def oracle_scan():
+    """POST is the interactive trigger; GET is the Vercel Cron entrypoint."""
+    if request.method == "POST":
+        body = request.get_json(silent=True) or {}
+    else:
+        body = {k: v for k, v in request.args.items()}
+    demo = body.get("demo")
+    if isinstance(demo, str):
+        demo = demo.lower() in ("1", "true", "yes")
+    elif demo is not None:
+        demo = bool(demo)
+    force_reseed = bool(body.get("force_reseed"))
+    try:
+        result = run_oracle_scan(demo=demo, force_reseed=force_reseed)
+        return jsonify(result)
+    except Exception as e:
+        return _server_error("oracle scan failed", e)
+
+
+@app.route("/api/oracle/snapshot", methods=["GET"])
+@rate_limited("oracle_snapshot", limit=60, window_s=60)
+def oracle_snapshot():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "60")), 365))
+    except ValueError:
+        limit = 60
+    try:
+        return jsonify({"summary": snapshot_summary(limit=limit)})
+    except Exception as e:
+        return _server_error("oracle snapshot failed", e)
+
+
+@app.route("/api/oracle/verdicts", methods=["GET"])
+@rate_limited("oracle_verdicts", limit=60, window_s=60)
+def oracle_verdicts():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "20")), 100))
+    except ValueError:
+        limit = 20
+    include_resolved = request.args.get("include_resolved", "0").lower() in ("1", "true", "yes")
+    try:
+        rows = oracle_list_verdicts(limit=limit, include_resolved=include_resolved)
+        return jsonify({"verdicts": rows, "stats": oracle_verdict_stats()})
+    except Exception as e:
+        return _server_error("oracle verdicts failed", e)
+
+
+@app.route("/api/oracle/resolve", methods=["POST"])
+@rate_limited("oracle_resolve", limit=60, window_s=60)
+def oracle_resolve():
+    body = request.get_json(silent=True) or {}
+    try:
+        verdict_id = int(body.get("id"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "id is required"}), 400
+    resolved = bool(body.get("resolved", True))
+    if not mark_verdict_resolved(verdict_id, resolved=resolved):
+        return jsonify({"error": "verdict not found"}), 404
+    return jsonify({"success": True, "id": verdict_id, "resolved": resolved})
+
+
+@app.route("/api/oracle/deck", methods=["POST"])
+@rate_limited("oracle_deck", limit=8, window_s=60)
+def oracle_deck():
+    """Generate a Revenue Health Briefing .pptx for a stored verdict and
+    persist the filename back onto the verdict row."""
+    from backend.board_brief import generate_board_deck
+
+    body = request.get_json(silent=True) or {}
+    try:
+        verdict_id = int(body.get("id"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "id is required"}), 400
+
+    matches = [v for v in oracle_list_verdicts(limit=200, include_resolved=True) if v.get("id") == verdict_id]
+    if not matches:
+        return jsonify({"error": "verdict not found"}), 404
+    verdict = matches[0]
+
+    company_name = (body.get("company_name") or "Fourseat").strip()[:120] or "Fourseat"
+    payload = build_deck_payload(verdict, company_name=company_name)
+
+    try:
+        result = generate_board_deck(payload)
+    except Exception as e:
+        return _server_error("oracle deck generation failed", e)
+
+    if result.get("success") and result.get("filename"):
+        safe = Path(result["filename"]).name
+        result["filename"] = safe
+        result["download_url"] = f"/api/brief/download/{safe}"
+        attach_deck_filename(verdict_id, safe)
+    return jsonify(result)
+
+
+@app.route("/api/stripe/webhook", methods=["POST"])
+def stripe_webhook():
+    """Receive Stripe events. Verifies signature when STRIPE_WEBHOOK_SECRET is
+    configured; otherwise rejects with 401 to prevent unsigned ingestion."""
+    raw_body = request.get_data(cache=False, as_text=False) or b""
+    sig_header = request.headers.get("Stripe-Signature", "")
+
+    if not STRIPE_WEBHOOK_SECRET:
+        return jsonify({"error": "stripe webhook not configured"}), 503
+
+    if not verify_stripe_signature(raw_body, sig_header, STRIPE_WEBHOOK_SECRET):
+        return jsonify({"error": "invalid signature"}), 401
+
+    try:
+        event = json.loads(raw_body.decode("utf-8"))
+    except Exception:
+        return jsonify({"error": "invalid json"}), 400
+
+    if not isinstance(event, dict) or not event.get("type"):
+        return jsonify({"error": "invalid event"}), 400
+
+    ok = ingest_stripe_event(event)
+    if not ok:
+        return jsonify({"error": "ingest failed"}), 500
+    return jsonify({"received": True, "type": event.get("type")})
 
 
 if __name__ == "__main__":
