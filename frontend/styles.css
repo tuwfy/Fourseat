@@ -56,7 +56,7 @@ nav{
   flex-shrink:0;
   background:
     transparent
-    url(/frontend/orb_crop.png)
+    url(/frontend/logo-circle.png)
     50% 50%/100% 100%
     no-repeat;
   filter:drop-shadow(0 4px 10px rgba(160,90,40,.18));
@@ -269,9 +269,24 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
   transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
   box-shadow:0 4px 16px rgba(255,255,255,.12);
   text-decoration:none;
+  position: relative;
+  overflow: hidden;
+}
+.btn-hero-primary::after,
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(232, 186, 131, 0.6), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.btn-hero-primary:hover::after,
+.btn-primary:hover::after {
+  left: 150%;
 }
 .btn-hero-primary:hover,
-.btn-primary:hover{background:#f0ebe1;transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.22)}
+.btn-primary:hover{background:#f0ebe1;transform:translateY(-3px) scale(1.02);box-shadow:0 12px 28px rgba(255,255,255,.25), 0 0 20px rgba(232,186,131,0.3)}
 .btn-primary:disabled{background:rgba(255,255,255,.1);color:rgba(255,255,255,.3);cursor:not-allowed;transform:none;box-shadow:none}
 .btn-hero-secondary{
   display:inline-flex;align-items:center;justify-content:center;
@@ -328,7 +343,7 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
   width:48px;height:48px;
   border-radius:50%;
   background:
-    url(/frontend/orb_crop.png) center/100% 100% no-repeat,
+    url(/frontend/logo-circle.png) center/100% 100% no-repeat,
     radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
   position:relative;flex-shrink:0;
   filter:drop-shadow(0 8px 22px rgba(132,84,35,.42));
@@ -946,7 +961,7 @@ select option{background:#1a1714;color:#fff}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
   background:
-    url(/frontend/orb_crop.png) center/100% 100% no-repeat,
+    url(/frontend/logo-circle.png) center/100% 100% no-repeat,
     radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
   filter:drop-shadow(0 6px 16px rgba(132,84,35,.4));
   flex-shrink:0;position:relative;
