@@ -16,19 +16,19 @@
   .admin-wrap{max-width:1100px;margin:0 auto;padding:7rem 3rem 4rem}
   .admin-stat{display:flex;align-items:flex-end;gap:1rem;margin-top:.5rem}
   .admin-count{font-family:'Instrument Serif',serif;font-size:5.5rem;line-height:1;letter-spacing:-.03em;color:var(--fg)}
-  .admin-count-lbl{font-size:.95rem;color:rgba(255,255,255,.5);padding-bottom:.7rem}
-  .admin-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;font-size:.82rem;color:rgba(255,255,255,.55)}
+  .admin-count-lbl{font-size:.95rem;color:var(--muted);padding-bottom:.7rem}
+  .admin-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;font-size:.82rem;color:var(--muted)}
   .admin-meta span{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .75rem;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.03)}
   .admin-dot{width:8px;height:8px;border-radius:50%;background:#4ade80}
   .admin-dot.off{background:#f87171}
   .admin-toolbar{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;margin-bottom:1.5rem}
   .admin-table{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden}
   .admin-table th,.admin-table td{padding:.85rem 1rem;text-align:left;font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
-  .admin-table th{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);background:rgba(0,0,0,.15)}
+  .admin-table th{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(0,0,0,.15)}
   .admin-table tr:last-child td{border-bottom:none}
   .admin-table td.email a{color:#e8ba83;text-decoration:none}
   .admin-table td.email a:hover{text-decoration:underline}
-  .admin-empty{padding:2rem;text-align:center;color:rgba(255,255,255,.45)}
+  .admin-empty{padding:2rem;text-align:center;color:var(--muted)}
   .admin-login{max-width:480px;margin:0 auto}
   @media (max-width:768px){
     .admin-wrap{padding:6rem 1.25rem 3rem}
@@ -61,7 +61,7 @@
         <input type="password" id="token" name="token" autocomplete="current-password" placeholder="••••••••" required/>
       </div>
       <div class="input-group" style="margin-bottom:0">
-        <label style="display:inline-flex;align-items:center;gap:.55rem;font-size:.85rem;color:rgba(255,255,255,.6);cursor:pointer">
+        <label style="display:inline-flex;align-items:center;gap:.55rem;font-size:.85rem;color:var(--muted);cursor:pointer">
           <input type="checkbox" id="remember" style="width:16px;height:16px;accent-color:#e8ba83"/>
           Keep me signed in on this device
         </label>

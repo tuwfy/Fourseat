@@ -391,7 +391,7 @@
     const st = $('#upload-status');
     if (st) {
       clearChildren(st);
-      st.appendChild(el('div', { style: 'font-size:.85rem;color:rgba(255,255,255,.5);margin-top:1rem' }, ['Adding to your memory…']));
+      st.appendChild(el('div', { style: 'font-size:.85rem;color:var(--muted);margin-top:1rem' }, ['Adding to your memory…']));
     }
 
     const fd = new FormData();
@@ -539,7 +539,7 @@
         }, ['Download PowerPoint']);
         out.appendChild(el('div', { class: 'deck-done reveal active' }, [
           el('div', { class: 'deck-done-title' }, ['Your deck is ready']),
-          el('div', { style: 'color:rgba(255,255,255,.5);margin-bottom:1.75rem' }, [(data.slides || 0) + ' slides generated']),
+          el('div', { style: 'color:var(--muted);margin-bottom:1.75rem' }, [(data.slides || 0) + ' slides generated']),
           link,
         ]));
       }

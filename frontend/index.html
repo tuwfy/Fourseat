@@ -520,7 +520,7 @@
   <section class="section" style="padding-top:9rem; min-height:80vh; display:flex; align-items:flex-start; justify-content:center">
     <div class="glass-card reveal" style="max-width:540px; width:100%; text-align:center">
       <h2 class="section-title" style="margin-bottom:1rem">Join the <em>waitlist</em></h2>
-      <p class="section-sub" style="margin:0 auto 1rem; color:rgba(255,255,255,.7)">Add your work email to join early access. We’ll follow up with onboarding details and a secure link to start your trial.</p>
+      <p class="section-sub" style="margin:0 auto 1rem; color:var(--muted)">Add your work email to join early access. We’ll follow up with onboarding details and a secure link to start your trial.</p>
       <div class="waitlist-count" id="waitlist-count" aria-live="polite"></div>
       <form id="waitlist-form" autocomplete="on" novalidate>
         <div class="input-group" style="text-align:left">
@@ -532,7 +532,7 @@
           <input type="email" id="waitlist-email" name="email" autocomplete="email" placeholder="name@company.com" required maxlength="200" inputmode="email"/>
         </div>
         <div class="input-group" style="text-align:left">
-          <label class="input-label" for="waitlist-company">Company <span style="font-weight:400;color:rgba(255,255,255,.4)">(optional)</span></label>
+          <label class="input-label" for="waitlist-company">Company <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
           <input type="text" id="waitlist-company" name="company" autocomplete="organization" placeholder="Acme Inc" maxlength="160"/>
         </div>
         <button type="button" class="btn-primary" id="signup-btn" data-action="start-signup" style="margin-top:1.25rem;width:100%;justify-content:center">Join waitlist</button>
@@ -610,7 +610,7 @@
           <textarea id="debate-q" name="debate-q" maxlength="4000" placeholder="e.g. Should we accept this partnership deal?"></textarea>
         </div>
         <div class="input-group">
-          <label class="input-label" for="debate-ctx">Additional context <span style="font-weight:400;color:rgba(255,255,255,.3)">(optional)</span></label>
+          <label class="input-label" for="debate-ctx">Additional context <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
           <textarea id="debate-ctx" name="debate-ctx" maxlength="6000" style="min-height:80px" placeholder="Stage, industry, key numbers, constraints…"></textarea>
         </div>
         <div style="margin-top:1.75rem">
@@ -656,8 +656,8 @@
             <label class="input-label">Upload a document</label>
             <div class="upload-zone" id="upload-zone" data-action="open-file" role="button" tabindex="0" aria-label="Choose a PDF, TXT or Markdown file">
               <svg class="upload-icon" viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>
-              <div style="font-size:1rem;color:rgba(255,255,255,.85)">Tap to upload</div>
-              <div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.4rem">PDF, TXT or Markdown · 12 MB max</div>
+              <div style="font-size:1rem;color:var(--fg)">Tap to upload</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:.4rem">PDF, TXT or Markdown · 12 MB max</div>
             </div>
             <input type="file" id="file-in" accept=".pdf,.txt,.md" style="display:none"/>
             <div class="input-group" style="margin-top:.5rem">
