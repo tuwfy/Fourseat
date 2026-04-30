@@ -267,12 +267,16 @@ def index():
 @app.route("/terms")
 @app.route("/tos")
 def terms_page():
-    return send_from_directory("frontend", "index.html")
+    return send_from_directory("frontend", "help.html")
 
 
 @app.route("/privacy")
 def privacy_page():
-    return send_from_directory("frontend", "index.html")
+    return send_from_directory("frontend", "help.html")
+
+@app.route("/help.html")
+def help_page():
+    return send_from_directory("frontend", "help.html")
 
 
 @app.route("/waitlist")
