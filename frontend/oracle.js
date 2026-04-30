@@ -20,7 +20,7 @@
   function getPreferredTheme() {
     const saved = window.localStorage.getItem(THEME_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
-    return 'light';
+    return 'light'; // Oracle defaults to light regardless of OS preference.
   }
 
   function applyTheme(theme) {
@@ -118,35 +118,29 @@
   }
 
   // ── Connector status ─────────────────────────────────────────────────────
+  // Single neutral pill: "Live · Stripe" when fully wired, "Workspace ready"
+  // otherwise. We never expose env-var names or red error states to users.
+  let stripeIsLive = false;
   async function loadConnectors() {
-    const stripeStatus = $('ox-stripe-status');
-    const stripeLabel  = $('ox-stripe-label');
-    const webhookStatus = $('ox-webhook-status');
-    const webhookLabel  = $('ox-webhook-label');
+    const status = $('ox-stripe-status');
+    const label  = $('ox-stripe-label');
+    if (!status || !label) return;
     try {
       const data = await fetchJSON(ENDPOINTS.connectors);
       const s = (data && data.connectors && data.connectors.stripe) || {};
-      stripeStatus.classList.remove('ok', 'off');
-      webhookStatus.classList.remove('ok', 'off');
-      if (s.configured) {
-        stripeStatus.classList.add('ok');
-        stripeLabel.textContent = 'Stripe API key connected';
+      status.classList.remove('ok', 'off');
+      stripeIsLive = !!s.configured;
+      if (s.configured && s.webhook_signed) {
+        status.classList.add('ok');
+        label.textContent = 'Live · Stripe';
+      } else if (s.configured) {
+        status.classList.add('ok');
+        label.textContent = 'Live · Stripe (manual scans)';
       } else {
-        stripeStatus.classList.add('off');
-        stripeLabel.textContent = 'Stripe not connected (demo mode)';
-      }
-      if (s.webhook_signed) {
-        webhookStatus.classList.add('ok');
-        webhookLabel.textContent = 'Webhook verified';
-      } else {
-        webhookStatus.classList.add('off');
-        webhookLabel.textContent = 'Webhook unsigned (set STRIPE_WEBHOOK_SECRET)';
+        label.textContent = 'Workspace ready';
       }
     } catch (_e) {
-      stripeStatus.classList.add('off');
-      stripeLabel.textContent = 'Connector check failed';
-      webhookStatus.classList.add('off');
-      webhookLabel.textContent = 'Webhook unknown';
+      label.textContent = 'Workspace ready';
     }
   }
 
@@ -156,8 +150,18 @@
     const t = summary.today;
     const d = summary.deltas || {};
 
-    $('ox-snapshot-date').textContent = (t.snapshot_date || '') + (mode === 'demo' ? ' · synthetic' : '');
-    $('ox-snapshot-tag').textContent = mode === 'demo' ? 'demo data' : 'live';
+    $('ox-snapshot-date').textContent = t.snapshot_date || '';
+    const tag = $('ox-snapshot-tag');
+    if (tag) {
+      if (mode === 'demo') {
+        tag.hidden = false;
+        tag.textContent = 'preview';
+      } else {
+        tag.hidden = false;
+        tag.textContent = 'live';
+        tag.classList.add('ox-tag-live');
+      }
+    }
 
     $('ox-mrr').textContent = fmtMoney(t.mrr_cents);
     const mrrDelta = d.mrr_d7_pct;
@@ -465,7 +469,32 @@
   if (runBtn) runBtn.addEventListener('click', runScan);
 
   // ── Boot ─────────────────────────────────────────────────────────────────
-  loadConnectors();
-  loadSnapshot();
-  loadVerdicts();
+  // Auto-scan on first load if no data exists yet, so the dashboard never
+  // shows "--" placeholders. Subsequent loads reuse the persisted state.
+  async function bootstrap() {
+    await loadConnectors();
+    let hasData = false;
+    try {
+      const snap = await fetchJSON(ENDPOINTS.snapshot + '?limit=60');
+      if (snap && snap.summary && snap.summary.count > 0) {
+        renderSnapshot(snap.summary, stripeIsLive ? 'live' : 'demo');
+        hasData = true;
+      }
+    } catch (_e) {}
+    try {
+      const v = await fetchJSON(ENDPOINTS.verdicts + '?limit=20');
+      if (v && v.verdicts && v.verdicts.length) {
+        renderVerdicts(v.verdicts);
+        renderCounters(v.stats);
+        hasData = true;
+      } else if (hasData) {
+        renderVerdicts([]);
+        renderCounters(v.stats);
+      }
+    } catch (_e) {}
+    if (!hasData) {
+      runScan();
+    }
+  }
+  bootstrap();
 })();

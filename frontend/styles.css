@@ -1417,9 +1417,9 @@ body[data-theme='light'] .deck-done,
 body[data-theme='light'] .upload-zone,
 body[data-theme='light'] .closing-cta-card,
 body[data-theme='light'] .waitlist-count{
-  background:rgba(244,234,219,.88);
-  border-color:rgba(139,92,50,.18);
-  box-shadow:none;
+  background:rgba(228,206,168,.78);
+  border-color:rgba(139,92,50,.24);
+  box-shadow:0 8px 24px rgba(86,57,28,.06), inset 0 1px 0 rgba(255,255,255,.35);
 }
 body[data-theme='light'] .sentinel-hero,
 body[data-theme='light'] .trust-strip{

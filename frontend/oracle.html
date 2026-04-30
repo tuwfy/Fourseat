@@ -25,12 +25,14 @@
     --good:#7ccea8;
   }
   body[data-theme='light']{
-    --bg:#f6f2ea; --bg-2:#f0e8db; --bg-3:#e8dcc8;
-    --fg:#1f1a14; --muted:#6b604f; --dim:#847866;
-    --line:rgba(31,26,20,.12); --line-2:rgba(31,26,20,.18);
-    --accent:#b77242; --accent-2:#bd8251;
-    --p0:#c0432c; --p1:#b77242; --p2:#a78b2a; --p3:#3f8a64;
-    --good:#3f8a64;
+    --bg:#f3ead9; --bg-2:#ecdfc8; --bg-3:#e2d2b3;
+    --fg:#231a10; --muted:#6b5b41; --dim:#8a7a5e;
+    --line:rgba(35,26,16,.14); --line-2:rgba(35,26,16,.22);
+    --accent:#9c5c2a; --accent-2:#b06b35;
+    --p0:#a83a22; --p1:#9c5c2a; --p2:#876b1f; --p3:#3f7a55;
+    --good:#3f7a55;
+    --card-tint:rgba(214,184,138,.32);
+    --card-tint-strong:rgba(195,159,108,.42);
   }
   body{background:var(--bg);color:var(--fg)}
   body[data-theme='light']{
@@ -140,10 +142,11 @@
   body[data-theme='dark'] .ox-btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
 
   .ox-snapshot-card{
-    background:rgba(255,255,255,.78);
+    background:var(--card-tint-strong, rgba(255,255,255,.78));
     border:1px solid var(--line-2);
     border-radius:22px;padding:1.6rem;
-    box-shadow:0 18px 50px rgba(31,26,20,.06);
+    box-shadow:0 18px 50px rgba(56,38,18,.08), inset 0 1px 0 rgba(255,255,255,.4);
+    backdrop-filter:saturate(1.1);
   }
   body[data-theme='dark'] .ox-snapshot-card{
     background:linear-gradient(180deg,rgba(28,24,20,.82),rgba(18,15,13,.82));
@@ -173,7 +176,7 @@
     display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;
   }
   .ox-metric{
-    background:rgba(31,26,20,.04);border:1px solid var(--line);
+    background:var(--card-tint,rgba(31,26,20,.04));border:1px solid var(--line);
     border-radius:14px;padding:.95rem 1.05rem;
   }
   body[data-theme='dark'] .ox-metric{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)}
@@ -183,6 +186,16 @@
   .ox-metric-delta.up{color:var(--good)}
   .ox-metric-delta.down{color:var(--p0)}
   .ox-spark{margin-top:1rem;height:80px;width:100%}
+  .ox-skel{
+    display:inline-block;width:60%;height:1.4rem;border-radius:6px;
+    background:linear-gradient(90deg,
+      rgba(156,92,42,.06),
+      rgba(156,92,42,.18),
+      rgba(156,92,42,.06));
+    background-size:200% 100%;
+    animation:oxShim 1.6s linear infinite;
+  }
+  @keyframes oxShim{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
   /* ── ACTION STRIP ────────────────────────────── */
   .ox-section{margin-bottom:3rem}
@@ -203,7 +216,7 @@
     display:inline-flex;align-items:center;gap:.45rem;
     padding:.4rem .85rem;border-radius:999px;
     font-size:.78rem;font-weight:500;
-    background:rgba(255,255,255,.6);border:1px solid var(--line-2);
+    background:var(--card-tint,rgba(255,255,255,.6));border:1px solid var(--line-2);
     color:var(--fg);
   }
   body[data-theme='dark'] .ox-counter{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
@@ -216,10 +229,10 @@
   /* ── VERDICT CARDS ───────────────────────────── */
   .ox-verdicts{display:flex;flex-direction:column;gap:1.1rem}
   .ox-verdict{
-    background:rgba(255,255,255,.82);
+    background:var(--card-tint-strong,rgba(255,255,255,.82));
     border:1px solid var(--line-2);
     border-radius:20px;padding:1.5rem 1.6rem;
-    box-shadow:0 14px 40px rgba(31,26,20,.06);
+    box-shadow:0 14px 40px rgba(56,38,18,.08), inset 0 1px 0 rgba(255,255,255,.35);
     transition:transform .2s,box-shadow .2s;
   }
   body[data-theme='dark'] .ox-verdict{
@@ -277,7 +290,7 @@
     margin:1rem 0 1.1rem;
   }
   .ox-panel-card{
-    background:rgba(31,26,20,.03);
+    background:var(--card-tint,rgba(31,26,20,.03));
     border:1px solid var(--line);
     border-radius:14px;padding:1rem 1.05rem;
     position:relative;
@@ -304,7 +317,7 @@
   }
   .ox-action-list li{
     font-size:.9rem;color:var(--fg);line-height:1.5;
-    padding:.55rem .8rem;background:rgba(31,26,20,.04);border:1px solid var(--line);
+    padding:.55rem .8rem;background:var(--card-tint,rgba(31,26,20,.04));border:1px solid var(--line);
     border-radius:10px;display:flex;gap:.55rem;align-items:flex-start;
   }
   body[data-theme='dark'] .ox-action-list li{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07)}
@@ -346,7 +359,7 @@
   /* ── EMPTY / LOADING ─────────────────────────── */
   .ox-empty{
     text-align:center;padding:3rem 1.5rem;
-    background:rgba(255,255,255,.5);border:1px dashed var(--line-2);
+    background:var(--card-tint,rgba(255,255,255,.5));border:1px dashed var(--line-2);
     border-radius:18px;color:var(--muted);
   }
   body[data-theme='dark'] .ox-empty{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.1)}
@@ -374,8 +387,9 @@
     display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.5rem;
   }
   .ox-step{
-    background:rgba(255,255,255,.5);border:1px solid var(--line-2);
+    background:var(--card-tint-strong,rgba(255,255,255,.5));border:1px solid var(--line-2);
     border-radius:18px;padding:1.4rem 1.3rem;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
   }
   body[data-theme='dark'] .ox-step{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
   .ox-step-num{
@@ -452,14 +466,10 @@
         Oracle hooks into Stripe, watches every charge, churn, and failed payment, and the moment something matters it produces a board-ready verdict signed by Strategy, Finance, Tech, and a Contrarian.
       </p>
 
-      <div class="ox-connectors" aria-label="Stripe connection status">
+      <div class="ox-connectors" aria-label="Workspace status">
         <div class="ox-connector" id="ox-stripe-status">
           <span class="dot" aria-hidden="true"></span>
-          <span id="ox-stripe-label">Checking Stripe...</span>
-        </div>
-        <div class="ox-connector" id="ox-webhook-status">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="ox-webhook-label">Checking webhook...</span>
+          <span id="ox-stripe-label">Workspace ready</span>
         </div>
       </div>
 
@@ -482,30 +492,30 @@
         <div class="ox-snapshot-orb" aria-hidden="true"></div>
         <div>
           <div class="ox-snapshot-title">Revenue snapshot</div>
-          <div class="ox-snapshot-sub" id="ox-snapshot-date">awaiting first scan</div>
+          <div class="ox-snapshot-sub" id="ox-snapshot-date">loading...</div>
         </div>
-        <span class="ox-snapshot-tag" id="ox-snapshot-tag">demo data</span>
+        <span class="ox-snapshot-tag" id="ox-snapshot-tag" hidden>preview</span>
       </div>
 
       <div class="ox-snapshot-grid">
         <div class="ox-metric">
           <div class="ox-metric-label">MRR</div>
-          <div class="ox-metric-value" id="ox-mrr">--</div>
-          <div class="ox-metric-delta" id="ox-mrr-delta">vs 7d ago</div>
+          <div class="ox-metric-value" id="ox-mrr"><span class="ox-skel"></span></div>
+          <div class="ox-metric-delta" id="ox-mrr-delta">vs 7 days ago</div>
         </div>
         <div class="ox-metric">
           <div class="ox-metric-label">NRR</div>
-          <div class="ox-metric-value" id="ox-nrr">--</div>
-          <div class="ox-metric-delta" id="ox-nrr-delta">vs 7d ago</div>
+          <div class="ox-metric-value" id="ox-nrr"><span class="ox-skel"></span></div>
+          <div class="ox-metric-delta" id="ox-nrr-delta">vs 7 days ago</div>
         </div>
         <div class="ox-metric">
           <div class="ox-metric-label">Active subs</div>
-          <div class="ox-metric-value" id="ox-subs">--</div>
+          <div class="ox-metric-value" id="ox-subs"><span class="ox-skel"></span></div>
           <div class="ox-metric-delta" id="ox-top-share">top customer share</div>
         </div>
         <div class="ox-metric">
           <div class="ox-metric-label">Failed today</div>
-          <div class="ox-metric-value" id="ox-failed">--</div>
+          <div class="ox-metric-value" id="ox-failed"><span class="ox-skel"></span></div>
           <div class="ox-metric-delta" id="ox-failed-count">invoices</div>
         </div>
       </div>

@@ -556,7 +556,10 @@ def brief_download(filename):
 
 @app.route("/sentinel")
 def sentinel_page():
-    return send_from_directory("frontend", "sentinel.html")
+    """Sentinel was deprecated in favour of Oracle. Permanent redirect for any
+    bookmarks or external links that still point at /sentinel."""
+    from flask import redirect
+    return redirect("/oracle", code=301)
 
 
 @app.route("/api/sentinel/run", methods=["POST"])

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="theme-color" content="#110f0d"/>
-<meta name="color-scheme" content="dark"/>
-<meta name="description" content="Fourseat is a decision workspace for founders and operators. Strategy, finance, technology, and a contrarian advisor pressure-test every important call before you commit."/>
+<meta name="theme-color" content="#f3ead9"/>
+<meta name="color-scheme" content="light"/>
+<meta name="description" content="Fourseat Oracle is the Company Brain. It hooks into Stripe, watches every charge, churn, and failed payment, and produces a board-ready verdict the moment something matters."/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <meta name="format-detection" content="telephone=no"/>
-<title>Fourseat · A board of advisors for every decision</title>
+<title>Fourseat · The Company Brain for revenue intelligence</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -19,7 +19,7 @@
 <link rel="icon" type="image/png" sizes="180x180" href="/frontend/logo-circle.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="/frontend/logo-circle.png"/>
 </head>
-<body>
+<body data-theme="light">
 
 <!-- ══ NAV ══════════════════════════════════════════ -->
 <nav aria-label="Primary">
@@ -28,10 +28,9 @@
     <span class="brand-word">fourseat</span>
   </button>
   <div class="nav-links" id="nav-links">
+    <a class="nav-link" href="/oracle">Oracle</a>
     <button type="button" class="nav-link" data-page="how" data-action="show-page">How it works</button>
     <button type="button" class="nav-link" data-page="pricing" data-action="show-page">Pricing</button>
-    <a class="nav-link nav-link-new" href="/sentinel" data-action="open-sentinel">Sentinel <span class="nav-link-badge">New</span></a>
-    <a class="nav-link nav-link-new" href="/oracle">Oracle <span class="nav-link-badge">New</span></a>
     <button type="button" class="nav-link" data-page="about" data-action="show-page">About</button>
   </div>
   <button type="button" class="theme-toggle" data-action="toggle-theme" data-theme-toggle aria-label="Switch to light mode" title="Switch theme">
@@ -57,103 +56,103 @@
     </div>
     <div class="hero-content">
       <div>
-        <a class="hero-badge" href="/sentinel" data-action="open-sentinel">
+        <a class="hero-badge" href="/oracle">
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
-          Introducing Fourseat Sentinel &middot; live inbox triage
+          The Company Brain &middot; revenue intelligence, on autopilot
           <span class="hero-badge-arrow">&rarr;</span>
         </a>
         <h1 class="hero-title">
-          A board of advisors<br/>
-          <em>for every decision.</em>
+          Your revenue,<br/>
+          <em>debated by the board.</em>
         </h1>
         <p class="hero-sub">
-          Fourseat is a decision workspace built for founders and operators. A panel of strategy, finance, technology, and contrarian advisors <strong id="type-text" class="cycle-text">pressure-tests every decision.</strong>
+          Fourseat is the connective intelligence layer for founders. We hook into your Stripe and operational data, watch every charge, churn, and failed payment, and the moment something matters we deliver a <strong>board-ready verdict</strong> signed by Strategy, Finance, Tech, and a Contrarian.
         </p>
         <div class="hero-actions">
-          <button type="button" class="btn-hero-primary" data-action="open-pricing">Get early access</button>
+          <a class="btn-hero-primary" href="/oracle">Open Oracle</a>
           <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
         </div>
         <ul class="hero-stats" aria-label="Highlights">
-          <li><span class="hero-stat-num">4</span><span class="hero-stat-lbl">specialist advisors</span></li>
-          <li><span class="hero-stat-num">1</span><span class="hero-stat-lbl">structured verdict</span></li>
-          <li><span class="hero-stat-num">~60s</span><span class="hero-stat-lbl">end-to-end</span></li>
+          <li><span class="hero-stat-num">6</span><span class="hero-stat-lbl">anomaly rules, always on</span></li>
+          <li><span class="hero-stat-num">4</span><span class="hero-stat-lbl">specialist advisors per verdict</span></li>
+          <li><span class="hero-stat-num">~60s</span><span class="hero-stat-lbl">from anomaly to deck</span></li>
         </ul>
       </div>
 
-      <aside class="hero-card" aria-label="Board snapshot">
+      <aside class="hero-card" aria-label="Oracle preview">
         <div class="hero-card-head">
           <div class="hero-orb" aria-hidden="true"></div>
           <div>
-            <div class="hero-card-title">Board in session</div>
-            <div class="hero-card-sub">Round 1 · independent analysis</div>
+            <div class="hero-card-title">Revenue anomaly · P0</div>
+            <div class="hero-card-sub">Churn cluster · 3.3x baseline</div>
           </div>
         </div>
         <ul class="hero-snapshot" aria-hidden="true">
-          <li><span class="snap-bar" style="background:#e8a87c"></span><span class="snap-role">Strategy</span><span class="snap-text">Strong fit, scoped narrowly.</span></li>
-          <li><span class="snap-bar" style="background:#7ccea8"></span><span class="snap-role">Finance</span><span class="snap-text">Payback inside two quarters.</span></li>
-          <li><span class="snap-bar" style="background:#7ca8e8"></span><span class="snap-role">Technology</span><span class="snap-text">Two-week build, low risk.</span></li>
-          <li><span class="snap-bar" style="background:#e87c7c"></span><span class="snap-role">Contrarian</span><span class="snap-text">What signal are we ignoring?</span></li>
+          <li><span class="snap-bar" style="background:#9c5c2a"></span><span class="snap-role">Strategy</span><span class="snap-text">A 3x churn spike is a positioning signal, not retention.</span></li>
+          <li><span class="snap-bar" style="background:#3f7a55"></span><span class="snap-role">Finance</span><span class="snap-text">One quarter of NRR at risk if this rate holds.</span></li>
+          <li><span class="snap-bar" style="background:#3a6dad"></span><span class="snap-role">Technology</span><span class="snap-text">Cross-reference cancellations with last 14d of releases.</span></li>
+          <li><span class="snap-bar" style="background:#a83a22"></span><span class="snap-role">Contrarian</span><span class="snap-text">Maybe this is healthy churn. Don't fix it, accelerate it.</span></li>
         </ul>
         <div class="hero-verdict">
-          <div class="hero-verdict-label">Chair’s verdict</div>
-          <div class="hero-verdict-text">Proceed, with a 30-day off-ramp clause.</div>
+          <div class="hero-verdict-label">Chair's verdict</div>
+          <div class="hero-verdict-text">Treat as a product-market signal, not a pricing one. Investigate which ICP just stopped fitting.</div>
           <div class="hero-verdict-meta"><span class="conf-pill conf-high">High confidence</span></div>
         </div>
-        <button type="button" class="btn-hero-primary hero-card-cta" data-action="open-debate">
-          Open the boardroom
-        </button>
+        <a class="btn-hero-primary hero-card-cta" href="/oracle">
+          Open the Oracle
+        </a>
       </aside>
     </div>
   </section>
 
-  <!-- SENTINEL SHOWCASE -->
-  <section class="section sentinel-hero reveal" aria-label="Fourseat Sentinel">
+  <!-- ORACLE SHOWCASE -->
+  <section class="section sentinel-hero reveal" aria-label="Fourseat Oracle">
     <div class="sentinel-inner">
       <div class="sentinel-copy">
         <div class="sentinel-eyebrow">
           <span class="sentinel-pulse" aria-hidden="true"></span>
-          Fourseat Sentinel · quick snapshot
+          Fourseat Oracle &middot; live revenue intelligence
         </div>
         <h2 class="section-title" style="margin-bottom:1rem">
-          Home snapshot:<br/><em>what matters right now.</em>
+          Six rules,<br/><em>always watching.</em>
         </h2>
         <p class="section-sub" style="max-width:540px;margin-left:0">
-          Sentinel is your decision inbox summarizer. Connect Google email, Slack, and Microsoft Teams so noisy inbound becomes one daily brief with priorities, actions, and recommendations you can execute fast.
+          Oracle continuously scans your Stripe data for the six anomalies that actually move the business: churn clusters, NRR drops, failed-payment leakage, concentration risk, expansion stall, and pricing-tier collapse. The moment one fires, the board convenes.
         </p>
         <ul class="sentinel-bullets">
-          <li><span class="sentinel-bullet-dot"></span> Connect Gmail, Slack, and Teams channels</li>
-          <li><span class="sentinel-bullet-dot"></span> Auto-prioritize inbound into P0-P3 decisions</li>
-          <li><span class="sentinel-bullet-dot"></span> One daily summary with recommended next actions</li>
+          <li><span class="sentinel-bullet-dot"></span> Connect Stripe in one click. 90 days of history, instantly</li>
+          <li><span class="sentinel-bullet-dot"></span> Auto-prioritized verdicts with a four-advisor panel</li>
+          <li><span class="sentinel-bullet-dot"></span> One-click board deck (.pptx) for every P0 verdict</li>
         </ul>
         <div class="hero-actions" style="margin-top:2rem">
-          <a class="btn-hero-primary" href="/sentinel" data-action="open-sentinel">Open the Sentinel dashboard</a>
+          <a class="btn-hero-primary" href="/oracle">Open the Oracle dashboard</a>
           <button type="button" class="btn-hero-secondary" data-action="open-waitlist">Get early access</button>
         </div>
       </div>
 
-      <aside class="sentinel-glance" aria-label="Sentinel snapshot board">
+      <aside class="sentinel-glance" aria-label="Oracle snapshot">
         <div class="sentinel-glance-top">
-          <div class="sentinel-glance-title">Daily Decision Briefing</div>
-          <div class="sentinel-glance-sub">Homepage snapshot · preview only</div>
+          <div class="sentinel-glance-title">Revenue Health Briefing</div>
+          <div class="sentinel-glance-sub">Live snapshot &middot; preview</div>
         </div>
 
         <div class="sentinel-glance-question">
-          <span class="sentinel-glance-q-label">Top thread</span>
-          <span class="sentinel-glance-q-text">Term sheet v3 · sign-off by Friday</span>
+          <span class="sentinel-glance-q-label">Top verdict</span>
+          <span class="sentinel-glance-q-text">P0 &middot; Churn cluster (3.3x baseline)</span>
         </div>
 
         <div class="sentinel-glance-grid">
           <article class="sentinel-mini-card mini-strategy">
             <div class="sentinel-mini-role">Strategy</div>
-            <div class="sentinel-mini-text">Strong fit if we tighten scope and hold timeline leverage.</div>
+            <div class="sentinel-mini-text">A concentrated cluster like this is a positioning signal, not retention.</div>
           </article>
           <article class="sentinel-mini-card mini-finance">
             <div class="sentinel-mini-role">Finance</div>
-            <div class="sentinel-mini-text">Counter at $20M pre. Decline ratchet. Keep 1x non-participating.</div>
+            <div class="sentinel-mini-text">If this rate holds, you'll lose a quarter's NRR by month-end.</div>
           </article>
           <article class="sentinel-mini-card mini-ops">
-            <div class="sentinel-mini-role">Ops</div>
-            <div class="sentinel-mini-text">Reply before Friday 5pm ET and batch non-urgent threads later.</div>
+            <div class="sentinel-mini-role">Contrarian</div>
+            <div class="sentinel-mini-text">Maybe this is healthy churn and you're shedding the wrong ICP. Don't fix it, accelerate it.</div>
           </article>
         </div>
 
@@ -162,7 +161,7 @@
             <span>Chair verdict</span>
             <span class="conf-pill conf-high">High confidence</span>
           </div>
-          <div class="sentinel-chair-text">Prioritize legal and financing first, then schedule media and partnership follow-ups in one block.</div>
+          <div class="sentinel-chair-text">Treat as a product-market signal. Pull the churn cohort and run five same-day exit interviews before any pricing change.</div>
         </div>
       </aside>
     </div>
@@ -186,83 +185,83 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="section" aria-label="Platform">
+  <!-- THE WEDGE -->
+  <section class="section" aria-label="What Oracle does">
     <div class="section-inner reveal">
-      <div class="section-label">Platform</div>
-      <h2 class="section-title">Everything you need to<br/><em>make sharper decisions</em></h2>
-      <p class="section-sub">Four modules that work together. A structured advisory debate, a private memory of your company history, a draft generator for board-ready decks, and a proactive sentinel that triages your inbox.</p>
+      <div class="section-label">The Company Brain</div>
+      <h2 class="section-title">From raw data<br/><em>to executive conviction.</em></h2>
+      <p class="section-sub">Every company runs on a dozen disconnected systems. The most expensive work in the building is leaders manually stitching that data into a story before they can decide anything. Oracle closes the loop.</p>
       <div class="features-grid">
-        <button type="button" class="feature-card" data-action="open-debate">
+        <a class="feature-card feature-card-new" href="/oracle">
+          <div class="feature-badge">Core</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg></div>
+          <div class="feature-name">Continuous monitoring</div>
+          <div class="feature-desc">Six anomaly rules run on every snapshot: churn cluster, NRR drop, failed-payment leakage, concentration risk, expansion stall, tier collapse. You don't watch dashboards anymore.</div>
+        </a>
+        <div class="feature-card">
           <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6 10a6 6 0 0 0 12 0"></path><path d="M12 16v4"></path><path d="M9 20h6"></path></svg></div>
           <div class="feature-name">The four advisors</div>
-          <div class="feature-desc">Ask any question. Strategy, finance, technology and a dedicated contrarian debate it from every angle, then a Board Chair delivers a structured verdict.</div>
-        </button>
-        <button type="button" class="feature-card" data-action="open-memory">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7a3 3 0 0 1 6 0v10a3 3 0 0 1-6 0Z"></path><path d="M9 9H7a2 2 0 0 0 0 4h2"></path><path d="M15 9h2a2 2 0 1 1 0 4h-2"></path><path d="M12 7v10"></path></svg></div>
-          <div class="feature-name">Fourseat Memory</div>
-          <div class="feature-desc">Upload your decks, memos and investor updates. Search the full history of your company in plain English, with cited sources on every answer.</div>
-        </button>
-        <button type="button" class="feature-card" data-action="open-brief">
+          <div class="feature-desc">Strategy, Finance, Tech, and a Contrarian each weigh in on every anomaly. The Chair compresses the debate into one sentence you can act on.</div>
+        </div>
+        <div class="feature-card">
           <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
-          <div class="feature-name">Fourseat Decks</div>
-          <div class="feature-desc">Enter your metrics, wins and risks. Get a polished, board-ready PowerPoint draft you can hand to your investors in minutes.</div>
-        </button>
-        <a class="feature-card feature-card-new" href="/sentinel" data-action="open-sentinel">
-          <div class="feature-badge">New</div>
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
-          <div class="feature-name">Fourseat Sentinel</div>
-          <div class="feature-desc">A proactive triage layer that reads your inbound and surfaces a daily decision briefing. Priority, action, and a Board verdict on every item that matters.</div>
-        </a>
+          <div class="feature-name">Board-ready decks</div>
+          <div class="feature-desc">Every P0 verdict ships with a one-click PowerPoint export: evidence, advisor panel, recommended actions, and the metrics to watch next week.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.9 4.9l2.8 2.8"/><path d="M16.3 16.3l2.8 2.8"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.9 19.1l2.8-2.8"/><path d="M16.3 7.7l2.8-2.8"/></svg></div>
+          <div class="feature-name">Built for the YC S26 thesis</div>
+          <div class="feature-desc">The connective layer that makes a company legible to AI by default. Stripe today; QuickBooks, GitHub, and Salesforce next. Each integration compounds the others.</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- LIVE PREVIEW -->
-  <section class="section preview-section" aria-label="See it in action">
+  <section class="section preview-section" aria-label="See a real verdict">
     <div class="section-inner reveal">
-      <div class="section-label">See it in action</div>
-      <h2 class="section-title">A real verdict,<br/><em>on a real question.</em></h2>
-      <p class="section-sub">A snapshot of a finished session. Four perspectives plus a Board Chair synthesis with risks, opportunities, and next steps.</p>
+      <div class="section-label">A real verdict</div>
+      <h2 class="section-title">What Oracle delivers,<br/><em>the moment it matters.</em></h2>
+      <p class="section-sub">A real Oracle verdict, fired automatically when failed-payment volume crossed 5% of MRR for seven days running. No human asked. No dashboard checked.</p>
 
       <div class="preview-board">
         <div class="preview-question">
-          <span class="preview-q-label">Question</span>
-          <span class="preview-q-text">Should we accept the partnership offer from a larger competitor?</span>
+          <span class="preview-q-label">Anomaly · P1</span>
+          <span class="preview-q-text">Failed payments averaging 6.6% of MRR over 7 days &middot; <strong style="color:var(--accent)">$78,400 at risk</strong></span>
         </div>
 
         <div class="preview-grid">
-          <div class="preview-card" style="--accent:#e8a87c">
+          <div class="preview-card" style="--accent:#9c5c2a">
             <div class="preview-bar"></div>
             <div class="preview-head">
               <span class="preview-role">Strategy</span>
-              <span class="preview-tag">Independent response</span>
+              <span class="preview-tag">Advisor view</span>
             </div>
-            <p class="preview-text">Strong fit if scope is narrow. Lock in a defined surface area before signaling exclusivity to the market.</p>
+            <p class="preview-text">Failed payments at this rate signal payment-method decay or bot-driven sign-ups. Don't conflate with churn until you triage.</p>
           </div>
-          <div class="preview-card" style="--accent:#7ccea8">
+          <div class="preview-card" style="--accent:#3f7a55">
             <div class="preview-bar"></div>
             <div class="preview-head">
               <span class="preview-role">Finance</span>
-              <span class="preview-tag">Independent response</span>
+              <span class="preview-tag">Advisor view</span>
             </div>
-            <p class="preview-text">Payback clears inside two quarters at conservative attach. Margin profile improves once distribution kicks in.</p>
+            <p class="preview-text">At 5%+ of MRR this is real money on the floor every week. Smart Retries plus a 14-day rescue email plays back ~40% in benchmarks.</p>
           </div>
-          <div class="preview-card" style="--accent:#7ca8e8">
+          <div class="preview-card" style="--accent:#3a6dad">
             <div class="preview-bar"></div>
             <div class="preview-head">
               <span class="preview-role">Technology</span>
-              <span class="preview-tag">Independent response</span>
+              <span class="preview-tag">Advisor view</span>
             </div>
-            <p class="preview-text">Integration is a two-week build with one shared schema. Negligible risk to the existing roadmap.</p>
+            <p class="preview-text">Enable Stripe Smart Retries with a custom 3/7/14 cadence and surface payment-update prompts in-app, not just email.</p>
           </div>
-          <div class="preview-card" style="--accent:#e87c7c">
+          <div class="preview-card" style="--accent:#a83a22">
             <div class="preview-bar"></div>
             <div class="preview-head">
               <span class="preview-role">Contrarian</span>
-              <span class="preview-tag">Independent response</span>
+              <span class="preview-tag">Advisor view</span>
             </div>
-            <p class="preview-text">What signal are we ignoring? If they need this deal more than we do, the price should reflect it.</p>
+            <p class="preview-text">Your dunning copy is bank-form English. Send a one-line founder email to anyone over $1k. Friction beats automation here.</p>
           </div>
         </div>
 
@@ -270,30 +269,30 @@
           <div class="preview-chair-head">
             <div class="chairman-orb" aria-hidden="true"></div>
             <div>
-              <div class="preview-chair-title">Board Chair · final decision</div>
-              <div class="preview-chair-sub">Synthesis of the full debate</div>
+              <div class="preview-chair-title">Chair's verdict &middot; auto-generated</div>
+              <div class="preview-chair-sub">Synthesis of the full advisor panel</div>
             </div>
             <span class="conf-pill conf-high preview-chair-pill">High confidence</span>
           </div>
-          <div class="preview-verdict">Proceed, with a narrow scope and a 30-day off-ramp clause.</div>
+          <div class="preview-verdict">Failed payments are leaking real money. Rescue cadence is the highest-ROI lever this week.</div>
           <div class="preview-cols">
             <div class="preview-col">
-              <div class="preview-col-title">Key risks</div>
-              <ul><li>Channel cannibalization on adjacent segments</li><li>Brand dilution if co-marketing slips</li></ul>
+              <div class="preview-col-title">Recommended actions</div>
+              <ul><li>Enable Smart Retries (3/7/14 cadence)</li><li>Personal outreach on failed invoices &gt; $1k</li><li>Ship dunning email v2 with payment-method update link</li></ul>
             </div>
             <div class="preview-col">
-              <div class="preview-col-title">Opportunities</div>
-              <ul><li>Faster enterprise distribution</li><li>Reference logo before Series A</li></ul>
+              <div class="preview-col-title">Watch next week</div>
+              <ul><li>Failed invoice $ recovered within 14 days</li><li>Payment-method update rate from dunning emails</li></ul>
             </div>
             <div class="preview-col">
-              <div class="preview-col-title">Action steps</div>
-              <ul><li>Negotiate scope &amp; off-ramp</li><li>Stand up a 60-day pilot pod</li></ul>
+              <div class="preview-col-title">Output</div>
+              <ul><li>One-page board deck (.pptx)</li><li>Persisted to your verdict queue</li><li>Forward, resolve, or re-open in one tap</li></ul>
             </div>
           </div>
         </div>
 
         <div class="preview-cta">
-          <button type="button" class="btn-hero-primary" data-action="open-debate">Try the boardroom</button>
+          <a class="btn-hero-primary" href="/oracle">Open the Oracle</a>
           <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
         </div>
       </div>
@@ -349,45 +348,45 @@
       <div class="pricing-grid">
         <div class="price-card">
           <div class="price-tier">Founder</div>
-          <div class="price-amount">$49<span>/mo</span></div>
-          <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
+          <div class="price-amount">$99<span>/mo</span></div>
+          <div class="price-desc">For solo founders running a real revenue motion.</div>
           <ul class="price-features">
-            <li>50 board debates per month</li>
-            <li>4 advisors plus the Board Chair</li>
-            <li>Memory for up to 10 documents</li>
-            <li>2 generated decks per month</li>
-            <li>Sentinel daily briefing (demo mode)</li>
+            <li>Stripe connect &middot; 90 days of history</li>
+            <li>Weekly anomaly scans</li>
+            <li>4-advisor verdicts on every P0 / P1</li>
+            <li>5 board decks per month (.pptx)</li>
+            <li>Workspace memory for 10 documents</li>
           </ul>
           <button type="button" class="btn-price" data-action="open-waitlist">Get started</button>
         </div>
         <div class="price-card featured">
-          <div class="price-tier">Growth</div>
-          <div class="price-amount">$149<span>/mo</span></div>
-          <div class="price-desc">For funded teams with active boards and real decisions.</div>
+          <div class="price-tier">Operator</div>
+          <div class="price-amount">$399<span>/mo</span></div>
+          <div class="price-desc">For funded teams treating revenue intelligence as a habit.</div>
           <ul class="price-features">
             <li>Everything in Founder</li>
-            <li>250 board debates per month</li>
-            <li>Unlimited memory documents</li>
-            <li>Unlimited generated decks</li>
-            <li>Sentinel live Gmail triage</li>
-            <li>Custom advisor personas</li>
+            <li>Daily anomaly scans &middot; full 6-rule suite</li>
+            <li>Auto-deck on every P0 verdict</li>
+            <li>Webhook ingestion &middot; real-time alerts</li>
+            <li>Unlimited workspace memory</li>
+            <li>Slack delivery for verdicts</li>
             <li>Team workspace</li>
           </ul>
           <button type="button" class="btn-price featured" data-action="open-waitlist">Start free trial</button>
         </div>
         <div class="price-card">
-          <div class="price-tier">Studio</div>
-          <div class="price-amount">$399<span>/mo</span></div>
-          <div class="price-desc">For studios and operators managing multiple companies.</div>
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amount">Custom</div>
+          <div class="price-desc">For multi-entity revenue and ops leaders.</div>
           <ul class="price-features">
-            <li>Everything in Growth</li>
-            <li>Multiple company workspaces</li>
-            <li>Sentinel across Slack and Gmail</li>
-            <li>API access</li>
-            <li>White-label decks</li>
-            <li>Priority support</li>
+            <li>Everything in Operator</li>
+            <li>Multi-company workspaces</li>
+            <li>QuickBooks, Salesforce, GitHub on roadmap</li>
+            <li>SSO &middot; SCIM &middot; audit log</li>
+            <li>API access &middot; white-label decks</li>
+            <li>Dedicated onboarding</li>
           </ul>
-          <button type="button" class="btn-price" data-action="open-waitlist">Contact us</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Talk to us</button>
         </div>
       </div>
     </div>
@@ -398,11 +397,11 @@
     <div class="closing-cta-card">
       <div class="closing-cta-glow" aria-hidden="true"></div>
       <div class="closing-cta-inner">
-        <div class="section-label">Ready to convene?</div>
-        <h2 class="section-title" style="margin-bottom:1rem">Bring a real board<br/><em>to your next call.</em></h2>
-        <p class="section-sub" style="margin:0 auto 2rem;max-width:540px;color:rgba(255,255,255,.7)">Join early access. We’ll email a secure link, set up your workspace, and get you to your first verdict in minutes.</p>
+        <div class="section-label">Ready to ship?</div>
+        <h2 class="section-title" style="margin-bottom:1rem">Stop building dashboards.<br/><em>Start receiving verdicts.</em></h2>
+        <p class="section-sub" style="margin:0 auto 2rem;max-width:540px">Connect Stripe, run one scan, and watch four advisors pressure-test your real revenue data. First verdict on your screen in under sixty seconds.</p>
         <div class="hero-actions" style="justify-content:center">
-          <button type="button" class="btn-hero-primary" data-action="open-waitlist">Get early access</button>
+          <a class="btn-hero-primary" href="/oracle">Open the Oracle</a>
           <button type="button" class="btn-hero-secondary" data-action="open-pricing">See pricing</button>
         </div>
       </div>
@@ -418,31 +417,34 @@
       <div class="section-label">How it works</div>
       <h2 class="section-title">How Fourseat works<br/><em>step by step</em></h2>
       <p class="section-sub">Fourseat runs four role-based analyses in parallel, then combines them into one board-style decision summary you can act on quickly.</p>
+      <p class="section-sub" style="margin-top:1rem">Oracle plugs into your operational stack, watches it continuously, and produces a board-ready verdict the moment something matters. Four steps, fully automated.</p>
       <div class="features-grid" style="margin-top:2rem">
         <div class="feature-card">
-          <div class="feature-name">1. Ask your question</div>
-          <div class="feature-desc">Enter a decision, problem, or strategy question with optional context: stage, metrics, constraints.</div>
+          <div class="feature-name">1. Connect Stripe</div>
+          <div class="feature-desc">One API key (or signed webhook) connects your revenue stack. Oracle backfills 90 days and starts watching every event.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-name">2. Four perspectives</div>
-          <div class="feature-desc">Strategy, finance, technology, and a contrarian respond independently so blind spots are surfaced early.</div>
+          <div class="feature-name">2. Detect anomalies</div>
+          <div class="feature-desc">Six rules run on every snapshot: churn cluster, NRR drop, failed-payment leakage, concentration risk, expansion stall, tier collapse.</div>
         </div>
         <div class="feature-card">
-          <div class="feature-name">3. A clear verdict</div>
-          <div class="feature-desc">A final synthesis returns a verdict, key risks, opportunities, and concrete action steps.</div>
+          <div class="feature-name">3. Convene the board</div>
+          <div class="feature-desc">Strategy, Finance, Technology, and a Contrarian each weigh in. The Chair compresses the debate into one verdict and a confidence score.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-name">4. Ship the deck</div>
+          <div class="feature-desc">One click to generate a board-ready PowerPoint with the verdict, evidence, advisor panel, recommended actions, and watch metrics.</div>
         </div>
       </div>
       <div class="glass-card" style="margin-top:2rem">
-        <div class="section-label">Other modules</div>
+        <div class="section-label">Supporting modules</div>
         <p class="section-sub" style="max-width:none">
-          <strong>Fourseat Memory:</strong> Upload documents and search past decisions in plain English.
+          <strong>Fourseat Memory:</strong> Upload decks, memos, and investor updates. Oracle uses your memory to add company context to every verdict.
           <br/><br/>
-          <strong>Fourseat Decks:</strong> Enter the key data and generate a board-ready presentation draft.
-          <br/><br/>
-          <strong>Fourseat Sentinel:</strong> A proactive triage layer that pulls important inbound from Gmail and Slack, runs it through the four-advisor panel, and returns a daily decision briefing with priority, category, and action for every item.
+          <strong>Fourseat Decks:</strong> The .pptx generator behind every Oracle verdict. Use it standalone for any board update.
         </p>
         <div style="margin-top:1.5rem">
-          <a class="btn-hero-secondary" href="/sentinel" data-action="open-sentinel">Open Sentinel dashboard</a>
+          <a class="btn-hero-secondary" href="/oracle">Open the Oracle</a>
         </div>
       </div>
     </div>
@@ -503,43 +505,45 @@
       <div class="pricing-grid">
         <div class="price-card">
           <div class="price-tier">Founder</div>
-          <div class="price-amount">$49<span>/mo</span></div>
-          <div class="price-desc">For solo founders who need a strategic thinking partner.</div>
+          <div class="price-amount">$99<span>/mo</span></div>
+          <div class="price-desc">For solo founders running a real revenue motion.</div>
           <ul class="price-features">
-            <li>50 board debates per month</li>
-            <li>4 advisors plus the Board Chair</li>
-            <li>Memory for up to 10 documents</li>
-            <li>2 generated decks per month</li>
-            <li>Sentinel daily briefing (demo mode)</li>
+            <li>Stripe connect &middot; 90 days of history</li>
+            <li>Weekly anomaly scans</li>
+            <li>4-advisor verdicts on every P0 / P1</li>
+            <li>5 board decks per month (.pptx)</li>
+            <li>Workspace memory for 10 documents</li>
           </ul>
           <button type="button" class="btn-price" data-action="open-waitlist">Get started</button>
         </div>
         <div class="price-card featured">
-          <div class="price-tier">Growth</div>
-          <div class="price-amount">$149<span>/mo</span></div>
-          <div class="price-desc">For funded teams with active boards and real decisions.</div>
+          <div class="price-tier">Operator</div>
+          <div class="price-amount">$399<span>/mo</span></div>
+          <div class="price-desc">For funded teams treating revenue intelligence as a habit.</div>
           <ul class="price-features">
             <li>Everything in Founder</li>
-            <li>250 board debates per month</li>
-            <li>Unlimited memory documents</li>
-            <li>Unlimited generated decks</li>
-            <li>Sentinel live Gmail triage</li>
-            <li>Custom advisor personas</li>
+            <li>Daily anomaly scans &middot; full 6-rule suite</li>
+            <li>Auto-deck on every P0 verdict</li>
+            <li>Webhook ingestion &middot; real-time alerts</li>
+            <li>Unlimited workspace memory</li>
+            <li>Slack delivery for verdicts</li>
+            <li>Team workspace</li>
           </ul>
           <button type="button" class="btn-price featured" data-action="open-waitlist">Start free trial</button>
         </div>
         <div class="price-card">
-          <div class="price-tier">Studio</div>
-          <div class="price-amount">$399<span>/mo</span></div>
-          <div class="price-desc">For studios and operators managing multiple companies.</div>
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amount">Custom</div>
+          <div class="price-desc">For multi-entity revenue and ops leaders.</div>
           <ul class="price-features">
-            <li>Everything in Growth</li>
-            <li>Multiple company workspaces</li>
-            <li>Sentinel across Slack and Gmail</li>
-            <li>API access</li>
-            <li>White-label decks</li>
+            <li>Everything in Operator</li>
+            <li>Multi-company workspaces</li>
+            <li>QuickBooks, Salesforce, GitHub on roadmap</li>
+            <li>SSO &middot; SCIM &middot; audit log</li>
+            <li>API access &middot; white-label decks</li>
+            <li>Dedicated onboarding</li>
           </ul>
-          <button type="button" class="btn-price" data-action="open-waitlist">Contact us</button>
+          <button type="button" class="btn-price" data-action="open-waitlist">Talk to us</button>
         </div>
       </div>
     </div>
@@ -748,16 +752,16 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-word">fourseat</span>
       </div>
-      <p class="footer-tagline">A decision workspace for founders and operators &mdash; every important call, pressure-tested by a board.</p>
+      <p class="footer-tagline">The Company Brain &mdash; revenue intelligence and board-ready verdicts on autopilot.</p>
     </div>
     <div class="footer-columns">
       <div>
-        <h4>Features</h4>
+        <h4>Product</h4>
+        <a href="/oracle">Oracle</a>
         <a href="/#how">How it works</a>
         <a href="/#debate">Boardroom</a>
         <a href="/#memory">Memory</a>
         <a href="/#brief">Decks</a>
-        <a href="/sentinel">Sentinel</a>
       </div>
       <div>
         <h4>Product</h4>
