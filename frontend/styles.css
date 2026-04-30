@@ -60,9 +60,15 @@ nav{
     50% 50%/100% 100%
     no-repeat;
   filter:drop-shadow(0 4px 10px rgba(160,90,40,.18));
-  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+  animation: spinBrand 15s linear infinite;
 }
-.nav-logo:hover .brand-mark{transform:rotate(8deg) scale(1.04)}
+@keyframes spinBrand {
+  100% { transform: rotate(360deg); }
+}
+@keyframes spinBrandFast {
+  100% { transform: scale(1.1) rotate(360deg); }
+}
+.nav-logo:hover .brand-mark{animation: spinBrandFast 2s linear infinite;}
 .brand-word{
   font-family:'Instrument Serif',serif;
   font-size:2rem;
@@ -102,7 +108,7 @@ nav{
 .theme-icon-moon{display:block}
 .theme-toggle[data-theme='light'] .theme-icon-sun{display:block}
 .theme-toggle[data-theme='light'] .theme-icon-moon{display:none}
-.theme-toggle-label{letter-spacing:.02em}
+.theme-toggle-label{display:none !important;}
 .nav-link{
   padding:.45rem 1rem;
   font-size:.85rem;font-weight:400;
@@ -1437,7 +1443,9 @@ body[data-theme='light'] .waitlist-count{
   background:rgba(228,206,168,.78);
   border-color:rgba(139,92,50,.24);
   box-shadow:0 8px 24px rgba(86,57,28,.06), inset 0 1px 0 rgba(255,255,255,.35);
+  color:#1f1a14;
 }
+body[data-theme='light'] .waitlist-count strong { color: #b06b35; }
 body[data-theme='light'] .sentinel-hero,
 body[data-theme='light'] .trust-strip{
   background:rgba(244,234,219,.62);
