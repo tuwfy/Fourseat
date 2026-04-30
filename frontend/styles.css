@@ -349,8 +349,7 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
   width:48px;height:48px;
   border-radius:50%;
   background:
-    url(/frontend/logo-circle.png) center/100% 100% no-repeat,
-    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
+    url(/frontend/logo-circle.png) center/100% 100% no-repeat;
   position:relative;flex-shrink:0;
   filter:drop-shadow(0 8px 22px rgba(132,84,35,.42));
   animation:spinOrb 8s linear infinite, orbFloat 4s ease-in-out infinite;
@@ -967,8 +966,7 @@ select option{background:#1a1714;color:#fff}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
   background:
-    url(/frontend/logo-circle.png) center/100% 100% no-repeat,
-    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
+    url(/frontend/logo-circle.png) center/100% 100% no-repeat;
   filter:drop-shadow(0 6px 16px rgba(132,84,35,.4));
   flex-shrink:0;position:relative;
   animation:spinOrb 8s linear infinite, orbFloat 4s ease-in-out infinite;
