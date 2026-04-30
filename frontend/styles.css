@@ -353,14 +353,14 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
     radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
   position:relative;flex-shrink:0;
   filter:drop-shadow(0 8px 22px rgba(132,84,35,.42));
-  animation:spinOrb 30s linear infinite, orbFloat 6s ease-in-out infinite;
+  animation:spinOrb 8s linear infinite, orbFloat 4s ease-in-out infinite;
   will-change:transform;
 }
 @keyframes orbFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-3px)}
+  0%,100%{translate:0 0}
+  50%{translate:0 -4px}
 }
-@keyframes spinOrb{to{transform:rotate(360deg)}}
+@keyframes spinOrb{to{rotate:360deg}}
 @media (prefers-reduced-motion:reduce){
   .hero-orb,.chairman-orb{animation:none}
 }
@@ -971,7 +971,7 @@ select option{background:#1a1714;color:#fff}
     radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
   filter:drop-shadow(0 6px 16px rgba(132,84,35,.4));
   flex-shrink:0;position:relative;
-  animation:spinOrb 30s linear infinite;
+  animation:spinOrb 8s linear infinite, orbFloat 4s ease-in-out infinite;
   will-change:transform;
 }
 .chairman-title{font-size:1.15rem;font-weight:600;color:#fff}
