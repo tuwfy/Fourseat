@@ -1035,18 +1035,27 @@
   }
 
   async function runScan() {
-    if (runBtn.disabled) return;
-    runBtn.disabled = true;
-    runLabel.textContent = 'Slideshow Active';
-    runIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    runLabel.textContent = 'Scanning revenue stream';
     
     cycleSlide();
     if (!slideInterval) {
       slideInterval = setInterval(cycleSlide, 15000);
     }
+    
+    // Live timer
+    let seconds = 0;
+    const timerEl = document.getElementById('ox-live-timer');
+    if (timerEl) {
+      setInterval(() => {
+        seconds++;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        timerEl.textContent = m + ':' + s;
+      }, 1000);
+    }
   }
 
-  if (runBtn) runBtn.addEventListener('click', runScan);
+  // No click handler needed — indicator is display-only
 
   async function bootstrap() {
     await loadConnectors();
