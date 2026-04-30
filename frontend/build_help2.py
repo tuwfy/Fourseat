@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+import os
+
+frontend_dir = "/Users/tyler/Documents/ty/projects/Fourseat/frontend"
+
+help_html = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -465,3 +469,9 @@
   </script>
 </body>
 </html>
+"""
+
+with open(os.path.join(frontend_dir, "help.html"), "w") as f:
+    f.write(help_html)
+
+print("help.html successfully upgraded to SPA with theme toggle and content.")
