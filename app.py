@@ -90,6 +90,8 @@ ALLOWED_FRONTEND_FILES = {
     "sentinel.js",
     "oracle.html",
     "oracle.js",
+    "help.js",
+    "help.html",
 }
 
 IS_DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
