@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fourseat Help Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1c1c1c;
+      --sidebar: #161616;
+      --fg: #f5f5f5;
+      --muted: #a1a1aa;
+      --border: #333333;
+      --accent: #d4a373;
+    }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--fg);
+      font-family: 'Inter', sans-serif;
+      display: flex; height: 100vh; overflow: hidden;
+    }
+    a { color: var(--muted); text-decoration: none; }
+    a:hover { color: var(--fg); }
+    
+    /* Left Sidebar */
+    .sidebar {
+      width: 260px; min-width: 260px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      height: 100%; overflow-y: auto;
+    }
+    .sidebar-header {
+      padding: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-weight: 600; font-size: 1.1rem; color: var(--fg); display:flex; align-items:center; gap:8px;}
+    .logo img { height: 20px; }
+    .search-box {
+      margin: 0 1.5rem 1.5rem;
+      background: #222; border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.5rem 0.8rem;
+      color: var(--muted); font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-section { margin-bottom: 2rem; }
+    .nav-title {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--fg); padding: 0 1.5rem; margin-bottom: 0.8rem;
+    }
+    .nav-link {
+      display: block; padding: 0.4rem 1.5rem; font-size: 0.85rem;
+      color: var(--muted); transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--fg); border-left: 2px solid var(--fg); background: rgba(255,255,255,0.03); }
+    
+    /* Main Content */
+    .main-wrap {
+      flex: 1; display: flex; flex-direction: column; height: 100%; overflow-y: auto;
+    }
+    .top-nav {
+      height: 60px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 2rem; gap: 2rem;
+    }
+    .top-link {
+      font-size: 0.85rem; color: var(--muted); height: 100%;
+      display: flex; align-items: center; border-bottom: 2px solid transparent;
+    }
+    .top-link.active { color: var(--fg); border-bottom-color: var(--fg); }
+    
+    .content-area {
+      display: flex; padding: 3rem; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;
+    }
+    .content-main { flex: 1; max-width: 700px; }
+    
+    .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 0 0 2rem; color: var(--fg); }
+    
+    .prose p { color: var(--muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    .prose h3 { color: var(--fg); font-size: 1.1rem; margin: 2rem 0 1rem; font-weight: 500;}
+    .prose strong { color: var(--fg); }
+    .prose a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--border); }
+    .prose a:hover { text-decoration-color: var(--fg); }
+    
+    /* Right TOC */
+    .toc { width: 220px; margin-left: 4rem; position: sticky; top: 3rem; height: fit-content; }
+    .toc-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg); margin-bottom: 1rem; }
+    .toc-link { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.6rem; }
+    .toc-link:hover { color: var(--fg); }
+    
+    .copy-btn {
+      float: right; background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.05); color: var(--fg); }
+    
+    @media (max-width: 900px) {
+      .toc { display: none; }
+      .content-area { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .top-nav { padding: 0 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="/frontend/logo-circle.png" alt="Fourseat"> Fourseat
+      </div>
+      <div style="width:36px; height:20px; background:#333; border-radius:10px; position:relative;">
+        <div style="width:14px; height:14px; background:#888; border-radius:50%; position:absolute; top:3px; right:3px;"></div>
+      </div>
+    </div>
+    
+    <div class="search-box">
+      <span>Search...</span>
+      <span style="border:1px solid var(--border); padding:2px 4px; border-radius:4px; font-size:0.7rem;">⌘K</span>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">Terms of Service</div>
+      <a href="#" class="nav-link">Platform Terms of Service</a>
+      <a href="#" class="nav-link">Application Terms of Service</a>
+      <a href="#" class="nav-link">User Terms of Service</a>
+      <a href="#" class="nav-link">Vulnerability Disclosure Policy</a>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">Policies</div>
+      <a href="#" class="nav-link active">Privacy Policy</a>
+      <a href="#" class="nav-link">Data Processing Addendum</a>
+      <a href="#" class="nav-link">Copyright Dispute Policy</a>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">Security Reports</div>
+      <a href="#" class="nav-link">Post-Mortem: API Key Exposure</a>
+      <a href="#" class="nav-link">Post-Mortem: Workspace Auto-Join</a>
+      <a href="#" class="nav-link">Post-Mortem: Session Logout</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrap">
+    <header class="top-nav">
+      <a href="/" class="top-link">← Back to Fourseat</a>
+      <a href="#" class="top-link">Help Center</a>
+      <a href="#" class="top-link">Fourseat API</a>
+      <a href="#" class="top-link active">Policies & Documents</a>
+    </header>
+    
+    <div class="content-area">
+      <main class="content-main">
+        <div class="breadcrumb">Policies</div>
+        
+        <button class="copy-btn">Copy page <span>↓</span></button>
+        <h1 class="page-title">Privacy Policy</h1>
+        
+        <div class="prose">
+          <p>At Fourseat, we take your privacy seriously. Please read this Privacy Policy to learn how we treat your personal data. <strong>By using or accessing our Services in any manner, you acknowledge that you accept the practices and policies outlined below.</strong></p>
+          <p>Before we get into the details, below are a few key points we'd like you to know:</p>
+          <ul>
+            <li style="color:var(--muted); margin-bottom:0.5rem;">We do not allow third parties such as OpenAI or Anthropic to use your Personal Data to train AI models.</li>
+            <li style="color:var(--muted); margin-bottom:0.5rem;">We only use De-Identified Data to train AI models, <a href="#">which you can opt-out of within your account settings</a>.</li>
+            <li style="color:var(--muted); margin-bottom:0.5rem;">We store your Personal Data in AWS servers located in the U.S. All Personal Data is encrypted at rest and in transit.</li>
+          </ul>
+          
+          <!-- Injected Fourseat Privacy Content -->
+          
+        <p><strong>Effective date:</strong> April 22, 2026</p>
+        <p>Fourseat is a decision-support workspace for founders and operators. By using Fourseat, you agree to these terms.</p>
+        <h3>1) Service scope</h3>
+        <p>Fourseat provides AI-assisted analysis and drafting features. Outputs are informational and are not legal, tax, investment, or accounting advice.</p>
+        <h3>2) Account and acceptable use</h3>
+        <p>You agree not to abuse the service, interfere with operations, reverse engineer protected systems, or submit unlawful content.</p>
+        <h3>3) Data and confidentiality</h3>
+        <p>You retain ownership of your content. You represent you have rights to upload and process data you submit.</p>
+        <h3>4) Billing and availability</h3>
+        <p>Paid plans renew per your selected cycle unless canceled. We may change features to improve security, reliability, and compliance.</p>
+        <h3>5) Limitation of liability</h3>
+        <p>To the fullest extent allowed by law, Fourseat is provided "as is" without warranties. You are responsible for final business decisions.</p>
+        <h3>6) Contact</h3>
+        <p>For legal requests, contact <a href="mailto:hello@fourseat.dev">hello@fourseat.dev</a>.</p>
+      
+        </div>
+      </main>
+      
+      <aside class="toc">
+        <div class="toc-title">On this page</div>
+        <div style="border-left: 1px solid var(--border); padding-left: 1rem;">
+          <a href="#" class="toc-link" style="color:var(--fg)">What this Privacy Policy Covers</a>
+          <a href="#" class="toc-link">Data we collect</a>
+          <a href="#" class="toc-link">How we use data</a>
+          <a href="#" class="toc-link">Processors and vendors</a>
+          <a href="#" class="toc-link">Security</a>
+          <a href="#" class="toc-link">Retention and deletion</a>
+          <a href="#" class="toc-link">Your rights</a>
+          <a href="#" class="toc-link">Contact Information</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+</body>
+</html>
