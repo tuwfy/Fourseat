@@ -6,6 +6,15 @@
 
   const API = '';
   const THEME_KEY = 'fourseat-theme';
+  const PAGE_PATHS = {
+    home: '/',
+    how: '/how',
+    pricing: '/pricing',
+    about: '/about',
+    waitlist: '/waitlist',
+    terms: '/terms',
+    privacy: '/privacy',
+  };
 
   const COLORS = {
     claude: '#e8a87c',
@@ -117,10 +126,11 @@
     $$('.nav-link[data-page]').forEach(function (b) { b.classList.remove('active'); });
     const activeBtn = document.querySelector('.nav-link[data-page="' + id + '"]');
     if (activeBtn) activeBtn.classList.add('active');
-    // Keep the URL clean — no #hash pollution as the user navigates the SPA.
+    // Keep URL path aligned with the active page for crawlability and sharing.
     if (history && history.replaceState) {
       try {
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        const nextPath = PAGE_PATHS[id] || '/';
+        history.replaceState(null, '', nextPath + window.location.search);
       } catch (_e) { /* noop */ }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -623,7 +633,13 @@
 
     const hashPage = (window.location.hash || '').replace('#', '').trim();
     const pathPage = (window.location.pathname || '').replace(/^\/+/, '').trim();
-    if ((pathPage === 'terms' || pathPage === 'tos') && document.getElementById('page-terms')) {
+    if (pathPage === 'how' && document.getElementById('page-how')) {
+      showPage('how');
+    } else if (pathPage === 'pricing' && document.getElementById('page-pricing')) {
+      showPage('pricing');
+    } else if (pathPage === 'about' && document.getElementById('page-about')) {
+      showPage('about');
+    } else if ((pathPage === 'terms' || pathPage === 'tos') && document.getElementById('page-terms')) {
       showPage('terms');
     } else if (pathPage === 'privacy' && document.getElementById('page-privacy')) {
       showPage('privacy');

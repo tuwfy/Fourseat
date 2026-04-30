@@ -55,12 +55,14 @@ nav{
   border-radius:50%;
   flex-shrink:0;
   background:
-    rgba(246,239,227,.96)
-    url(/frontend/logo-circle.png)
-    49% 50%/84% 84%
+    transparent
+    url(/frontend/orb_crop.png)
+    50% 50%/100% 100%
     no-repeat;
-  box-shadow:inset 0 0 0 1px rgba(160,111,63,.18);
+  filter:drop-shadow(0 4px 10px rgba(160,90,40,.18));
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
 }
+.nav-logo:hover .brand-mark{transform:rotate(8deg) scale(1.04)}
 .brand-word{
   font-family:'Instrument Serif',serif;
   font-size:2rem;
@@ -326,14 +328,16 @@ a.hero-badge:hover .hero-badge-arrow{transform:translateX(2px)}
   width:48px;height:48px;
   border-radius:50%;
   background:
-    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%),
-    linear-gradient(145deg,#2f2011,#8f5e32 72%),
-    url(/frontend/logo-circle.png) center/72% no-repeat;
-  border:1px solid rgba(232,186,131,.35);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 18px rgba(132,84,35,.32);
+    url(/frontend/orb_crop.png) center/100% 100% no-repeat,
+    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
   position:relative;flex-shrink:0;
-  animation:spinOrb 30s linear infinite;
+  filter:drop-shadow(0 8px 22px rgba(132,84,35,.42));
+  animation:spinOrb 30s linear infinite, orbFloat 6s ease-in-out infinite;
   will-change:transform;
+}
+@keyframes orbFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
 }
 @keyframes spinOrb{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){
@@ -942,11 +946,9 @@ select option{background:#1a1714;color:#fff}
 .chairman-orb{
   width:48px;height:48px;border-radius:50%;
   background:
-    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%),
-    linear-gradient(145deg,#2f2011,#8f5e32 72%),
-    url(/frontend/logo-circle.png) center/72% no-repeat;
-  border:1px solid rgba(232,186,131,.35);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 16px rgba(132,84,35,.28);
+    url(/frontend/orb_crop.png) center/100% 100% no-repeat,
+    radial-gradient(circle at 26% 25%,rgba(255,223,177,.32),transparent 46%);
+  filter:drop-shadow(0 6px 16px rgba(132,84,35,.4));
   flex-shrink:0;position:relative;
   animation:spinOrb 30s linear infinite;
   will-change:transform;

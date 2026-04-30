@@ -6,18 +6,63 @@
 <meta name="theme-color" content="#f3ead9"/>
 <meta name="color-scheme" content="light"/>
 <meta name="description" content="Fourseat Oracle is the Company Brain. It hooks into Stripe, watches every charge, churn, and failed payment, and produces a board-ready verdict the moment something matters."/>
+<meta name="robots" content="index,follow,max-image-preview:large"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Fourseat | The Company Brain for revenue intelligence"/>
+<meta property="og:description" content="Connect Stripe, detect anomalies, and get board-ready verdicts from Strategy, Finance, Tech, and Contrarian advisors."/>
+<meta property="og:url" content="https://fourseat.dev/"/>
+<meta property="og:site_name" content="Fourseat"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Fourseat | The Company Brain for revenue intelligence"/>
+<meta name="twitter:description" content="Connect Stripe, detect anomalies, and get board-ready verdicts from Strategy, Finance, Tech, and Contrarian advisors."/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <meta name="format-detection" content="telephone=no"/>
 <title>Fourseat · The Company Brain for revenue intelligence</title>
+<link rel="canonical" href="https://fourseat.dev/"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/frontend/styles.css"/>
 <link rel="manifest" href="/frontend/manifest.webmanifest"/>
-<link rel="icon" type="image/png" sizes="32x32" href="/frontend/logo-circle.png"/>
-<link rel="icon" type="image/png" sizes="180x180" href="/frontend/logo-circle.png"/>
-<link rel="apple-touch-icon" sizes="180x180" href="/frontend/logo-circle.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/frontend/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="180x180" href="/frontend/favicon-180.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/frontend/favicon-180.png"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://fourseat.dev/#organization",
+      "name": "Fourseat",
+      "url": "https://fourseat.dev/",
+      "logo": "https://fourseat.dev/frontend/logo-circle.png",
+      "sameAs": [
+        "https://www.linkedin.com/company/fourseat",
+        "https://x.com/fourseatdev"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://fourseat.dev/#website",
+      "url": "https://fourseat.dev/",
+      "name": "Fourseat",
+      "publisher": {
+        "@id": "https://fourseat.dev/#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Fourseat Oracle",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": "https://fourseat.dev/oracle",
+      "description": "Revenue intelligence software that monitors Stripe anomalies and generates board-ready verdicts."
+    }
+  ]
+}
+</script>
 </head>
 <body data-theme="light">
 
@@ -29,9 +74,9 @@
   </button>
   <div class="nav-links" id="nav-links">
     <a class="nav-link" href="/oracle">Oracle</a>
-    <button type="button" class="nav-link" data-page="how" data-action="show-page">How it works</button>
-    <button type="button" class="nav-link" data-page="pricing" data-action="show-page">Pricing</button>
-    <button type="button" class="nav-link" data-page="about" data-action="show-page">About</button>
+    <a class="nav-link" href="/how" data-page="how" data-action="show-page">How it works</a>
+    <a class="nav-link" href="/pricing" data-page="pricing" data-action="show-page">Pricing</a>
+    <a class="nav-link" href="/about" data-page="about" data-action="show-page">About</a>
   </div>
   <button type="button" class="theme-toggle" data-action="toggle-theme" data-theme-toggle aria-label="Switch to light mode" title="Switch theme">
     <span class="theme-toggle-icon" aria-hidden="true">
@@ -758,17 +803,17 @@
       <div>
         <h4>Product</h4>
         <a href="/oracle">Oracle</a>
-        <a href="/#how">How it works</a>
-        <a href="/#debate">Boardroom</a>
-        <a href="/#memory">Memory</a>
-        <a href="/#brief">Decks</a>
+        <a href="/how">How it works</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/about">About</a>
+        <a href="/waitlist">Get access</a>
       </div>
       <div>
         <h4>Product</h4>
-        <a href="/#pricing">Pricing</a>
+        <a href="/pricing">Pricing</a>
         <a href="/waitlist">Get access</a>
-        <a href="/#debate">Start trial</a>
-        <a href="/#about">About</a>
+        <a href="/oracle">Start trial</a>
+        <a href="/about">About</a>
       </div>
       <div>
         <h4>Company</h4>

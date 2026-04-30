@@ -14,7 +14,7 @@ import time
 from collections import deque
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, request, send_file, send_from_directory
+from flask import Flask, Response, abort, jsonify, request, send_file, send_from_directory
 from werkzeug.exceptions import HTTPException, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -77,6 +77,7 @@ ALLOWED_FRONTEND_FILES = {
     "manifest.webmanifest",
     "sw.js",
     "orb.png",
+    "orb_crop.png",
     "favicon-32.png",
     "favicon-180.png",
     "icon-192.png",
@@ -277,6 +278,58 @@ def privacy_page():
 @app.route("/waitlist")
 def waitlist_page():
     return send_from_directory("frontend", "index.html")
+
+
+@app.route("/how")
+def how_page():
+    return send_from_directory("frontend", "index.html")
+
+
+@app.route("/pricing")
+def pricing_page():
+    return send_from_directory("frontend", "index.html")
+
+
+@app.route("/about")
+def about_page():
+    return send_from_directory("frontend", "index.html")
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    base = request.url_root.rstrip("/")
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        f"Sitemap: {base}/sitemap.xml\n"
+    )
+    return Response(body, mimetype="text/plain; charset=utf-8")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    base = request.url_root.rstrip("/")
+    urls = (
+        "/",
+        "/oracle",
+        "/how",
+        "/pricing",
+        "/about",
+        "/waitlist",
+        "/terms",
+        "/privacy",
+    )
+    xml_urls = "".join(
+        f"<url><loc>{base}{path}</loc></url>"
+        for path in urls
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        f"{xml_urls}"
+        "</urlset>"
+    )
+    return Response(xml, mimetype="application/xml; charset=utf-8")
 
 
 @app.route("/frontend/<path:path>")

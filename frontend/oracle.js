@@ -81,6 +81,34 @@
     if (Math.abs(dollars) >= 1_000) return '$' + (dollars / 1_000).toFixed(1) + 'k';
     return '$' + dollars.toFixed(0);
   }
+
+  // Count-up animation for metric values. Drives an interpolated scalar through
+  // the formatter so the numbers tween up while the unit suffixes stay correct.
+  function countUp(node, fromValue, toValue, fmt, duration) {
+    if (!node) return;
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || fromValue === toValue) {
+      node.textContent = fmt(toValue);
+      return;
+    }
+    const ms = duration || 900;
+    const start = performance.now();
+    const ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+    function frame(now) {
+      const t = Math.min(1, (now - start) / ms);
+      const v = fromValue + (toValue - fromValue) * ease(t);
+      node.textContent = fmt(v);
+      if (t < 1) requestAnimationFrame(frame);
+      else {
+        node.textContent = fmt(toValue);
+        node.classList.add('flash');
+        setTimeout(function () { node.classList.remove('flash'); }, 1200);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  // Track previous values so we tween from old → new on subsequent scans.
+  const prevMetrics = { mrr: 0, nrr: 0, subs: 0, failed: 0 };
   function fmtPct(pct, digits) {
     if (pct == null || isNaN(pct)) return '--';
     return Number(pct).toFixed(digits == null ? 1 : digits) + '%';
@@ -163,7 +191,17 @@
       }
     }
 
-    $('ox-mrr').textContent = fmtMoney(t.mrr_cents);
+    // Replace skeleton placeholders with the actual node before tweening.
+    function clearSkeleton(node) {
+      if (!node) return;
+      const skel = node.querySelector('.ox-skel');
+      if (skel) node.removeChild(skel);
+    }
+    ['ox-mrr', 'ox-nrr', 'ox-subs', 'ox-failed'].forEach(function (id) { clearSkeleton($(id)); });
+
+    countUp($('ox-mrr'), prevMetrics.mrr, t.mrr_cents || 0, fmtMoney, 900);
+    prevMetrics.mrr = t.mrr_cents || 0;
+
     const mrrDelta = d.mrr_d7_pct;
     const mrrDeltaEl = $('ox-mrr-delta');
     mrrDeltaEl.classList.remove('up', 'down');
@@ -174,7 +212,9 @@
       mrrDeltaEl.textContent = 'vs 7d ago';
     }
 
-    $('ox-nrr').textContent = fmtPct(t.nrr_pct, 1);
+    countUp($('ox-nrr'), prevMetrics.nrr, t.nrr_pct || 0, function (v) { return fmtPct(v, 1); }, 900);
+    prevMetrics.nrr = t.nrr_pct || 0;
+
     const nrrDelta = d.nrr_d7_delta;
     const nrrDeltaEl = $('ox-nrr-delta');
     nrrDeltaEl.classList.remove('up', 'down');
@@ -186,12 +226,16 @@
       nrrDeltaEl.textContent = 'vs 7d ago';
     }
 
-    $('ox-subs').textContent = (t.active_subs != null ? t.active_subs : '--');
+    const subs = t.active_subs != null ? t.active_subs : 0;
+    countUp($('ox-subs'), prevMetrics.subs, subs, function (v) { return Math.round(v).toLocaleString(); }, 900);
+    prevMetrics.subs = subs;
+
     $('ox-top-share').textContent = (t.top_customer_share != null)
       ? 'top customer · ' + fmtPct(t.top_customer_share * 100, 1)
       : 'top customer share';
 
-    $('ox-failed').textContent = fmtMoney(t.failed_payments_cents);
+    countUp($('ox-failed'), prevMetrics.failed, t.failed_payments_cents || 0, fmtMoney, 900);
+    prevMetrics.failed = t.failed_payments_cents || 0;
     $('ox-failed-count').textContent = (t.failed_payments_count || 0) + ' invoices today';
 
     renderSpark(summary.series || []);
@@ -223,6 +267,10 @@
     const fillPoints = linePoints + ' L' + W.toFixed(1) + ' ' + H + ' L0 ' + H + ' Z';
     linePath.setAttribute('d', linePoints);
     fillPath.setAttribute('d', fillPoints);
+    // Trigger draw-in animation by toggling the class.
+    linePath.classList.remove('draw');
+    void linePath.getBBox();
+    linePath.classList.add('draw');
   }
 
   // ── Counters ─────────────────────────────────────────────────────────────
