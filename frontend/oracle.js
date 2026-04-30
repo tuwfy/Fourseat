@@ -956,7 +956,7 @@
     const slide = DEMO_SLIDES[currentSlide];
     
     // Render snapshot and verdicts
-    renderSnapshot(slide.summary, 'demo');
+    renderSnapshot({ today: slide.summary, deltas: slide.summary, series: slide.summary.series }, 'demo');
     renderVerdicts([slide.verdict]);
     renderCounters({ total_open: 1, by_priority: { [slide.verdict.priority]: 1 } });
     
@@ -981,5 +981,34 @@
     await loadConnectors();
     runScan();
   }
+  
+  // --- AUDIT LOG STREAM ---
+  const STREAM_EVENTS = [
+    "Webhook: charge.succeeded [$140.00]",
+    "Rule match: churn_cluster [skip]",
+    "Anomaly scan: completed (124ms)",
+    "Webhook: customer.subscription.deleted",
+    "Verdict synthesized: P0 Churn",
+    "DB Sync: active_subs (1240)",
+    "Webhook: invoice.payment_failed",
+    "Rule match: failed_payment_leakage",
+    "Chairman verdict generated",
+    "Data pipeline: 41 events processed",
+    "Sync: Stripe -> Oracle (12ms)"
+  ];
+  const streamEl = document.getElementById('ox-stream-list');
+  if (streamEl) {
+    setInterval(() => {
+      if (Math.random() > 0.6) return;
+      const li = document.createElement('li');
+      const time = new Date().toISOString().split('T')[1].slice(0,8);
+      li.textContent = `[${time}] ${STREAM_EVENTS[Math.floor(Math.random() * STREAM_EVENTS.length)]}`;
+      streamEl.appendChild(li);
+      if (streamEl.children.length > 5) {
+        streamEl.removeChild(streamEl.firstChild);
+      }
+    }, 800);
+  }
+
   bootstrap();
 })();

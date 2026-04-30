@@ -61,6 +61,29 @@
 
   .ox-shell{max-width:1200px;margin:0 auto;padding:120px 24px 72px}
 
+  
+  .ox-stream {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.03);
+    border: 1px dashed var(--line-2);
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  body[data-theme='dark'] .ox-stream { background: rgba(255,255,255,0.02); }
+  .ox-stream::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30px;
+    background: linear-gradient(to top, var(--bg), transparent);
+  }
+  .ox-stream-title { font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ox-stream ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+  .ox-stream li { animation: oxRiseLeft 0.3s ease-out; }
+
   /* ── HERO ─────────────────────────────────────── */
   .ox-hero{
     display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
@@ -169,16 +192,16 @@
     width:42px;height:42px;flex-shrink:0;
     background:url(/frontend/logo-circle.png) center/100% 100% no-repeat;
     filter:drop-shadow(0 8px 22px rgba(183,114,66,.32));
-    animation:oxOrbFloat 5s ease-in-out infinite, oxOrbSpin 40s linear infinite;
+    animation:oxOrbSpin 10s linear infinite, oxOrbFloat 4s ease-in-out infinite;
     will-change:transform;
   }
   @keyframes oxOrbFloat{
-    0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-3px)}
+    0%,100%{translate:0 0}
+    50%{translate:0 -4px}
   }
   @keyframes oxOrbSpin{
-    from{filter:drop-shadow(0 8px 22px rgba(183,114,66,.32)) hue-rotate(0deg)}
-    to{filter:drop-shadow(0 8px 22px rgba(183,114,66,.32)) hue-rotate(8deg)}
+    from{rotate:0deg}
+    to{rotate:360deg}
   }
   .ox-snapshot-title{font-size:.95rem;font-weight:600;color:var(--fg)}
   .ox-snapshot-sub{font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:.15rem}
@@ -690,6 +713,13 @@
       </div>
 
       <div class="ox-flash" id="ox-flash" role="status" aria-live="polite"></div>
+      
+      <div class="ox-stream">
+        <div class="ox-stream-title">Live Pipeline Stream</div>
+        <ul id="ox-stream-list">
+          <li>[init] Listening for Stripe events...</li>
+        </ul>
+      </div>
     </div>
 
     <!-- SNAPSHOT CARD -->
