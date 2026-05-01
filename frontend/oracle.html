@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#f6f2ea"/>
 <meta name="color-scheme" content="light dark"/>
-<meta name="description" content="Fourseat Oracle - your Stripe revenue, debated by the board. Anomaly detection, verdicts, and a one-click board deck."/>
+<meta name="description" content="Fourseat Oracle — the connective AI layer. Connect Stripe, QuickBooks, GitHub, Linear, and Slack into one intelligence system that produces board-ready verdicts."/>
 <meta name="robots" content="index,follow,max-image-preview:large"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="Fourseat Oracle | Revenue intelligence for founders"/>
-<meta property="og:description" content="Detect Stripe anomalies, get board-ready verdicts, and generate revenue health briefings in one click."/>
+<meta property="og:description" content="Connect 5 sources. Detect cross-source anomalies. Get board-ready verdicts from Strategy, Finance, Tech, and Contrarian advisors."/>
 <meta property="og:url" content="https://fourseat.dev/oracle"/>
 <title>Fourseat Oracle - Revenue intelligence for founders</title>
 <link rel="canonical" href="https://fourseat.dev/oracle"/>
@@ -731,15 +731,31 @@
         <span class="ox-pulse" aria-hidden="true"></span>
         Fourseat Oracle
       </div>
-      <h1 class="ox-title">Your revenue,<br/><em>debated by the board.</em></h1>
+      <h1 class="ox-title">Your company,<br/><em>queryable by default.</em></h1>
       <p class="ox-lede">
-        Oracle hooks into Stripe, watches every charge, churn, and failed payment, and the moment something matters it produces a board-ready verdict signed by Strategy, Finance, Tech, and a Contrarian.
+        Oracle connects Stripe, QuickBooks, GitHub, Linear, and Slack into a single AI layer. It monitors what's happening, compares it to what should be happening, and surfaces board-ready verdicts the moment something matters.
       </p>
 
-      <div class="ox-connectors" aria-label="Workspace status">
-        <div class="ox-connector" id="ox-stripe-status">
+      <div class="ox-connectors" aria-label="Connected sources">
+        <div class="ox-connector ok" id="ox-stripe-status">
           <span class="dot" aria-hidden="true"></span>
-          <span id="ox-stripe-label">Workspace ready</span>
+          <span id="ox-stripe-label">Stripe · Live</span>
+        </div>
+        <div class="ox-connector ok" id="ox-qb-status">
+          <span class="dot" aria-hidden="true"></span>
+          <span>QuickBooks · Live</span>
+        </div>
+        <div class="ox-connector ok" id="ox-gh-status">
+          <span class="dot" aria-hidden="true"></span>
+          <span>GitHub · Live</span>
+        </div>
+        <div class="ox-connector ok" id="ox-linear-status">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Linear · Live</span>
+        </div>
+        <div class="ox-connector ok" id="ox-slack-status">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Slack · Live</span>
         </div>
       </div>
 
@@ -747,7 +763,7 @@
         <div class="ox-live-indicator" id="ox-run-btn">
           <span class="ox-live-dot"></span>
           <span id="ox-run-icon" style="display:none"></span>
-          <span id="ox-run-label">Scanning revenue stream</span>
+          <span id="ox-run-label">Scanning all sources</span>
           <span class="ox-live-timer" id="ox-live-timer">00:00</span>
         </div>
         <a class="ox-btn-ghost" href="#how">How it works</a>
@@ -758,17 +774,17 @@
       <div class="ox-stream">
         <div class="ox-stream-title">Live Pipeline Stream</div>
         <ul id="ox-stream-list">
-          <li>[init] Listening for Stripe events...</li>
+          <li>[init] Listening across 5 connected sources...</li>
         </ul>
       </div>
     </div>
 
     <!-- SNAPSHOT CARD -->
-    <aside class="ox-snapshot-card" aria-label="Revenue snapshot">
+    <aside class="ox-snapshot-card" aria-label="Company snapshot">
       <div class="ox-snapshot-head">
         <div class="ox-snapshot-orb" aria-hidden="true"></div>
         <div>
-          <div class="ox-snapshot-title">Revenue snapshot</div>
+          <div class="ox-snapshot-title">Company snapshot</div>
           <div class="ox-snapshot-sub" id="ox-snapshot-date">loading...</div>
         </div>
         <span class="ox-snapshot-tag" id="ox-snapshot-tag" hidden>preview</span>
@@ -834,35 +850,35 @@
   <!-- HOW IT WORKS -->
   <section class="ox-section" id="how">
     <div class="ox-section-label">How it works</div>
-    <h2 class="ox-section-title">Four steps, fully automated.</h2>
+    <h2 class="ox-section-title">Five sources. One closed loop.</h2>
     <div class="ox-steps">
       <div class="ox-step">
         <div class="ox-step-num">01</div>
-        <div class="ox-step-title">Connect Stripe</div>
-        <div class="ox-step-desc">One API key (or live webhook with signature verification). Oracle backfills 90 days and starts watching every event.</div>
+        <div class="ox-step-title">Connect everything</div>
+        <div class="ox-step-desc">One-click OAuth for Stripe, QuickBooks, GitHub, Linear, and Slack. Oracle backfills 90 days of history from each source and begins real-time monitoring.</div>
       </div>
       <div class="ox-step">
         <div class="ox-step-num">02</div>
-        <div class="ox-step-title">Detect anomalies</div>
-        <div class="ox-step-desc">Six rules run on every snapshot: churn cluster, NRR drop, failed-payment leakage, concentration risk, expansion stall, tier collapse.</div>
+        <div class="ox-step-title">Cross-source detection</div>
+        <div class="ox-step-desc">Rules run across all sources simultaneously: revenue vs. engineering output, sprint velocity vs. churn, Slack sentiment vs. financial health. Blind spots other tools miss.</div>
       </div>
       <div class="ox-step">
         <div class="ox-step-num">03</div>
         <div class="ox-step-title">Convene the board</div>
-        <div class="ox-step-desc">Strategy, Finance, Tech and a Contrarian each weigh in. The Chair compresses the debate into one verdict you can act on.</div>
+        <div class="ox-step-desc">Strategy, Finance, Tech and a Contrarian advisor each reason across the full context. The Chair synthesizes one verdict you can act on immediately.</div>
       </div>
       <div class="ox-step">
         <div class="ox-step-num">04</div>
-        <div class="ox-step-title">Ship the deck</div>
-        <div class="ox-step-desc">One click to generate a board-ready .pptx. Forward it. Resolve the verdict. Move on.</div>
+        <div class="ox-step-title">Close the loop</div>
+        <div class="ox-step-desc">Every resolution feeds back into the system. Oracle learns which signals matter to your company and gets sharper with every cycle. Open loop becomes closed loop.</div>
       </div>
     </div>
   </section>
 
   <!-- FINAL -->
   <section class="ox-final">
-    <h2>Stop building dashboards. <em>Start receiving verdicts.</em></h2>
-    <p>Oracle is rolling out with Fourseat early access. Add your Stripe key today, or join the waitlist for managed onboarding.</p>
+    <h2>Not another dashboard. <em>A self-improving loop.</em></h2>
+    <p>Oracle turns your company's own artifacts — every charge, commit, ticket, and message — into a single intelligence layer that reasons across all of it. Join early access and connect your first source today.</p>
     <div class="ox-cta-row">
       <a class="ox-btn-primary" href="/waitlist">Get early access</a>
       <a class="ox-btn-ghost" href="/sentinel">See Sentinel</a>

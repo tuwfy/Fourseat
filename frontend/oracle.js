@@ -297,6 +297,15 @@
     concentration_risk:      'Concentration risk',
     expansion_stall:         'Expansion stall',
     pricing_tier_collapse:   'Pricing tier collapse',
+    engineering_velocity:    'Engineering velocity decline',
+    sprint_scope_creep:      'Sprint scope creep',
+    deploy_freeze_risk:      'Deploy freeze → churn risk',
+    expense_anomaly:         'Expense anomaly',
+    slack_sentiment_shift:   'Team sentiment shift',
+    cross_source_misalign:   'Revenue ↔ engineering misalignment',
+    ar_aging_risk:           'Accounts receivable aging',
+    pr_bottleneck:           'PR review bottleneck',
+    team_burnout_signal:     'Team burnout signal',
   };
 
   function ruleLabel(rule) { return RULE_LABELS[rule] || rule; }
@@ -1017,6 +1026,151 @@
         "Health scores of remaining top 5 customers"
       ]
     }
+  },
+  {
+    "summary": {
+      "snapshot_date": "2026-04-30 15:30 UTC",
+      "mrr_cents": 11800000,
+      "mrr_d7_pct": 0.8,
+      "nrr_pct": 103.1,
+      "nrr_d7_delta": -0.3,
+      "active_subs": 1180,
+      "top_customer_share": 0.14,
+      "failed_payments_cents": 89000,
+      "failed_payments_count": 3,
+      "series": [{"mrr_cents": 11600000},{"mrr_cents": 11700000},{"mrr_cents": 11800000}]
+    },
+    "verdict": {
+      "id": "v11",
+      "rule": "engineering_velocity",
+      "priority": "P0",
+      "confidence": "High",
+      "resolved": false,
+      "one_liner": "GitHub deploy frequency dropped 67% this week while Linear sprint velocity fell 38%.",
+      "strategy_view": "Engineering is blocked. If this continues, the Q3 roadmap slides 4-6 weeks. Escalate now.",
+      "finance_view": "Slower shipping means delayed revenue from the enterprise tier launch. Adjust the forecast.",
+      "tech_view": "14 PRs are stuck in review. Two senior engineers are out and no one has merge authority. Fix the CODEOWNERS file.",
+      "contrarian_view": "Maybe the team is doing the right thing — shipping slower to avoid breaking production. Check the incident log.",
+      "evidence": {"deploy_freq_drop": 67, "velocity_drop": 38},
+      "actions": ["Unblock PR review pipeline", "Reassign merge authority"],
+      "watch_metrics": ["Deploy frequency (daily)", "PR cycle time"]
+    }
+  },
+  {
+    "summary": {
+      "snapshot_date": "2026-04-30 15:45 UTC",
+      "mrr_cents": 15600000,
+      "mrr_d7_pct": 2.1,
+      "nrr_pct": 107.4,
+      "nrr_d7_delta": 1.2,
+      "active_subs": 1340,
+      "top_customer_share": 0.09,
+      "failed_payments_cents": 210000,
+      "failed_payments_count": 7,
+      "series": [{"mrr_cents": 15200000},{"mrr_cents": 15400000},{"mrr_cents": 15600000}]
+    },
+    "verdict": {
+      "id": "v12",
+      "rule": "expense_anomaly",
+      "priority": "P1",
+      "confidence": "High",
+      "resolved": false,
+      "one_liner": "QuickBooks flagged $42k in unbudgeted SaaS spend this month — 3x the normal run rate.",
+      "strategy_view": "This is tool sprawl. Every new tool fragments the workflow. Consolidate before it becomes cultural.",
+      "finance_view": "At this burn rate, SaaS spend alone eats 18% of gross margin. Cap it or justify each line item.",
+      "tech_view": "Most of the spend is duplicate tooling — three monitoring platforms and two CI/CD providers. Consolidate.",
+      "contrarian_view": "Maybe the team is experimenting with better tools. Don't kill innovation with budget controls too early.",
+      "evidence": {"monthly_saas": 42000, "normal_run_rate": 14000},
+      "actions": ["Audit all active SaaS subscriptions", "Set up approval workflow for new tools"],
+      "watch_metrics": ["Monthly SaaS spend vs. budget"]
+    }
+  },
+  {
+    "summary": {
+      "snapshot_date": "2026-04-30 16:00 UTC",
+      "mrr_cents": 9200000,
+      "mrr_d7_pct": -1.8,
+      "nrr_pct": 96.2,
+      "nrr_d7_delta": -3.1,
+      "active_subs": 920,
+      "top_customer_share": 0.22,
+      "failed_payments_cents": 340000,
+      "failed_payments_count": 11,
+      "series": [{"mrr_cents": 9500000},{"mrr_cents": 9350000},{"mrr_cents": 9200000}]
+    },
+    "verdict": {
+      "id": "v13",
+      "rule": "deploy_freeze_risk",
+      "priority": "P0",
+      "confidence": "High",
+      "resolved": false,
+      "one_liner": "GitHub shows zero deploys in 72 hours. Stripe churn spiked 4x in the same window. These are correlated.",
+      "strategy_view": "Customers are churning because the product stopped improving. Ship something visible today.",
+      "finance_view": "The 72-hour freeze has already cost us $14k in churned MRR. Every additional day compounds.",
+      "tech_view": "A failed CI pipeline is blocking all merges. The fix is a one-line config change in the build file.",
+      "contrarian_view": "Correlation is not causation. The churn may be seasonal. But fix the pipeline anyway.",
+      "evidence": {"deploy_gap_hours": 72, "churn_spike": 4.0},
+      "actions": ["Fix CI pipeline immediately", "Ship a customer-visible update within 24h"],
+      "watch_metrics": ["Deploy frequency", "Churn rate (daily)"]
+    }
+  },
+  {
+    "summary": {
+      "snapshot_date": "2026-04-30 16:15 UTC",
+      "mrr_cents": 13400000,
+      "mrr_d7_pct": 1.4,
+      "nrr_pct": 105.8,
+      "nrr_d7_delta": 0.6,
+      "active_subs": 1290,
+      "top_customer_share": 0.11,
+      "failed_payments_cents": 67000,
+      "failed_payments_count": 2,
+      "series": [{"mrr_cents": 13100000},{"mrr_cents": 13250000},{"mrr_cents": 13400000}]
+    },
+    "verdict": {
+      "id": "v14",
+      "rule": "team_burnout_signal",
+      "priority": "P1",
+      "confidence": "Medium",
+      "resolved": false,
+      "one_liner": "Slack shows 12 mentions of 'burnout' and 'overworked' in eng channels this week. Linear shows 60-hour sprint loads.",
+      "strategy_view": "This is a retention risk. If you lose a senior engineer now, the roadmap dies. Act before they resign.",
+      "finance_view": "Replacing a senior engineer costs 6-9 months of salary. Prevention is 10x cheaper than replacement.",
+      "tech_view": "Sprint loads are 40% above sustainable capacity. Cut scope on the current sprint immediately.",
+      "contrarian_view": "People vent in Slack. Check 1:1 notes and actual attrition signals before sounding the alarm.",
+      "evidence": {"burnout_mentions": 12, "sprint_load_hours": 60},
+      "actions": ["Schedule skip-level 1:1s this week", "Reduce current sprint scope by 30%"],
+      "watch_metrics": ["Slack sentiment (eng channels)", "Sprint load vs. capacity"]
+    }
+  },
+  {
+    "summary": {
+      "snapshot_date": "2026-04-30 16:30 UTC",
+      "mrr_cents": 18200000,
+      "mrr_d7_pct": 3.5,
+      "nrr_pct": 112.1,
+      "nrr_d7_delta": 2.4,
+      "active_subs": 1520,
+      "top_customer_share": 0.07,
+      "failed_payments_cents": 45000,
+      "failed_payments_count": 1,
+      "series": [{"mrr_cents": 17500000},{"mrr_cents": 17800000},{"mrr_cents": 18200000}]
+    },
+    "verdict": {
+      "id": "v15",
+      "rule": "cross_source_misalign",
+      "priority": "P1",
+      "confidence": "High",
+      "resolved": false,
+      "one_liner": "Revenue is up 3.5% but engineering is building features no paying customer requested. Linear backlog vs. Stripe expansion data are misaligned.",
+      "strategy_view": "The product team is building what they think is cool, not what drives expansion. Realign the roadmap to top-revenue customer requests.",
+      "finance_view": "Expansion revenue is coming from only 2 features. 80% of engineering effort is on features with zero revenue attribution.",
+      "tech_view": "Cross-reference Linear tickets tagged 'customer-request' with actual Stripe expansion events. The overlap is only 12%.",
+      "contrarian_view": "Some of the best products were built without customer input. But at this stage, you can't afford to guess.",
+      "evidence": {"roadmap_customer_overlap": 12, "revenue_growth": 3.5},
+      "actions": ["Tag all Linear tickets with revenue attribution", "Kill or pause non-revenue features"],
+      "watch_metrics": ["Feature-to-revenue attribution rate"]
+    }
   }
 ];
   
@@ -1035,7 +1189,7 @@
   }
 
   async function runScan() {
-    runLabel.textContent = 'Scanning revenue stream';
+    runLabel.textContent = 'Scanning all sources';
     
     cycleSlide();
     if (!slideInterval) {
@@ -1064,17 +1218,26 @@
   
   // --- AUDIT LOG STREAM ---
   const STREAM_EVENTS = [
-    "Webhook: charge.succeeded [$140.00]",
-    "Rule match: churn_cluster [skip]",
-    "Anomaly scan: completed (124ms)",
-    "Webhook: customer.subscription.deleted",
-    "Verdict synthesized: P0 Churn",
-    "DB Sync: active_subs (1240)",
-    "Webhook: invoice.payment_failed",
-    "Rule match: failed_payment_leakage",
-    "Chairman verdict generated",
-    "Data pipeline: 41 events processed",
-    "Sync: Stripe -> Oracle (12ms)"
+    "Stripe: charge.succeeded [$140.00]",
+    "Stripe: customer.subscription.deleted",
+    "Stripe: invoice.payment_failed [$89.00]",
+    "QuickBooks: P&L sync completed (Q2)",
+    "QuickBooks: expense anomaly flagged [$4,200 SaaS spend]",
+    "QuickBooks: AR aging > 60 days for 3 accounts",
+    "GitHub: PR #847 merged → main (auth-refactor)",
+    "GitHub: deploy frequency: 3.2/day → 1.1/day (⚠ drop)",
+    "GitHub: 14 PRs open > 5 days, review bottleneck detected",
+    "Linear: Sprint velocity dropped 38% vs. last cycle",
+    "Linear: 23 tickets moved to backlog (scope creep signal)",
+    "Linear: Bug count up 4x in 'Payments' project",
+    "Slack: #eng-general sentiment shift: neutral → negative",
+    "Slack: 4 mentions of 'burnout' in last 48h",
+    "Slack: CEO ↔ CTO DM frequency up 3x (escalation signal)",
+    "Cross-source: churn spike correlates with deploy freeze",
+    "Cross-source: Slack frustration + Linear backlog → team risk",
+    "Chairman verdict synthesized: P0",
+    "Pipeline: 147 events processed across 5 sources (89ms)",
+    "Rule match: engineering_velocity_decline [triggered]",
   ];
   const streamEl = document.getElementById('ox-stream-list');
   if (streamEl) {
