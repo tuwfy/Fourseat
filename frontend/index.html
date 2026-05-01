@@ -74,9 +74,7 @@
   </button>
   <div class="nav-links" id="nav-links">
     <a class="nav-link" href="/oracle">Oracle</a>
-    <a class="nav-link" href="/how" data-page="how" data-action="show-page">How it works</a>
-    <a class="nav-link" href="/pricing" data-page="pricing" data-action="show-page">Pricing</a>
-    <a class="nav-link" href="/about" data-page="about" data-action="show-page">About</a>
+    <a class="nav-link" href="#how">How it works</a>
   </div>
   <button type="button" class="theme-toggle" data-action="toggle-theme" data-theme-toggle aria-label="Switch to light mode" title="Switch theme">
     <span class="theme-toggle-icon" aria-hidden="true">
@@ -95,361 +93,211 @@
 <!-- ══ HOME PAGE ═════════════════════════════════════ -->
 <main id="page-home" class="page active">
 
-  <section class="hero reveal" aria-label="Hero">
-    <div class="hero-bg" aria-hidden="true">
-      <div class="hero-grid" aria-hidden="true"></div>
-    </div>
-    <div class="hero-content">
-      <div>
-        <a class="hero-badge" href="/oracle">
-          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".4"/><path d="M8 5a3 3 0 100 6A3 3 0 008 5z"/></svg>
-          The Company Brain &middot; revenue intelligence, on autopilot
-          <span class="hero-badge-arrow">&rarr;</span>
+  <!-- ══ HERO ─────────────────────────────────────────── -->
+  <section class="fs-hero reveal" aria-label="Hero">
+    <div class="fs-hero-aura" aria-hidden="true"></div>
+    <div class="fs-hero-inner">
+      <a class="fs-eyebrow" href="/oracle">
+        <span class="fs-eyebrow-dot" aria-hidden="true"></span>
+        The Company Brain
+        <span class="fs-eyebrow-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+      <h1 class="fs-headline">
+        <span class="fs-line">Your revenue,</span>
+        <span class="fs-line"><em>debated by the board.</em></span>
+      </h1>
+      <p class="fs-sub">Stripe in. Verdict out. Sixty seconds.</p>
+      <div class="fs-cta">
+        <a class="fs-btn fs-btn-primary" href="/oracle">
+          <span>Open Oracle</span>
+          <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <h1 class="hero-title">
-          Your revenue,<br/>
-          <em>debated by the board.</em>
-        </h1>
-        <p class="hero-sub">
-          Fourseat is the connective intelligence layer for founders. We hook into your Stripe and operational data, watch every charge, churn, and failed payment, and the moment something matters we deliver a <strong>board-ready verdict</strong> signed by Strategy, Finance, Tech, and a Contrarian.
-        </p>
-        <div class="hero-actions">
-          <a class="btn-hero-primary" href="/oracle">Open Oracle</a>
-          <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
-        </div>
-        <ul class="hero-stats" aria-label="Highlights">
-          <li><span class="hero-stat-num">6</span><span class="hero-stat-lbl">anomaly rules, always on</span></li>
-          <li><span class="hero-stat-num">4</span><span class="hero-stat-lbl">specialist advisors per verdict</span></li>
-          <li><span class="hero-stat-num">~60s</span><span class="hero-stat-lbl">from anomaly to deck</span></li>
-        </ul>
-      </div>
-
-      <aside class="hero-card" aria-label="Oracle preview">
-        <div class="hero-card-head">
-          <div class="hero-orb" aria-hidden="true"></div>
-          <div>
-            <div class="hero-card-title">Revenue anomaly · P0</div>
-            <div class="hero-card-sub">Churn cluster · 3.3x baseline</div>
-          </div>
-        </div>
-        <ul class="hero-snapshot" aria-hidden="true">
-          <li><span class="snap-bar" style="background:#9c5c2a"></span><span class="snap-role">Strategy</span><span class="snap-text">A 3x churn spike is a positioning signal, not retention.</span></li>
-          <li><span class="snap-bar" style="background:#3f7a55"></span><span class="snap-role">Finance</span><span class="snap-text">One quarter of NRR at risk if this rate holds.</span></li>
-          <li><span class="snap-bar" style="background:#3a6dad"></span><span class="snap-role">Technology</span><span class="snap-text">Cross-reference cancellations with last 14d of releases.</span></li>
-          <li><span class="snap-bar" style="background:#a83a22"></span><span class="snap-role">Contrarian</span><span class="snap-text">Maybe this is healthy churn. Don't fix it, accelerate it.</span></li>
-        </ul>
-        <div class="hero-verdict">
-          <div class="hero-verdict-label">Chair's verdict</div>
-          <div class="hero-verdict-text">Treat as a product-market signal, not a pricing one. Investigate which ICP just stopped fitting.</div>
-          <div class="hero-verdict-meta"><span class="conf-pill conf-high">High confidence</span></div>
-        </div>
-        <a class="btn-hero-primary hero-card-cta" href="/oracle">
-          Open the Oracle
-        </a>
-      </aside>
-    </div>
-  </section>
-
-  <!-- ORACLE SHOWCASE -->
-  <section class="section sentinel-hero reveal" aria-label="Fourseat Oracle">
-    <div class="sentinel-inner">
-      <div class="sentinel-copy">
-        <div class="sentinel-eyebrow">
-          <span class="sentinel-pulse" aria-hidden="true"></span>
-          Fourseat Oracle &middot; live revenue intelligence
-        </div>
-        <h2 class="section-title" style="margin-bottom:1rem">
-          Six rules,<br/><em>always watching.</em>
-        </h2>
-        <p class="section-sub" style="max-width:540px;margin-left:0">
-          Oracle continuously scans your Stripe data for the six anomalies that actually move the business: churn clusters, NRR drops, failed-payment leakage, concentration risk, expansion stall, and pricing-tier collapse. The moment one fires, the board convenes.
-        </p>
-        <ul class="sentinel-bullets">
-          <li><span class="sentinel-bullet-dot"></span> Connect Stripe in one click. 90 days of history, instantly</li>
-          <li><span class="sentinel-bullet-dot"></span> Auto-prioritized verdicts with a four-advisor panel</li>
-          <li><span class="sentinel-bullet-dot"></span> One-click board deck (.pptx) for every P0 verdict</li>
-        </ul>
-        <div class="hero-actions" style="margin-top:2rem">
-          <a class="btn-hero-primary" href="/oracle">Open the Oracle dashboard</a>
-          <button type="button" class="btn-hero-secondary" data-action="open-waitlist">Get early access</button>
-        </div>
-      </div>
-
-      <aside class="sentinel-glance" aria-label="Oracle snapshot">
-        <div class="sentinel-glance-top">
-          <div class="sentinel-glance-title">Revenue Health Briefing</div>
-          <div class="sentinel-glance-sub">Live snapshot &middot; preview</div>
-        </div>
-
-        <div class="sentinel-glance-question">
-          <span class="sentinel-glance-q-label">Top verdict</span>
-          <span class="sentinel-glance-q-text">P0 &middot; Churn cluster (3.3x baseline)</span>
-        </div>
-
-        <div class="sentinel-glance-grid">
-          <article class="sentinel-mini-card mini-strategy">
-            <div class="sentinel-mini-role">Strategy</div>
-            <div class="sentinel-mini-text">A concentrated cluster like this is a positioning signal, not retention.</div>
-          </article>
-          <article class="sentinel-mini-card mini-finance">
-            <div class="sentinel-mini-role">Finance</div>
-            <div class="sentinel-mini-text">If this rate holds, you'll lose a quarter's NRR by month-end.</div>
-          </article>
-          <article class="sentinel-mini-card mini-ops">
-            <div class="sentinel-mini-role">Contrarian</div>
-            <div class="sentinel-mini-text">Maybe this is healthy churn and you're shedding the wrong ICP. Don't fix it, accelerate it.</div>
-          </article>
-        </div>
-
-        <div class="sentinel-chair-note">
-          <div class="sentinel-chair-head">
-            <span>Chair verdict</span>
-            <span class="conf-pill conf-high">High confidence</span>
-          </div>
-          <div class="sentinel-chair-text">Treat as a product-market signal. Pull the churn cohort and run five same-day exit interviews before any pricing change.</div>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- TRUST STRIP -->
-  <section class="trust-strip reveal" aria-label="Built for">
-    <div class="trust-inner">
-      <div class="trust-label">Built for</div>
-      <div class="trust-items">
-        <span>Pre-seed founders</span>
-        <span class="trust-dot"></span>
-        <span>Seed &amp; Series A teams</span>
-        <span class="trust-dot"></span>
-        <span>Operator-led studios</span>
-        <span class="trust-dot"></span>
-        <span>Solo CEOs</span>
-        <span class="trust-dot"></span>
-        <span>Fractional execs</span>
+        <button type="button" class="fs-btn fs-btn-ghost" data-action="open-waitlist">Get early access</button>
       </div>
     </div>
-  </section>
 
-  <!-- THE WEDGE -->
-  <section class="section" aria-label="What Oracle does">
-    <div class="section-inner reveal">
-      <div class="section-label">The Company Brain</div>
-      <h2 class="section-title">From raw data<br/><em>to executive conviction.</em></h2>
-      <p class="section-sub">Every company runs on a dozen disconnected systems. The most expensive work in the building is leaders manually stitching that data into a story before they can decide anything. Oracle closes the loop.</p>
-      <div class="features-grid">
-        <a class="feature-card feature-card-new" href="/oracle">
-          <div class="feature-badge">Core</div>
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg></div>
-          <div class="feature-name">Continuous monitoring</div>
-          <div class="feature-desc">Six anomaly rules run on every snapshot: churn cluster, NRR drop, failed-payment leakage, concentration risk, expansion stall, tier collapse. You don't watch dashboards anymore.</div>
-        </a>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="4" width="6" height="10" rx="3"></rect><path d="M6 10a6 6 0 0 0 12 0"></path><path d="M12 16v4"></path><path d="M9 20h6"></path></svg></div>
-          <div class="feature-name">The four advisors</div>
-          <div class="feature-desc">Strategy, Finance, Tech, and a Contrarian each weigh in on every anomaly. The Chair compresses the debate into one sentence you can act on.</div>
+    <!-- Animated verdict card -->
+    <div class="fs-hero-stage" aria-hidden="true">
+      <div class="fs-card fs-card-1">
+        <div class="fs-card-pill fs-card-pill-p0">P0 · Churn cluster</div>
+        <div class="fs-card-headline">3.3x baseline</div>
+        <div class="fs-card-sub">Detected at 09:14 UTC</div>
+      </div>
+      <div class="fs-card fs-card-2">
+        <div class="fs-card-pill fs-card-pill-conf">High confidence</div>
+        <div class="fs-card-quote">"Treat this as a positioning signal, not retention. Investigate which ICP just stopped fitting."</div>
+        <div class="fs-card-byline">Chair's verdict</div>
+      </div>
+      <div class="fs-card fs-card-3">
+        <div class="fs-card-row">
+          <span class="fs-dot" style="background:#9c5c2a"></span>
+          <span class="fs-card-mini">Strategy &middot; positioning signal</span>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
-          <div class="feature-name">Board-ready decks</div>
-          <div class="feature-desc">Every P0 verdict ships with a one-click PowerPoint export: evidence, advisor panel, recommended actions, and the metrics to watch next week.</div>
+        <div class="fs-card-row">
+          <span class="fs-dot" style="background:#3f7a55"></span>
+          <span class="fs-card-mini">Finance &middot; one quarter NRR at risk</span>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.9 4.9l2.8 2.8"/><path d="M16.3 16.3l2.8 2.8"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.9 19.1l2.8-2.8"/><path d="M16.3 7.7l2.8-2.8"/></svg></div>
-          <div class="feature-name">Built for modern founders</div>
-          <div class="feature-desc">The connective layer that makes a company legible to AI by default. Stripe today; QuickBooks, GitHub, and Salesforce next. Each integration compounds the others.</div>
+        <div class="fs-card-row">
+          <span class="fs-dot" style="background:#3a6dad"></span>
+          <span class="fs-card-mini">Tech &middot; cross-ref last 14d releases</span>
+        </div>
+        <div class="fs-card-row">
+          <span class="fs-dot" style="background:#a83a22"></span>
+          <span class="fs-card-mini">Contrarian &middot; maybe accelerate it</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- LIVE PREVIEW -->
-  <section class="section preview-section" aria-label="See a real verdict">
-    <div class="section-inner reveal">
-      <div class="section-label">A real verdict</div>
-      <h2 class="section-title">What Oracle delivers,<br/><em>the moment it matters.</em></h2>
-      <p class="section-sub">A real Oracle verdict, fired automatically when failed-payment volume crossed 5% of MRR for seven days running. No human asked. No dashboard checked.</p>
+  <!-- ══ NUMBERS STRIP ────────────────────────────────── -->
+  <section class="fs-numbers reveal" aria-label="By the numbers">
+    <div class="fs-num">
+      <div class="fs-num-big" data-counter="6">0</div>
+      <div class="fs-num-label">anomaly rules<br/>always watching</div>
+    </div>
+    <div class="fs-num-divider" aria-hidden="true"></div>
+    <div class="fs-num">
+      <div class="fs-num-big" data-counter="4">0</div>
+      <div class="fs-num-label">specialist advisors<br/>on every verdict</div>
+    </div>
+    <div class="fs-num-divider" aria-hidden="true"></div>
+    <div class="fs-num">
+      <div class="fs-num-big" data-counter="60" data-suffix="s">0s</div>
+      <div class="fs-num-label">end to end<br/>anomaly to deck</div>
+    </div>
+  </section>
 
-      <div class="preview-board">
-        <div class="preview-question">
-          <span class="preview-q-label">Anomaly · P1</span>
-          <span class="preview-q-text">Failed payments averaging 6.6% of MRR over 7 days &middot; <strong style="color:var(--accent)">$78,400 at risk</strong></span>
+  <!-- ══ MOMENT 1 · CONNECT ───────────────────────────── -->
+  <section class="fs-moment reveal" id="how" aria-label="Connect">
+    <div class="fs-moment-text">
+      <div class="fs-moment-step">01 / Connect</div>
+      <h2 class="fs-moment-title">One key.<br/><em>Ninety days, instantly.</em></h2>
+      <p class="fs-moment-line">Plug in your Stripe key and Oracle backfills the last quarter of revenue. No engineering work. No dashboards to wire.</p>
+    </div>
+    <div class="fs-moment-stage">
+      <div class="fs-pill-stack" aria-hidden="true">
+        <div class="fs-conn fs-conn-1">
+          <span class="fs-conn-dot"></span>
+          <span class="fs-conn-name">Stripe</span>
+          <span class="fs-conn-meta">connected</span>
         </div>
-
-        <div class="preview-grid">
-          <div class="preview-card" style="--accent:#9c5c2a">
-            <div class="preview-bar"></div>
-            <div class="preview-head">
-              <span class="preview-role">Strategy</span>
-              <span class="preview-tag">Advisor view</span>
-            </div>
-            <p class="preview-text">Failed payments at this rate signal payment-method decay or bot-driven sign-ups. Don't conflate with churn until you triage.</p>
-          </div>
-          <div class="preview-card" style="--accent:#3f7a55">
-            <div class="preview-bar"></div>
-            <div class="preview-head">
-              <span class="preview-role">Finance</span>
-              <span class="preview-tag">Advisor view</span>
-            </div>
-            <p class="preview-text">At 5%+ of MRR this is real money on the floor every week. Smart Retries plus a 14-day rescue email plays back ~40% in benchmarks.</p>
-          </div>
-          <div class="preview-card" style="--accent:#3a6dad">
-            <div class="preview-bar"></div>
-            <div class="preview-head">
-              <span class="preview-role">Technology</span>
-              <span class="preview-tag">Advisor view</span>
-            </div>
-            <p class="preview-text">Enable Stripe Smart Retries with a custom 3/7/14 cadence and surface payment-update prompts in-app, not just email.</p>
-          </div>
-          <div class="preview-card" style="--accent:#a83a22">
-            <div class="preview-bar"></div>
-            <div class="preview-head">
-              <span class="preview-role">Contrarian</span>
-              <span class="preview-tag">Advisor view</span>
-            </div>
-            <p class="preview-text">Your dunning copy is bank-form English. Send a one-line founder email to anyone over $1k. Friction beats automation here.</p>
-          </div>
+        <div class="fs-conn fs-conn-2">
+          <span class="fs-conn-dot is-pending"></span>
+          <span class="fs-conn-name">QuickBooks</span>
+          <span class="fs-conn-meta">soon</span>
         </div>
-
-        <div class="preview-chair">
-          <div class="preview-chair-head">
-            <div class="chairman-orb" aria-hidden="true"></div>
-            <div>
-              <div class="preview-chair-title">Chair's verdict &middot; auto-generated</div>
-              <div class="preview-chair-sub">Synthesis of the full advisor panel</div>
-            </div>
-            <span class="conf-pill conf-high preview-chair-pill">High confidence</span>
-          </div>
-          <div class="preview-verdict">Failed payments are leaking real money. Rescue cadence is the highest-ROI lever this week.</div>
-          <div class="preview-cols">
-            <div class="preview-col">
-              <div class="preview-col-title">Recommended actions</div>
-              <ul><li>Enable Smart Retries (3/7/14 cadence)</li><li>Personal outreach on failed invoices &gt; $1k</li><li>Ship dunning email v2 with payment-method update link</li></ul>
-            </div>
-            <div class="preview-col">
-              <div class="preview-col-title">Watch next week</div>
-              <ul><li>Failed invoice $ recovered within 14 days</li><li>Payment-method update rate from dunning emails</li></ul>
-            </div>
-            <div class="preview-col">
-              <div class="preview-col-title">Output</div>
-              <ul><li>One-page board deck (.pptx)</li><li>Persisted to your verdict queue</li><li>Forward, resolve, or re-open in one tap</li></ul>
-            </div>
-          </div>
+        <div class="fs-conn fs-conn-3">
+          <span class="fs-conn-dot is-pending"></span>
+          <span class="fs-conn-name">GitHub</span>
+          <span class="fs-conn-meta">soon</span>
         </div>
-
-        <div class="preview-cta">
-          <a class="btn-hero-primary" href="/oracle">Open the Oracle</a>
-          <button type="button" class="btn-hero-secondary" data-action="open-how">See how it works</button>
+        <div class="fs-conn fs-conn-4">
+          <span class="fs-conn-dot is-pending"></span>
+          <span class="fs-conn-name">Linear</span>
+          <span class="fs-conn-meta">soon</span>
+        </div>
+        <div class="fs-conn fs-conn-5">
+          <span class="fs-conn-dot is-pending"></span>
+          <span class="fs-conn-name">Slack</span>
+          <span class="fs-conn-meta">soon</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="section" style="padding-top:0" aria-label="Testimonials">
-    <div class="section-inner reveal">
-      <div class="section-label">From the field</div>
-      <h2 class="section-title">How teams use<br/><em>Fourseat</em></h2>
-      <p class="section-sub">Founders and operators rely on Fourseat for board prep, narrative stress-tests, and faster alignment across strategy, finance and product.</p>
-      <div class="testimonials-grid">
-        <article class="testi-card">
-          <div class="testi-quote">“We run major fundraise and positioning questions through the board before investor calls. The contrarian seat alone has saved us from weak narratives.”</div>
-          <div class="testi-author">
-            <div class="testi-avatar t-img-1" aria-hidden="true">JS</div>
-            <div>
-              <div class="testi-name">Jamie S.</div>
-              <div class="testi-role">Founder · B2B SaaS</div>
-            </div>
-          </div>
-        </article>
-        <article class="testi-card">
-          <div class="testi-quote">“Board updates used to eat a full day. Structured prompts and deck scaffolding cut that down so we can focus on the actual decisions.”</div>
-          <div class="testi-author">
-            <div class="testi-avatar t-img-2" aria-hidden="true">MP</div>
-            <div>
-              <div class="testi-name">Marcus P.</div>
-              <div class="testi-role">COO · Fintech</div>
-            </div>
-          </div>
-        </article>
-        <article class="testi-card">
-          <div class="testi-quote">“Memory search across decks and memos means we stop re-litigating old commitments. It’s become part of our weekly leadership rhythm.”</div>
-          <div class="testi-author">
-            <div class="testi-avatar t-img-3" aria-hidden="true">DK</div>
-            <div>
-              <div class="testi-name">Dana K.</div>
-              <div class="testi-role">Principal · Studio</div>
-            </div>
-          </div>
-        </article>
-      </div>
+  <!-- ══ MOMENT 2 · DETECT ────────────────────────────── -->
+  <section class="fs-moment fs-moment-flip reveal" aria-label="Detect">
+    <div class="fs-moment-text">
+      <div class="fs-moment-step">02 / Detect</div>
+      <h2 class="fs-moment-title">The moment<br/><em>something matters.</em></h2>
+      <p class="fs-moment-line">Six rules run on every snapshot. Churn clusters, NRR drops, failed payment leakage, concentration risk. The signal finds you.</p>
     </div>
-  </section>
-
-  <!-- PRICING -->
-  <section class="section" aria-label="Pricing">
-    <div class="section-inner reveal">
-      <div class="section-label">Pricing</div>
-      <h2 class="section-title">Plans built for<br/><em>real decisions</em></h2>
-      <div class="pricing-grid">
-        <div class="price-card">
-          <div class="price-tier">Founder</div>
-          <div class="price-amount">$99<span>/mo</span></div>
-          <div class="price-desc">For solo founders running a real revenue motion.</div>
-          <ul class="price-features">
-            <li>Stripe connect &middot; 90 days of history</li>
-            <li>Weekly anomaly scans</li>
-            <li>4-advisor verdicts on every P0 / P1</li>
-            <li>5 board decks per month (.pptx)</li>
-            <li>Workspace memory for 10 documents</li>
-          </ul>
-          <button type="button" class="btn-price" data-action="open-waitlist">Get started</button>
+    <div class="fs-moment-stage">
+      <div class="fs-radar" aria-hidden="true">
+        <div class="fs-radar-ring"></div>
+        <div class="fs-radar-ring fs-radar-ring-2"></div>
+        <div class="fs-radar-ring fs-radar-ring-3"></div>
+        <div class="fs-radar-blip fs-radar-blip-1">
+          <span class="fs-radar-pulse"></span>
+          <span class="fs-radar-label">Churn cluster &middot; P0</span>
         </div>
-        <div class="price-card featured">
-          <div class="price-tier">Operator</div>
-          <div class="price-amount">$399<span>/mo</span></div>
-          <div class="price-desc">For funded teams treating revenue intelligence as a habit.</div>
-          <ul class="price-features">
-            <li>Everything in Founder</li>
-            <li>Daily anomaly scans &middot; full 6-rule suite</li>
-            <li>Auto-deck on every P0 verdict</li>
-            <li>Webhook ingestion &middot; real-time alerts</li>
-            <li>Unlimited workspace memory</li>
-            <li>Slack delivery for verdicts</li>
-            <li>Team workspace</li>
-          </ul>
-          <button type="button" class="btn-price featured" data-action="open-waitlist">Start free trial</button>
-        </div>
-        <div class="price-card">
-          <div class="price-tier">Enterprise</div>
-          <div class="price-amount">Custom</div>
-          <div class="price-desc">For multi-entity revenue and ops leaders.</div>
-          <ul class="price-features">
-            <li>Everything in Operator</li>
-            <li>Multi-company workspaces</li>
-            <li>QuickBooks, Salesforce, GitHub on roadmap</li>
-            <li>SSO &middot; SCIM &middot; audit log</li>
-            <li>API access &middot; white-label decks</li>
-            <li>Dedicated onboarding</li>
-          </ul>
-          <button type="button" class="btn-price" data-action="open-waitlist">Talk to us</button>
+        <div class="fs-radar-blip fs-radar-blip-2">
+          <span class="fs-radar-pulse"></span>
+          <span class="fs-radar-label">Failed payments &middot; P1</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CLOSING CTA -->
-  <section class="section closing-cta reveal" aria-label="Get started">
-    <div class="closing-cta-card">
-      <div class="closing-cta-glow" aria-hidden="true"></div>
-      <div class="closing-cta-inner">
-        <div class="section-label">Ready to ship?</div>
-        <h2 class="section-title" style="margin-bottom:1rem">Stop building dashboards.<br/><em>Start receiving verdicts.</em></h2>
-        <p class="section-sub" style="margin:0 auto 2rem;max-width:540px">Connect Stripe, run one scan, and watch four advisors pressure-test your real revenue data. First verdict on your screen in under sixty seconds.</p>
-        <div class="hero-actions" style="justify-content:center">
-          <a class="btn-hero-primary" href="/oracle">Open the Oracle</a>
-          <button type="button" class="btn-hero-secondary" data-action="open-pricing">See pricing</button>
+  <!-- ══ MOMENT 3 · DEBATE ────────────────────────────── -->
+  <section class="fs-moment reveal" aria-label="Debate">
+    <div class="fs-moment-text">
+      <div class="fs-moment-step">03 / Debate</div>
+      <h2 class="fs-moment-title">Four voices.<br/><em>One verdict.</em></h2>
+      <p class="fs-moment-line">Strategy, Finance, Technology, and a Contrarian each weigh in. The Chair compresses the debate into one sentence you can act on.</p>
+    </div>
+    <div class="fs-moment-stage">
+      <div class="fs-panel" aria-hidden="true">
+        <div class="fs-panel-card" style="--c:#9c5c2a">
+          <div class="fs-panel-role">Strategy</div>
+          <div class="fs-panel-text">A 3x churn spike is a positioning signal, not retention.</div>
+        </div>
+        <div class="fs-panel-card" style="--c:#3f7a55">
+          <div class="fs-panel-role">Finance</div>
+          <div class="fs-panel-text">One quarter of NRR at risk if this rate holds.</div>
+        </div>
+        <div class="fs-panel-card" style="--c:#3a6dad">
+          <div class="fs-panel-role">Technology</div>
+          <div class="fs-panel-text">Cross-reference cancellations with last 14 days of releases.</div>
+        </div>
+        <div class="fs-panel-card" style="--c:#a83a22">
+          <div class="fs-panel-role">Contrarian</div>
+          <div class="fs-panel-text">Maybe this is healthy churn. Don't fix it, accelerate it.</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ══ MOMENT 4 · SHIP ──────────────────────────────── -->
+  <section class="fs-moment fs-moment-flip reveal" aria-label="Ship">
+    <div class="fs-moment-text">
+      <div class="fs-moment-step">04 / Ship</div>
+      <h2 class="fs-moment-title">Board-ready<br/><em>in seconds.</em></h2>
+      <p class="fs-moment-line">Every P0 verdict ships with a one-click PowerPoint export. Forward it. Move on.</p>
+    </div>
+    <div class="fs-moment-stage">
+      <div class="fs-deck" aria-hidden="true">
+        <div class="fs-deck-tab"></div>
+        <div class="fs-deck-line fs-deck-line-1"></div>
+        <div class="fs-deck-line fs-deck-line-2"></div>
+        <div class="fs-deck-block fs-deck-block-1"></div>
+        <div class="fs-deck-block fs-deck-block-2"></div>
+        <div class="fs-deck-block fs-deck-block-3"></div>
+        <div class="fs-deck-stamp">Revenue Health<br/>Briefing.pptx</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PULL QUOTE ───────────────────────────────────── -->
+  <section class="fs-quote reveal" aria-label="What founders say">
+    <p class="fs-quote-text">
+      "We stopped checking the dashboard. The dashboard checks us."
+    </p>
+    <p class="fs-quote-byline">Founder, Series A SaaS &middot; design partner</p>
+  </section>
+
+  <!-- ══ CLOSING CTA ──────────────────────────────────── -->
+  <section class="fs-final reveal" aria-label="Get started">
+    <h2 class="fs-final-title">
+      Stop building dashboards.<br/>
+      <em>Start receiving verdicts.</em>
+    </h2>
+    <div class="fs-cta">
+      <a class="fs-btn fs-btn-primary" href="/oracle">
+        <span>Open Oracle</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <button type="button" class="fs-btn fs-btn-ghost" data-action="open-waitlist">Get early access</button>
     </div>
   </section>
 
@@ -751,11 +599,13 @@
       <div>
         <h4>Product</h4>
         <a href="/oracle">Oracle</a>
-        <a href="/sentinel">Sentinel</a>
+        <a href="#how">How it works</a>
+        <a href="/pricing" data-page="pricing" data-action="show-page">Pricing</a>
         <a href="/waitlist">Get early access</a>
       </div>
       <div>
         <h4>Company</h4>
+        <a href="/about" data-page="about" data-action="show-page">About</a>
         <a href="mailto:hello@fourseat.dev?subject=Fourseat%20Support">Support</a>
         <a href="mailto:hello@fourseat.dev?subject=Fourseat%20Security">Security</a>
         <a href="mailto:hello@fourseat.dev?subject=Fourseat%20Partnership">Partnerships</a>

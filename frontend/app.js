@@ -628,6 +628,77 @@
     }, { threshold: 0.1 });
     $$('.reveal').forEach(function (el) { observer.observe(el); });
 
+    // ── Granola-style sections: scroll-reveal + number count-up ─────────────
+    const reduced = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const fsObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        const target = entry.target;
+        target.classList.add('is-visible');
+
+        // Count-up for any data-counter children inside this revealed block.
+        const counters = target.querySelectorAll('[data-counter]');
+        counters.forEach(function (counter) {
+          if (counter.dataset.done === '1') return;
+          counter.dataset.done = '1';
+          const end = parseFloat(counter.dataset.counter || '0');
+          const suffix = counter.dataset.suffix || '';
+          if (reduced || !isFinite(end)) {
+            counter.textContent = end + suffix;
+            return;
+          }
+          const duration = 1100;
+          const start = performance.now();
+          (function tick(now) {
+            const t = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const value = Math.round(eased * end);
+            counter.textContent = value + suffix;
+            if (t < 1) requestAnimationFrame(tick);
+            else counter.textContent = end + suffix;
+          })(start);
+        });
+
+        fsObserver.unobserve(target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    $$('.fs-numbers, .fs-moment, .fs-quote, .fs-final').forEach(function (el) {
+      fsObserver.observe(el);
+    });
+
+    // ── Subtle parallax on hero verdict cards ──────────────────────────────
+    const heroStage = document.querySelector('.fs-hero-stage');
+    if (heroStage && !reduced) {
+      let raf = 0;
+      let mx = 0, my = 0;
+      const onMove = function (e) {
+        const rect = heroStage.getBoundingClientRect();
+        mx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        my = (e.clientY - rect.top - rect.height / 2) / rect.height;
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          const cards = heroStage.querySelectorAll('.fs-card');
+          cards.forEach(function (card, i) {
+            const factor = (i + 1) * 4;
+            card.style.setProperty('--px', (mx * factor).toFixed(2) + 'px');
+            card.style.setProperty('--py', (my * factor).toFixed(2) + 'px');
+            card.style.transform =
+              'translate3d(' + (mx * factor) + 'px,' + (my * factor) + 'px,0) ' +
+              'rotate(var(--r,0deg))';
+          });
+        });
+      };
+      heroStage.addEventListener('mousemove', onMove);
+      heroStage.addEventListener('mouseleave', function () {
+        const cards = heroStage.querySelectorAll('.fs-card');
+        cards.forEach(function (card) { card.style.transform = ''; });
+      });
+    }
+
     buildMetrics();
     startPhraseCycle();
 
