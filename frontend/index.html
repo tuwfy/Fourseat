@@ -95,6 +95,7 @@
 
   <!-- ══ HERO ─────────────────────────────────────────── -->
   <section class="fs-hero reveal" aria-label="Hero">
+    <div class="fs-grid-bg" aria-hidden="true"></div>
     <div class="fs-hero-aura" aria-hidden="true"></div>
     <div class="fs-hero-inner">
       <a class="fs-eyebrow" href="/oracle">
@@ -114,14 +115,25 @@
         </a>
         <button type="button" class="fs-btn fs-btn-ghost" data-action="open-waitlist">Get early access</button>
       </div>
+      <div class="fs-status" aria-live="polite">
+        <span class="fs-status-dot" aria-hidden="true"></span>
+        <span class="fs-status-label">Reading</span>
+        <span class="fs-status-stream" id="fs-status-stream">
+          <span class="fs-status-item">2,847 events from Stripe</span>
+          <span class="fs-status-item">412 cohort points scored</span>
+          <span class="fs-status-item">6 anomaly rules running</span>
+          <span class="fs-status-item">last scan 14s ago</span>
+          <span class="fs-status-item">2,847 events from Stripe</span>
+        </span>
+      </div>
     </div>
 
-    <!-- Animated verdict card -->
+    <!-- Animated verdict cards + sparkline -->
     <div class="fs-hero-stage" aria-hidden="true">
       <div class="fs-card fs-card-1">
-        <div class="fs-card-pill fs-card-pill-p0">P0 · Churn cluster</div>
+        <div class="fs-card-pill fs-card-pill-p0">P0 &middot; Churn cluster</div>
         <div class="fs-card-headline">3.3x baseline</div>
-        <div class="fs-card-sub">Detected at 09:14 UTC</div>
+        <div class="fs-card-sub">Detected at 09:14 UTC &middot; $213,328 MRR</div>
       </div>
       <div class="fs-card fs-card-2">
         <div class="fs-card-pill fs-card-pill-conf">High confidence</div>
@@ -146,6 +158,72 @@
           <span class="fs-card-mini">Contrarian &middot; maybe accelerate it</span>
         </div>
       </div>
+      <div class="fs-card fs-card-4">
+        <div class="fs-card-mini-label">MRR &middot; trailing 30d</div>
+        <svg class="fs-spark" viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="fsSparkGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="fs-spark-fill" d="M0 50 L0 32 L18 28 L36 22 L54 18 L72 14 L90 12 L108 16 L126 22 L144 30 L162 36 L180 42 L198 50 L220 54 L220 60 L0 60 Z" fill="url(#fsSparkGrad)"/>
+          <path class="fs-spark-line" d="M0 32 L18 28 L36 22 L54 18 L72 14 L90 12 L108 16 L126 22 L144 30 L162 36 L180 42 L198 50 L220 54" fill="none" stroke="#9c5c2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
+          <circle class="fs-spark-cursor" cx="220" cy="54" r="4" fill="#9c5c2a"/>
+        </svg>
+        <div class="fs-card-mini-row">
+          <span class="fs-card-mini-stat">$213.3k</span>
+          <span class="fs-card-mini-delta">-5.87%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ LOGO MARQUEE ─────────────────────────────────── -->
+  <section class="fs-marquee" aria-label="Built on">
+    <div class="fs-marquee-label">Reads from</div>
+    <div class="fs-marquee-track">
+      <div class="fs-marquee-row">
+        <span class="fs-marquee-item">Stripe</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">QuickBooks</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">GitHub</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Linear</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Slack</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Notion</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Salesforce</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">HubSpot</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Snowflake</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Segment</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Stripe</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">QuickBooks</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">GitHub</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Linear</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Slack</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Notion</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Salesforce</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">HubSpot</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Snowflake</span>
+        <span class="fs-marquee-sep">&middot;</span>
+        <span class="fs-marquee-item">Segment</span>
+      </div>
     </div>
   </section>
 
@@ -167,6 +245,116 @@
     </div>
   </section>
 
+  <!-- ══ MINI STAT CARDS WITH SPARKLINES ──────────────── -->
+  <section class="fs-mini-stats reveal" aria-label="What Oracle watches">
+    <article class="fs-mini-card">
+      <div class="fs-mini-head">
+        <span class="fs-mini-tag fs-mini-tag-good">Healthy</span>
+        <span class="fs-mini-name">MRR</span>
+      </div>
+      <div class="fs-mini-num">$213.3k</div>
+      <svg class="fs-mini-spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 30 L20 26 L40 22 L60 18 L80 14 L100 12 L120 14 L140 18 L160 22 L180 26 L200 28" fill="none" stroke="#3f7a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="fs-mini-path"/>
+      </svg>
+      <div class="fs-mini-foot">+12.4% vs 30d</div>
+    </article>
+    <article class="fs-mini-card">
+      <div class="fs-mini-head">
+        <span class="fs-mini-tag fs-mini-tag-warn">Watch</span>
+        <span class="fs-mini-name">NRR</span>
+      </div>
+      <div class="fs-mini-num">115.9%</div>
+      <svg class="fs-mini-spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 14 L20 16 L40 14 L60 12 L80 14 L100 18 L120 22 L140 24 L160 26 L180 30 L200 34" fill="none" stroke="#9c5c2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="fs-mini-path"/>
+      </svg>
+      <div class="fs-mini-foot">-7.22pp vs 7d</div>
+    </article>
+    <article class="fs-mini-card">
+      <div class="fs-mini-head">
+        <span class="fs-mini-tag fs-mini-tag-bad">Anomaly</span>
+        <span class="fs-mini-name">Churn rate</span>
+      </div>
+      <div class="fs-mini-num">3.3<span class="fs-mini-unit">x</span></div>
+      <svg class="fs-mini-spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 28 L20 28 L40 26 L60 26 L80 24 L100 22 L120 18 L140 14 L160 10 L180 8 L200 6" fill="none" stroke="#a83a22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="fs-mini-path"/>
+      </svg>
+      <div class="fs-mini-foot">vs trailing 90d</div>
+    </article>
+    <article class="fs-mini-card">
+      <div class="fs-mini-head">
+        <span class="fs-mini-tag fs-mini-tag-warn">Watch</span>
+        <span class="fs-mini-name">Top customer</span>
+      </div>
+      <div class="fs-mini-num">21.6%</div>
+      <svg class="fs-mini-spark" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 30 L20 28 L40 26 L60 24 L80 22 L100 20 L120 16 L140 14 L160 12 L180 10 L200 8" fill="none" stroke="#876b1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="fs-mini-path"/>
+      </svg>
+      <div class="fs-mini-foot">of total ARR</div>
+    </article>
+  </section>
+
+  <!-- ══ LIVE VERDICT TICKER ──────────────────────────── -->
+  <section class="fs-ticker reveal" aria-label="Live verdicts">
+    <div class="fs-ticker-text">
+      <div class="fs-moment-step">Live verdicts</div>
+      <h2 class="fs-moment-title">A continuous<br/><em>news feed for your business.</em></h2>
+      <p class="fs-moment-line">Every anomaly, every advisor opinion, every chair verdict streams into a single feed. Read it like a timeline.</p>
+    </div>
+    <div class="fs-ticker-stage" aria-hidden="true">
+      <div class="fs-ticker-list" id="fs-ticker-list">
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p0">P0</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">Churn cluster &middot; 3.3x trailing baseline</div>
+            <div class="fs-ticker-meta">9 minutes ago &middot; 17 churned subscriptions detected</div>
+          </div>
+          <span class="fs-ticker-time">09:14</span>
+        </article>
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p1">P1</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">Failed payment leakage &middot; 6.6% of MRR</div>
+            <div class="fs-ticker-meta">23 minutes ago &middot; $14,032 unrecovered over 7d</div>
+          </div>
+          <span class="fs-ticker-time">09:00</span>
+        </article>
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p1">P1</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">Concentration risk &middot; top customer 21.6% of ARR</div>
+            <div class="fs-ticker-meta">42 minutes ago &middot; up from 14.2% over 30d</div>
+          </div>
+          <span class="fs-ticker-time">08:42</span>
+        </article>
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p1">P1</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">Pricing tier collapse &middot; Starter -36% subs</div>
+            <div class="fs-ticker-meta">1 hour ago &middot; 73 subs lost over 30d</div>
+          </div>
+          <span class="fs-ticker-time">08:11</span>
+        </article>
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p2">P2</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">Expansion stall &middot; 38% of trailing 90d baseline</div>
+            <div class="fs-ticker-meta">2 hours ago &middot; upsell motion underperforming</div>
+          </div>
+          <span class="fs-ticker-time">07:24</span>
+        </article>
+        <article class="fs-ticker-row">
+          <span class="fs-ticker-pri fs-ticker-pri-p2">P2</span>
+          <div class="fs-ticker-body">
+            <div class="fs-ticker-head">NRR drop &middot; first dip below 100% in 30d</div>
+            <div class="fs-ticker-meta">3 hours ago &middot; expansion no longer covering churn</div>
+          </div>
+          <span class="fs-ticker-time">06:08</span>
+        </article>
+      </div>
+      <div class="fs-ticker-fade" aria-hidden="true"></div>
+    </div>
+  </section>
+
   <!-- ══ MOMENT 1 · CONNECT ───────────────────────────── -->
   <section class="fs-moment reveal" id="how" aria-label="Connect">
     <div class="fs-moment-text">
@@ -175,31 +363,52 @@
       <p class="fs-moment-line">Plug in your Stripe key and Oracle backfills the last quarter of revenue. No engineering work. No dashboards to wire.</p>
     </div>
     <div class="fs-moment-stage">
-      <div class="fs-pill-stack" aria-hidden="true">
-        <div class="fs-conn fs-conn-1">
-          <span class="fs-conn-dot"></span>
-          <span class="fs-conn-name">Stripe</span>
-          <span class="fs-conn-meta">connected</span>
+      <div class="fs-flow" aria-hidden="true">
+        <svg class="fs-flow-svg" viewBox="0 0 380 360" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="fsFlowGrad" x1="0" x2="1">
+              <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#9c5c2a" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M40 40 C 180 40 200 180 340 180" class="fs-flow-path" pathLength="100"/>
+          <path d="M40 110 C 180 110 200 180 340 180" class="fs-flow-path" pathLength="100" style="animation-delay:.4s"/>
+          <path d="M40 180 L 340 180" class="fs-flow-path" pathLength="100" style="animation-delay:.8s"/>
+          <path d="M40 250 C 180 250 200 180 340 180" class="fs-flow-path" pathLength="100" style="animation-delay:1.2s"/>
+          <path d="M40 320 C 180 320 200 180 340 180" class="fs-flow-path" pathLength="100" style="animation-delay:1.6s"/>
+        </svg>
+        <div class="fs-flow-pills">
+          <div class="fs-conn fs-conn-1">
+            <span class="fs-conn-dot"></span>
+            <span class="fs-conn-name">Stripe</span>
+            <span class="fs-conn-meta">connected</span>
+          </div>
+          <div class="fs-conn fs-conn-2">
+            <span class="fs-conn-dot is-pending"></span>
+            <span class="fs-conn-name">QuickBooks</span>
+            <span class="fs-conn-meta">soon</span>
+          </div>
+          <div class="fs-conn fs-conn-3">
+            <span class="fs-conn-dot is-pending"></span>
+            <span class="fs-conn-name">GitHub</span>
+            <span class="fs-conn-meta">soon</span>
+          </div>
+          <div class="fs-conn fs-conn-4">
+            <span class="fs-conn-dot is-pending"></span>
+            <span class="fs-conn-name">Linear</span>
+            <span class="fs-conn-meta">soon</span>
+          </div>
+          <div class="fs-conn fs-conn-5">
+            <span class="fs-conn-dot is-pending"></span>
+            <span class="fs-conn-name">Slack</span>
+            <span class="fs-conn-meta">soon</span>
+          </div>
         </div>
-        <div class="fs-conn fs-conn-2">
-          <span class="fs-conn-dot is-pending"></span>
-          <span class="fs-conn-name">QuickBooks</span>
-          <span class="fs-conn-meta">soon</span>
-        </div>
-        <div class="fs-conn fs-conn-3">
-          <span class="fs-conn-dot is-pending"></span>
-          <span class="fs-conn-name">GitHub</span>
-          <span class="fs-conn-meta">soon</span>
-        </div>
-        <div class="fs-conn fs-conn-4">
-          <span class="fs-conn-dot is-pending"></span>
-          <span class="fs-conn-name">Linear</span>
-          <span class="fs-conn-meta">soon</span>
-        </div>
-        <div class="fs-conn fs-conn-5">
-          <span class="fs-conn-dot is-pending"></span>
-          <span class="fs-conn-name">Slack</span>
-          <span class="fs-conn-meta">soon</span>
+        <div class="fs-flow-target">
+          <span class="fs-flow-target-orb"></span>
+          <span class="fs-flow-target-num" data-counter="2847">0</span>
+          <span class="fs-flow-target-label">events ingested</span>
         </div>
       </div>
     </div>
@@ -213,17 +422,52 @@
       <p class="fs-moment-line">Six rules run on every snapshot. Churn clusters, NRR drops, failed payment leakage, concentration risk. The signal finds you.</p>
     </div>
     <div class="fs-moment-stage">
-      <div class="fs-radar" aria-hidden="true">
-        <div class="fs-radar-ring"></div>
-        <div class="fs-radar-ring fs-radar-ring-2"></div>
-        <div class="fs-radar-ring fs-radar-ring-3"></div>
-        <div class="fs-radar-blip fs-radar-blip-1">
-          <span class="fs-radar-pulse"></span>
-          <span class="fs-radar-label">Churn cluster &middot; P0</span>
+      <div class="fs-detect" aria-hidden="true">
+        <div class="fs-radar">
+          <div class="fs-radar-ring"></div>
+          <div class="fs-radar-ring fs-radar-ring-2"></div>
+          <div class="fs-radar-ring fs-radar-ring-3"></div>
+          <div class="fs-radar-blip fs-radar-blip-1">
+            <span class="fs-radar-pulse"></span>
+            <span class="fs-radar-label">Churn cluster &middot; P0</span>
+          </div>
+          <div class="fs-radar-blip fs-radar-blip-2">
+            <span class="fs-radar-pulse"></span>
+            <span class="fs-radar-label">Failed payments &middot; P1</span>
+          </div>
+          <div class="fs-radar-blip fs-radar-blip-3">
+            <span class="fs-radar-pulse"></span>
+            <span class="fs-radar-label">Concentration &middot; P1</span>
+          </div>
+          <svg class="fs-radar-sweep" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="fsSweep" x1="0" x2="1">
+                <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0.4"/>
+              </linearGradient>
+            </defs>
+            <path d="M100 100 L 100 8 A 92 92 0 0 1 192 100 Z" fill="url(#fsSweep)"/>
+          </svg>
         </div>
-        <div class="fs-radar-blip fs-radar-blip-2">
-          <span class="fs-radar-pulse"></span>
-          <span class="fs-radar-label">Failed payments &middot; P1</span>
+        <div class="fs-detect-chart">
+          <div class="fs-detect-chart-label">MRR · trailing 90d</div>
+          <svg class="fs-detect-svg" viewBox="0 0 320 90" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="fsDetGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0.28"/>
+                <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 70 L20 64 L40 56 L60 48 L80 38 L100 28 L120 22 L140 18 L160 22 L180 28 L200 36 L220 50 L240 60 L260 70 L280 78 L300 82 L320 84 L320 90 L0 90 Z" fill="url(#fsDetGrad)"/>
+            <path d="M0 70 L20 64 L40 56 L60 48 L80 38 L100 28 L120 22 L140 18 L160 22 L180 28 L200 36 L220 50 L240 60 L260 70 L280 78 L300 82 L320 84" fill="none" stroke="#9c5c2a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" pathLength="100" class="fs-detect-line"/>
+            <circle cx="180" cy="28" r="5" fill="#a83a22" class="fs-detect-marker fs-detect-marker-1"/>
+            <circle cx="240" cy="60" r="5" fill="#9c5c2a" class="fs-detect-marker fs-detect-marker-2"/>
+            <circle cx="280" cy="78" r="5" fill="#876b1f" class="fs-detect-marker fs-detect-marker-3"/>
+          </svg>
+          <div class="fs-detect-toast">
+            <span class="fs-detect-toast-pulse"></span>
+            <span class="fs-detect-toast-text">Anomaly detected at day 84</span>
+          </div>
         </div>
       </div>
     </div>
@@ -237,22 +481,46 @@
       <p class="fs-moment-line">Strategy, Finance, Technology, and a Contrarian each weigh in. The Chair compresses the debate into one sentence you can act on.</p>
     </div>
     <div class="fs-moment-stage">
-      <div class="fs-panel" aria-hidden="true">
-        <div class="fs-panel-card" style="--c:#9c5c2a">
-          <div class="fs-panel-role">Strategy</div>
-          <div class="fs-panel-text">A 3x churn spike is a positioning signal, not retention.</div>
+      <div class="fs-debate" aria-hidden="true">
+        <div class="fs-debate-row" style="--c:#9c5c2a">
+          <div class="fs-debate-avatar">S</div>
+          <div class="fs-debate-bubble">
+            <div class="fs-debate-role">Strategy</div>
+            <div class="fs-debate-text">A 3x churn spike is a positioning signal, not retention.</div>
+          </div>
         </div>
-        <div class="fs-panel-card" style="--c:#3f7a55">
-          <div class="fs-panel-role">Finance</div>
-          <div class="fs-panel-text">One quarter of NRR at risk if this rate holds.</div>
+        <div class="fs-debate-row" style="--c:#3f7a55">
+          <div class="fs-debate-avatar">F</div>
+          <div class="fs-debate-bubble">
+            <div class="fs-debate-role">Finance</div>
+            <div class="fs-debate-text">One quarter of NRR at risk if this rate holds.</div>
+          </div>
         </div>
-        <div class="fs-panel-card" style="--c:#3a6dad">
-          <div class="fs-panel-role">Technology</div>
-          <div class="fs-panel-text">Cross-reference cancellations with last 14 days of releases.</div>
+        <div class="fs-debate-row" style="--c:#3a6dad">
+          <div class="fs-debate-avatar">T</div>
+          <div class="fs-debate-bubble">
+            <div class="fs-debate-role">Technology</div>
+            <div class="fs-debate-text">Cross-reference cancellations with last 14 days of releases.</div>
+          </div>
         </div>
-        <div class="fs-panel-card" style="--c:#a83a22">
-          <div class="fs-panel-role">Contrarian</div>
-          <div class="fs-panel-text">Maybe this is healthy churn. Don't fix it, accelerate it.</div>
+        <div class="fs-debate-row" style="--c:#a83a22">
+          <div class="fs-debate-avatar">C</div>
+          <div class="fs-debate-bubble">
+            <div class="fs-debate-role">Contrarian</div>
+            <div class="fs-debate-text">Maybe this is healthy churn. Don't fix it, accelerate it.</div>
+          </div>
+        </div>
+        <div class="fs-debate-typing">
+          <div class="fs-debate-avatar fs-debate-avatar-chair">★</div>
+          <div class="fs-debate-bubble fs-debate-bubble-typing">
+            <span class="fs-typing-dot"></span>
+            <span class="fs-typing-dot"></span>
+            <span class="fs-typing-dot"></span>
+          </div>
+        </div>
+        <div class="fs-debate-final">
+          <div class="fs-debate-final-label">Chair's verdict</div>
+          <div class="fs-debate-final-text">Treat as positioning signal. Pull churn cohort, run five same-day exit interviews.</div>
         </div>
       </div>
     </div>
@@ -266,14 +534,85 @@
       <p class="fs-moment-line">Every P0 verdict ships with a one-click PowerPoint export. Forward it. Move on.</p>
     </div>
     <div class="fs-moment-stage">
-      <div class="fs-deck" aria-hidden="true">
-        <div class="fs-deck-tab"></div>
-        <div class="fs-deck-line fs-deck-line-1"></div>
-        <div class="fs-deck-line fs-deck-line-2"></div>
-        <div class="fs-deck-block fs-deck-block-1"></div>
-        <div class="fs-deck-block fs-deck-block-2"></div>
-        <div class="fs-deck-block fs-deck-block-3"></div>
-        <div class="fs-deck-stamp">Revenue Health<br/>Briefing.pptx</div>
+      <div class="fs-decks" aria-hidden="true">
+        <div class="fs-deck fs-deck-back-2">
+          <div class="fs-deck-tab"></div>
+          <div class="fs-deck-line" style="width:60%"></div>
+          <div class="fs-deck-line" style="width:30%"></div>
+          <div class="fs-deck-block" style="width:38%"></div>
+          <div class="fs-deck-block" style="width:22%"></div>
+        </div>
+        <div class="fs-deck fs-deck-back-1">
+          <div class="fs-deck-tab"></div>
+          <div class="fs-deck-line" style="width:74%"></div>
+          <div class="fs-deck-line" style="width:42%"></div>
+          <div class="fs-deck-block" style="width:30%"></div>
+          <div class="fs-deck-block" style="width:32%"></div>
+        </div>
+        <div class="fs-deck fs-deck-front">
+          <div class="fs-deck-tab"></div>
+          <div class="fs-deck-line fs-deck-line-1"></div>
+          <div class="fs-deck-line fs-deck-line-2"></div>
+          <div class="fs-deck-block fs-deck-block-1"></div>
+          <div class="fs-deck-block fs-deck-block-2"></div>
+          <div class="fs-deck-block fs-deck-block-3"></div>
+          <div class="fs-deck-chart">
+            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+              <path d="M0 22 L20 18 L40 14 L60 10 L80 8 L100 12" fill="none" stroke="#9c5c2a" stroke-width="1.5" pathLength="100"/>
+            </svg>
+          </div>
+          <div class="fs-deck-stamp">Revenue Health<br/>Briefing.pptx</div>
+        </div>
+        <div class="fs-deck-pages">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CLOSED-LOOP DIAGRAM ──────────────────────────── -->
+  <section class="fs-loop reveal" aria-label="The closed loop">
+    <div class="fs-loop-text">
+      <div class="fs-moment-step">The closed loop</div>
+      <h2 class="fs-moment-title">An open-loop org runs on hope.<br/><em>A closed loop runs on signal.</em></h2>
+      <p class="fs-moment-line">Most companies make a decision and check the result weeks later. Oracle is the loop that watches what happened, compares it to what should have, and fires a verdict the moment the gap matters.</p>
+    </div>
+    <div class="fs-loop-stage" aria-hidden="true">
+      <svg class="fs-loop-svg" viewBox="0 0 360 360">
+        <defs>
+          <linearGradient id="fsLoopGrad" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#9c5c2a" stop-opacity=".08"/>
+            <stop offset="100%" stop-color="#9c5c2a" stop-opacity=".04"/>
+          </linearGradient>
+        </defs>
+        <circle cx="180" cy="180" r="138" fill="url(#fsLoopGrad)" stroke="rgba(156,92,42,.22)" stroke-width="1"/>
+        <circle cx="180" cy="180" r="138" fill="none" stroke="#9c5c2a" stroke-width="2" stroke-dasharray="4 6" pathLength="100" class="fs-loop-orbit"/>
+        <circle r="6" fill="#9c5c2a" class="fs-loop-particle">
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#fsLoopPath"/>
+          </animateMotion>
+        </circle>
+        <path id="fsLoopPath" d="M 180 42 A 138 138 0 1 1 179.99 42" fill="none" stroke="none"/>
+      </svg>
+      <div class="fs-loop-node fs-loop-n1">
+        <span class="fs-loop-num">01</span>
+        <span class="fs-loop-name">Connect</span>
+      </div>
+      <div class="fs-loop-node fs-loop-n2">
+        <span class="fs-loop-num">02</span>
+        <span class="fs-loop-name">Detect</span>
+      </div>
+      <div class="fs-loop-node fs-loop-n3">
+        <span class="fs-loop-num">03</span>
+        <span class="fs-loop-name">Debate</span>
+      </div>
+      <div class="fs-loop-node fs-loop-n4">
+        <span class="fs-loop-num">04</span>
+        <span class="fs-loop-name">Ship</span>
+      </div>
+      <div class="fs-loop-center">
+        <div class="fs-loop-center-num" data-counter="60" data-suffix="s">0s</div>
+        <div class="fs-loop-center-label">end to end</div>
       </div>
     </div>
   </section>

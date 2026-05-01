@@ -665,7 +665,7 @@
       });
     }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
 
-    $$('.fs-numbers, .fs-moment, .fs-quote, .fs-final').forEach(function (el) {
+    $$('.fs-numbers, .fs-moment, .fs-quote, .fs-final, .fs-mini-stats, .fs-ticker, .fs-loop').forEach(function (el) {
       fsObserver.observe(el);
     });
 
