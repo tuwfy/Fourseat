@@ -54,6 +54,28 @@ from backend.stripe_oracle import (
     build_deck_payload,
     STRIPE_WEBHOOK_SECRET,
 )
+from backend.company_brain import (
+    connector_status as brain_connector_status,
+    artifact_counts as brain_artifact_counts,
+    list_artifacts as brain_list_artifacts,
+    list_signals as brain_list_signals,
+    mark_signal_resolved as brain_mark_resolved,
+    signal_stats as brain_signal_stats,
+    query_brain,
+    run_brain_scan,
+    fetch_slack as brain_fetch_slack,
+    fetch_github as brain_fetch_github,
+    fetch_linear as brain_fetch_linear,
+    fetch_quickbooks as brain_fetch_quickbooks,
+    fetch_notion as brain_fetch_notion,
+    upsert_artifacts as brain_upsert,
+    verify_slack_signature as brain_verify_slack,
+    verify_github_signature as brain_verify_github,
+    verify_linear_signature as brain_verify_linear,
+    SLACK_SIGNING_SECRET as BRAIN_SLACK_SECRET,
+    GITHUB_WEBHOOK_SECRET as BRAIN_GITHUB_SECRET,
+    LINEAR_WEBHOOK_SECRET as BRAIN_LINEAR_SECRET,
+)
 
 
 # ── Configuration ────────────────────────────────────────────────────────────
@@ -841,6 +863,269 @@ def stripe_webhook():
     if not ok:
         return jsonify({"error": "ingest failed"}), 500
     return jsonify({"received": True, "type": event.get("type")})
+
+
+# ── Module 6: Company Brain (cross-source intelligence) ─────────────────────
+
+@app.route("/api/brain/connectors", methods=["GET"])
+@rate_limited("brain_connectors", limit=60, window_s=60)
+def brain_connectors():
+    try:
+        return jsonify({
+            "connectors": brain_connector_status(),
+            "artifact_counts": brain_artifact_counts(),
+        })
+    except Exception as e:
+        return _server_error("brain connectors failed", e)
+
+
+@app.route("/api/brain/scan", methods=["POST", "GET"])
+@rate_limited("brain_scan", limit=10, window_s=60)
+def brain_scan():
+    if request.method == "POST":
+        body = request.get_json(silent=True) or {}
+    else:
+        body = {k: v for k, v in request.args.items()}
+    demo = body.get("demo")
+    if isinstance(demo, str):
+        demo = demo.lower() in ("1", "true", "yes")
+    elif demo is not None:
+        demo = bool(demo)
+    force_reseed = bool(body.get("force_reseed"))
+    try:
+        return jsonify(run_brain_scan(demo=demo, force_reseed=force_reseed))
+    except Exception as e:
+        return _server_error("brain scan failed", e)
+
+
+@app.route("/api/brain/ingest", methods=["POST"])
+@rate_limited("brain_ingest", limit=10, window_s=60)
+def brain_ingest():
+    """Manual trigger to pull a single source's recent artifacts. Used by the
+    dashboard's per-connector refresh buttons."""
+    body = request.get_json(silent=True) or {}
+    source = (body.get("source") or "").strip().lower()
+    fetchers = {
+        "slack":      brain_fetch_slack,
+        "github":     brain_fetch_github,
+        "linear":     brain_fetch_linear,
+        "quickbooks": brain_fetch_quickbooks,
+        "notion":     brain_fetch_notion,
+    }
+    fn = fetchers.get(source)
+    if not fn:
+        return jsonify({"error": "unknown source"}), 400
+    try:
+        arts = fn()
+        ids = brain_upsert(arts) if arts else []
+        return jsonify({"source": source, "ingested": len(ids), "ids": ids})
+    except Exception as e:
+        return _server_error("brain ingest failed", e)
+
+
+@app.route("/api/brain/query", methods=["POST"])
+@rate_limited("brain_query", limit=20, window_s=60)
+def brain_query():
+    body = request.get_json(silent=True) or {}
+    question = (body.get("question") or "").strip()[:1000]
+    if not question:
+        return jsonify({"error": "question is required"}), 400
+    try:
+        return jsonify(query_brain(question))
+    except Exception as e:
+        return _server_error("brain query failed", e)
+
+
+@app.route("/api/brain/artifacts", methods=["GET"])
+@rate_limited("brain_artifacts", limit=60, window_s=60)
+def brain_artifacts():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "50")), 500))
+    except ValueError:
+        limit = 50
+    source = (request.args.get("source") or "").strip().lower()
+    try:
+        return jsonify({"artifacts": brain_list_artifacts(limit=limit, source=source)})
+    except Exception as e:
+        return _server_error("brain artifacts failed", e)
+
+
+@app.route("/api/brain/signals", methods=["GET"])
+@rate_limited("brain_signals", limit=60, window_s=60)
+def brain_signals():
+    try:
+        limit = max(1, min(int(request.args.get("limit", "20")), 100))
+    except ValueError:
+        limit = 20
+    include_resolved = request.args.get("include_resolved", "0").lower() in ("1", "true", "yes")
+    try:
+        return jsonify({
+            "signals": brain_list_signals(limit=limit, include_resolved=include_resolved),
+            "stats": brain_signal_stats(),
+        })
+    except Exception as e:
+        return _server_error("brain signals failed", e)
+
+
+@app.route("/api/brain/signals/resolve", methods=["POST"])
+@rate_limited("brain_resolve", limit=60, window_s=60)
+def brain_resolve():
+    body = request.get_json(silent=True) or {}
+    try:
+        signal_id = int(body.get("id"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "id is required"}), 400
+    resolved = bool(body.get("resolved", True))
+    if not brain_mark_resolved(signal_id, resolved=resolved):
+        return jsonify({"error": "signal not found"}), 404
+    return jsonify({"success": True, "id": signal_id, "resolved": resolved})
+
+
+@app.route("/api/slack/webhook", methods=["POST"])
+def slack_webhook():
+    """Slack Events API: handles the URL verification challenge plus signed
+    inbound events. Drops a small subset (`message.channels`) into artifacts."""
+    raw = request.get_data(cache=False, as_text=False) or b""
+    ts = request.headers.get("X-Slack-Request-Timestamp", "")
+    sig = request.headers.get("X-Slack-Signature", "")
+
+    # Always honour Slack's url_verification challenge first (no signature required).
+    try:
+        body = json.loads(raw.decode("utf-8")) if raw else {}
+    except Exception:
+        body = {}
+    if isinstance(body, dict) and body.get("type") == "url_verification":
+        return jsonify({"challenge": body.get("challenge", "")})
+
+    if not BRAIN_SLACK_SECRET:
+        return jsonify({"error": "slack webhook not configured"}), 503
+    if not brain_verify_slack(raw, ts, sig, BRAIN_SLACK_SECRET):
+        return jsonify({"error": "invalid signature"}), 401
+
+    event = (body or {}).get("event", {}) if isinstance(body, dict) else {}
+    if event.get("type") == "message" and event.get("text") and event.get("subtype") is None:
+        from backend.company_brain import Artifact, upsert_artifacts as _upsert
+        from datetime import datetime as _dt, timezone as _tz
+        ts_str = str(event.get("ts") or "")
+        try:
+            occurred = _dt.fromtimestamp(float(ts_str), tz=_tz.utc).isoformat()
+        except Exception:
+            occurred = _dt.now(_tz.utc).isoformat()
+        ch = event.get("channel", "")
+        _upsert([Artifact(
+            source="slack",
+            artifact_type="message",
+            external_id=f"{ch}:{ts_str}",
+            title=(event.get("text") or "").split("\n", 1)[0][:200],
+            body=(event.get("text") or "")[:6000],
+            author=f"slack:{event.get('user') or event.get('bot_id') or 'unknown'}",
+            url=f"https://slack.com/archives/{ch}/p{ts_str.replace('.', '')}",
+            tags=[f"channel:{ch}"],
+            metadata={"channel_id": ch, "ts": ts_str, "thread_ts": event.get("thread_ts")},
+            occurred_at=occurred,
+        )])
+    return jsonify({"received": True})
+
+
+@app.route("/api/github/webhook", methods=["POST"])
+def github_webhook():
+    """GitHub webhooks: pull_request and issues events get ingested directly."""
+    raw = request.get_data(cache=False, as_text=False) or b""
+    sig = request.headers.get("X-Hub-Signature-256", "")
+    event_type = request.headers.get("X-GitHub-Event", "")
+    if not BRAIN_GITHUB_SECRET:
+        return jsonify({"error": "github webhook not configured"}), 503
+    if not brain_verify_github(raw, sig, BRAIN_GITHUB_SECRET):
+        return jsonify({"error": "invalid signature"}), 401
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except Exception:
+        return jsonify({"error": "invalid json"}), 400
+
+    from backend.company_brain import Artifact, upsert_artifacts as _upsert
+    repo = (payload.get("repository") or {}).get("full_name", "")
+    if event_type == "pull_request" and repo:
+        pr = payload.get("pull_request") or {}
+        tags = ["pr", "merged" if pr.get("merged_at") else pr.get("state", "open")]
+        for lbl in (pr.get("labels") or []):
+            n = (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).strip()
+            if n: tags.append(f"label:{n}")
+        _upsert([Artifact(
+            source="github",
+            artifact_type="pr",
+            external_id=f"{repo}#pr-{pr.get('number')}",
+            title=(pr.get("title") or "")[:300],
+            body=(pr.get("body") or "")[:5000] or (pr.get("title") or ""),
+            author=(pr.get("user") or {}).get("login", "")[:200],
+            url=pr.get("html_url", ""),
+            tags=tags,
+            metadata={"repo": repo, "number": pr.get("number"), "state": pr.get("state"), "merged_at": pr.get("merged_at")},
+            occurred_at=pr.get("updated_at") or pr.get("created_at") or "",
+        )])
+    elif event_type == "issues" and repo:
+        it = payload.get("issue") or {}
+        tags = ["issue", it.get("state", "open")]
+        for lbl in (it.get("labels") or []):
+            n = (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).strip()
+            if n: tags.append(f"label:{n}")
+        _upsert([Artifact(
+            source="github",
+            artifact_type="issue",
+            external_id=f"{repo}#issue-{it.get('number')}",
+            title=(it.get("title") or "")[:300],
+            body=(it.get("body") or "")[:4000] or (it.get("title") or ""),
+            author=(it.get("user") or {}).get("login", "")[:200],
+            url=it.get("html_url", ""),
+            tags=tags,
+            metadata={"repo": repo, "number": it.get("number"), "state": it.get("state")},
+            occurred_at=it.get("updated_at") or it.get("created_at") or "",
+        )])
+    return jsonify({"received": True, "event": event_type})
+
+
+@app.route("/api/linear/webhook", methods=["POST"])
+def linear_webhook():
+    """Linear webhook: signed with linear-signature header (raw HMAC-SHA-256 hex)."""
+    raw = request.get_data(cache=False, as_text=False) or b""
+    sig = request.headers.get("Linear-Signature", "")
+    if not BRAIN_LINEAR_SECRET:
+        return jsonify({"error": "linear webhook not configured"}), 503
+    if not brain_verify_linear(raw, sig, BRAIN_LINEAR_SECRET):
+        return jsonify({"error": "invalid signature"}), 401
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except Exception:
+        return jsonify({"error": "invalid json"}), 400
+
+    if (payload.get("type") or "").lower() != "issue":
+        return jsonify({"received": True, "ignored": payload.get("type")})
+
+    from backend.company_brain import Artifact, upsert_artifacts as _upsert
+    data = payload.get("data") or {}
+    state_name = (data.get("state") or {}).get("name", "")
+    state_type = (data.get("state") or {}).get("type", "")
+    tags = ["linear-issue", f"state:{state_name.lower()}", f"state-type:{state_type.lower()}"]
+    for l in ((data.get("labels") or {}).get("nodes") or []):
+        if l.get("name"): tags.append(f"label:{l['name']}")
+    _upsert([Artifact(
+        source="linear",
+        artifact_type="issue",
+        external_id=data.get("id") or data.get("identifier") or "",
+        title=(data.get("identifier", "") + " " + (data.get("title") or "")).strip()[:300],
+        body=(data.get("description") or data.get("title") or "")[:5000],
+        author=((data.get("assignee") or {}).get("name") or "")[:200],
+        url=data.get("url", ""),
+        tags=tags,
+        metadata={
+            "identifier": data.get("identifier"),
+            "priority": data.get("priority"),
+            "state_name": state_name,
+            "state_type": state_type,
+            "completed_at": data.get("completedAt"),
+        },
+        occurred_at=data.get("updatedAt") or data.get("createdAt") or "",
+    )])
+    return jsonify({"received": True})
 
 
 if __name__ == "__main__":

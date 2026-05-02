@@ -626,7 +626,13 @@ def seed_demo_artifacts(reset: bool = True) -> list[Artifact]:
     if reset:
         with _connect() as conn:
             conn.execute("DELETE FROM artifacts")
-            conn.execute("DELETE FROM artifacts_fts")
+            # Contentless FTS5 tables don't support DELETE FROM directly;
+            # the 'delete-all' command is the documented way to clear them.
+            try:
+                conn.execute("INSERT INTO artifacts_fts(artifacts_fts) VALUES('delete-all')")
+            except Exception:
+                # Some SQLite builds emit this differently; rebuild as a safety net.
+                conn.execute("INSERT INTO artifacts_fts(artifacts_fts) VALUES('rebuild')")
     arts: list[Artifact] = []
     for spec in DEMO_ARTIFACTS:
         meta = spec.get("meta") or {}

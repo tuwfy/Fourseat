@@ -1214,6 +1214,275 @@
   async function bootstrap() {
     await loadConnectors();
     runScan();
+    initBrain();
+  }
+
+  // ── Company Brain UI ─────────────────────────────────────────────────────
+  const BRAIN = {
+    connectors: '/api/brain/connectors',
+    scan:       '/api/brain/scan',
+    query:      '/api/brain/query',
+    signals:    '/api/brain/signals',
+    resolve:    '/api/brain/signals/resolve',
+  };
+
+  const SOURCE_LABELS = {
+    stripe:'Stripe', slack:'Slack', github:'GitHub',
+    linear:'Linear', quickbooks:'QuickBooks', notion:'Notion',
+  };
+
+  async function loadBrainConnectors() {
+    let live = {};
+    let counts = {};
+    try {
+      const r = await fetchJSON(BRAIN.connectors);
+      live = (r && r.connectors) || {};
+      counts = (r && r.artifact_counts) || {};
+    } catch (_e) {}
+    // Stripe is configured at the Oracle level; fold its status in.
+    let stripeLive = false;
+    try {
+      const r2 = await fetchJSON('/api/oracle/connectors');
+      stripeLive = !!(r2 && r2.connectors && r2.connectors.stripe && r2.connectors.stripe.configured);
+    } catch (_e) {}
+    const nodes = document.querySelectorAll('.ox-bc');
+    nodes.forEach(function (node) {
+      const src = node.dataset.source;
+      const meta = document.getElementById('ox-bc-meta-' + src);
+      let isLive = false;
+      if (src === 'stripe') isLive = stripeLive;
+      else isLive = !!(live[src] && live[src].configured);
+      const count = counts[src] || 0;
+      node.classList.remove('is-live', 'is-demo');
+      node.classList.add(isLive ? 'is-live' : 'is-demo');
+      if (meta) {
+        if (isLive) {
+          meta.textContent = count > 0 ? (count + ' artifacts · live') : 'live';
+        } else {
+          meta.textContent = count > 0 ? (count + ' artifacts · preview') : 'preview';
+        }
+      }
+    });
+  }
+
+  function renderSignal(sig) {
+    const card = document.createElement('div');
+    card.className = 'ox-signal' + (sig.resolved ? ' resolved' : '');
+    const top = document.createElement('div');
+    top.className = 'ox-signal-top';
+    const pri = document.createElement('span');
+    pri.className = 'ox-pri ' + (sig.priority || 'P2').toLowerCase();
+    pri.textContent = sig.priority || 'P2';
+    top.appendChild(pri);
+    const rule = document.createElement('span');
+    rule.className = 'ox-signal-rule';
+    rule.textContent = (sig.rule || '').replace(/_/g, ' ');
+    top.appendChild(rule);
+    const conf = document.createElement('span');
+    conf.className = 'ox-signal-conf ' + (sig.confidence || 'Medium').toLowerCase();
+    conf.textContent = (sig.confidence || 'Medium') + ' confidence';
+    top.appendChild(conf);
+    card.appendChild(top);
+
+    const headline = document.createElement('div');
+    headline.className = 'ox-signal-headline';
+    headline.textContent = sig.one_liner || '';
+    card.appendChild(headline);
+
+    const meta = document.createElement('div');
+    meta.className = 'ox-signal-meta';
+    meta.textContent = (sig.involved_artifact_ids || []).length + ' artifacts · ' +
+                       (sig.detected_at || '').replace('T', ' ').slice(0, 16) + ' UTC';
+    card.appendChild(meta);
+
+    // Compact 4-advisor row
+    const panel = document.createElement('div');
+    panel.className = 'ox-panel';
+    panel.style.marginTop = '.6rem';
+    const advisors = [
+      { role: 'Strategy', text: sig.strategy_view, c: '#9c5c2a' },
+      { role: 'Finance', text: sig.finance_view, c: '#3f7a55' },
+      { role: 'Technology', text: sig.tech_view, c: '#3a6dad' },
+      { role: 'Contrarian', text: sig.contrarian_view, c: '#a83a22' },
+    ];
+    advisors.forEach(function (a) {
+      const c = document.createElement('div');
+      c.className = 'ox-panel-card';
+      c.style.setProperty('--c', a.c);
+      const r = document.createElement('div');
+      r.className = 'ox-panel-role';
+      r.textContent = a.role;
+      const t = document.createElement('div');
+      t.className = 'ox-panel-text';
+      t.textContent = a.text || ('[' + a.role + ' offline]');
+      c.appendChild(r);
+      c.appendChild(t);
+      panel.appendChild(c);
+    });
+    card.appendChild(panel);
+
+    // Actions list
+    if (sig.actions && sig.actions.length) {
+      const ah = document.createElement('div');
+      ah.className = 'ox-actions-head';
+      ah.style.marginTop = '.8rem';
+      ah.textContent = 'Recommended actions';
+      card.appendChild(ah);
+      const ul = document.createElement('ul');
+      ul.className = 'ox-action-list';
+      sig.actions.forEach(function (a) {
+        const li = document.createElement('li');
+        li.textContent = a;
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+    }
+
+    // CTA
+    const cta = document.createElement('div');
+    cta.className = 'ox-signal-actions';
+    const resolve = document.createElement('button');
+    resolve.type = 'button';
+    resolve.className = 'ox-mini-btn';
+    resolve.textContent = sig.resolved ? 'Re-open' : 'Mark resolved';
+    resolve.addEventListener('click', async function () {
+      resolve.disabled = true;
+      try {
+        await fetchJSON(BRAIN.resolve, {
+          method: 'POST',
+          body: JSON.stringify({ id: sig.id, resolved: !sig.resolved }),
+        });
+        await loadBrainSignals();
+      } catch (e) {
+        flash(e.message || 'Resolve failed', 'error');
+        resolve.disabled = false;
+      }
+    });
+    cta.appendChild(resolve);
+    card.appendChild(cta);
+
+    return card;
+  }
+
+  async function loadBrainSignals() {
+    const wrap = document.getElementById('ox-brain-signals');
+    if (!wrap) return;
+    let signals = [];
+    try {
+      const r = await fetchJSON(BRAIN.signals + '?limit=10');
+      signals = (r && r.signals) || [];
+    } catch (_e) {}
+    wrap.innerHTML = '';
+    if (!signals.length) {
+      const e = document.createElement('div');
+      e.className = 'ox-empty';
+      const h = document.createElement('h3');
+      h.textContent = 'Brain is ready.';
+      const p = document.createElement('p');
+      p.textContent = 'Run a brain scan to detect cross-source signals across Slack, GitHub, Linear and Stripe.';
+      e.appendChild(h); e.appendChild(p);
+      wrap.appendChild(e);
+      return;
+    }
+    signals.forEach(function (s) { wrap.appendChild(renderSignal(s)); });
+  }
+
+  async function runBrainScan() {
+    const btn = document.getElementById('ox-brain-rescan');
+    const original = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Scanning...'; }
+    try {
+      const data = await fetchJSON(BRAIN.scan, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      });
+      flash(
+        (data.signals_detected || 0) + ' signal' +
+        ((data.signals_detected === 1) ? '' : 's') +
+        ' detected · ' + (data.mode || 'demo') + ' mode'
+      );
+      await loadBrainConnectors();
+      await loadBrainSignals();
+    } catch (e) {
+      flash(e.message || 'Brain scan failed', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = original; }
+    }
+  }
+
+  function renderAskResult(answer, citations) {
+    const result = document.getElementById('ox-ask-result');
+    const ans = document.getElementById('ox-ask-answer');
+    const cites = document.getElementById('ox-ask-citations');
+    if (!result || !ans || !cites) return;
+    ans.textContent = answer || '';
+    cites.innerHTML = '';
+    (citations || []).forEach(function (c, i) {
+      const a = document.createElement(c.url ? 'a' : 'div');
+      a.className = 'ox-ask-cite';
+      if (c.url) { a.href = c.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      const num = document.createElement('span');
+      num.className = 'ox-ask-cite-num';
+      num.textContent = '[' + (i + 1) + ']';
+      const body = document.createElement('div');
+      body.textContent = c.title || '';
+      const src = document.createElement('span');
+      src.className = 'ox-ask-cite-source';
+      src.textContent = SOURCE_LABELS[c.source] || c.source || '';
+      a.appendChild(num); a.appendChild(body); a.appendChild(src);
+      cites.appendChild(a);
+    });
+    result.hidden = false;
+  }
+
+  async function askBrain(question) {
+    const btn = document.getElementById('ox-ask-btn');
+    const input = document.getElementById('ox-ask-input');
+    if (!question) return;
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    if (input) input.disabled = true;
+    try {
+      const data = await fetchJSON(BRAIN.query, {
+        method: 'POST',
+        body: JSON.stringify({ question: question }),
+      });
+      renderAskResult(data.answer || '', data.citations || []);
+    } catch (e) {
+      flash(e.message || 'Brain query failed', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Ask'; }
+      if (input) input.disabled = false;
+    }
+  }
+
+  function initBrain() {
+    const form = document.getElementById('ox-ask-form');
+    const input = document.getElementById('ox-ask-input');
+    const rescan = document.getElementById('ox-brain-rescan');
+    if (form) {
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        askBrain((input.value || '').trim());
+      });
+    }
+    document.querySelectorAll('.ox-ask-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        const q = chip.dataset.q || '';
+        if (input) input.value = q;
+        askBrain(q);
+      });
+    });
+    if (rescan) rescan.addEventListener('click', runBrainScan);
+    loadBrainConnectors();
+    // Auto-fire a brain scan on first load if no signals exist yet so the
+    // demo dashboard never shows an empty state.
+    fetchJSON(BRAIN.signals + '?limit=1').then(function (r) {
+      if (!r || !r.signals || !r.signals.length) {
+        runBrainScan();
+      } else {
+        loadBrainSignals();
+      }
+    }).catch(function () { runBrainScan(); });
   }
   
   // --- AUDIT LOG STREAM ---
