@@ -95,19 +95,14 @@
 
   <!-- ══ HERO ─────────────────────────────────────────── -->
   <section class="fs-hero reveal" aria-label="Hero">
-    <div class="fs-grid-bg" aria-hidden="true"></div>
-    <div class="fs-hero-aura" aria-hidden="true"></div>
+    <div class="fs-hero-vignette" aria-hidden="true"></div>
     <div class="fs-hero-inner">
-      <a class="fs-eyebrow" href="/oracle">
-        <span class="fs-eyebrow-dot" aria-hidden="true"></span>
-        The Company Brain
-        <span class="fs-eyebrow-arrow" aria-hidden="true">&rarr;</span>
-      </a>
       <h1 class="fs-headline">
-        <span class="fs-line">Your company,</span>
-        <span class="fs-line"><em>queryable by default.</em></span>
+        <span class="fs-line">A connective layer</span>
+        <span class="fs-line">for the modern</span>
+        <span class="fs-line"><em>company.</em></span>
       </h1>
-      <p class="fs-sub">Connect everything. Detect what matters. Close the loop.</p>
+      <p class="fs-sub">Fourseat reads every signal across your stack and turns it into a single board-grade intelligence layer. Close the loop on revenue, engineering, and customer feedback.</p>
       <div class="fs-cta">
         <a class="fs-btn fs-btn-primary" href="/oracle">
           <span>Open Oracle</span>
@@ -115,69 +110,69 @@
         </a>
         <button type="button" class="fs-btn fs-btn-ghost" data-action="open-waitlist">Get early access</button>
       </div>
-      <div class="fs-status" aria-live="polite">
-        <span class="fs-status-dot" aria-hidden="true"></span>
-        <span class="fs-status-label">Reading</span>
-        <span class="fs-status-stream" id="fs-status-stream">
-          <span class="fs-status-item">5 sources connected</span>
-          <span class="fs-status-item">2,847 Stripe events ingested</span>
-          <span class="fs-status-item">412 GitHub commits tracked</span>
-          <span class="fs-status-item">89 Linear tickets scored</span>
-          <span class="fs-status-item">1,204 Slack messages analyzed</span>
-          <span class="fs-status-item">cross-source scan: 89ms</span>
-        </span>
-      </div>
     </div>
 
-    <!-- Animated verdict cards + sparkline -->
-    <div class="fs-hero-stage" aria-hidden="true">
-      <div class="fs-card fs-card-1">
-        <div class="fs-card-pill fs-card-pill-p0">P0 &middot; Churn cluster</div>
-        <div class="fs-card-headline">3.3x baseline</div>
-        <div class="fs-card-sub">Detected at 09:14 UTC &middot; $213,328 MRR</div>
+    <!-- Editorial product composition: one composed dashboard frame -->
+    <figure class="fs-stage" aria-label="Oracle dashboard composition">
+      <div class="fs-stage-frame">
+        <div class="fs-stage-chrome">
+          <span class="fs-stage-dot"></span>
+          <span class="fs-stage-dot"></span>
+          <span class="fs-stage-dot"></span>
+          <span class="fs-stage-url">fourseat.dev / oracle</span>
+        </div>
+        <div class="fs-stage-body">
+          <div class="fs-stage-hd">
+            <div>
+              <div class="fs-stage-eyebrow">Revenue Health · live</div>
+              <div class="fs-stage-title">Wednesday, 09:14 UTC</div>
+            </div>
+            <div class="fs-stage-pri">P0</div>
+          </div>
+
+          <div class="fs-stage-headline">
+            Churn cluster, <em>3.3&times;&nbsp;baseline.</em>
+          </div>
+          <div class="fs-stage-quote">
+            &ldquo;Treat as a positioning signal, not retention. Investigate which ICP just stopped fitting.&rdquo;
+            <span class="fs-stage-byline">— Chair&rsquo;s verdict</span>
+          </div>
+
+          <svg class="fs-stage-chart" viewBox="0 0 520 140" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="fsStageGrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g stroke="rgba(53,42,28,.08)" stroke-width="1">
+              <line x1="0" x2="520" y1="35" y2="35"/>
+              <line x1="0" x2="520" y1="70" y2="70"/>
+              <line x1="0" x2="520" y1="105" y2="105"/>
+            </g>
+            <path d="M0 110 L40 96 L80 84 L120 70 L160 56 L200 44 L240 36 L280 30 L320 38 L360 50 L400 70 L440 92 L480 110 L520 122 L520 140 L0 140 Z" fill="url(#fsStageGrad)"/>
+            <path class="fs-stage-line" d="M0 110 L40 96 L80 84 L120 70 L160 56 L200 44 L240 36 L280 30 L320 38 L360 50 L400 70 L440 92 L480 110 L520 122"
+                  fill="none" stroke="#9c5c2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
+            <circle class="fs-stage-mark" cx="280" cy="30" r="5" fill="#9c5c2a"/>
+            <circle class="fs-stage-mark fs-stage-mark-pulse" cx="280" cy="30" r="10" fill="none" stroke="#9c5c2a" stroke-width="1"/>
+          </svg>
+
+          <div class="fs-stage-grid">
+            <div class="fs-stage-row"><span class="fs-stage-key">MRR</span><span class="fs-stage-val">$213,328</span></div>
+            <div class="fs-stage-row"><span class="fs-stage-key">NRR</span><span class="fs-stage-val">115.9%</span></div>
+            <div class="fs-stage-row"><span class="fs-stage-key">Churn (7d)</span><span class="fs-stage-val fs-stage-val-bad">3.3&times;</span></div>
+            <div class="fs-stage-row"><span class="fs-stage-key">Top customer</span><span class="fs-stage-val">21.6%</span></div>
+          </div>
+
+          <div class="fs-stage-foot">
+            <span class="fs-stage-foot-dot" style="background:#9c5c2a"></span>
+            <span class="fs-stage-foot-text">4 advisors · synthesis ready</span>
+            <span class="fs-stage-foot-arrow" aria-hidden="true">&rarr;</span>
+          </div>
+        </div>
       </div>
-      <div class="fs-card fs-card-2">
-        <div class="fs-card-pill fs-card-pill-conf">High confidence</div>
-        <div class="fs-card-quote">"Treat this as a positioning signal, not retention. Investigate which ICP just stopped fitting."</div>
-        <div class="fs-card-byline">Chair's verdict</div>
-      </div>
-      <div class="fs-card fs-card-3">
-        <div class="fs-card-row">
-          <span class="fs-dot" style="background:#9c5c2a"></span>
-          <span class="fs-card-mini">Strategy &middot; positioning signal</span>
-        </div>
-        <div class="fs-card-row">
-          <span class="fs-dot" style="background:#3f7a55"></span>
-          <span class="fs-card-mini">Finance &middot; one quarter NRR at risk</span>
-        </div>
-        <div class="fs-card-row">
-          <span class="fs-dot" style="background:#3a6dad"></span>
-          <span class="fs-card-mini">Tech &middot; cross-ref last 14d releases</span>
-        </div>
-        <div class="fs-card-row">
-          <span class="fs-dot" style="background:#a83a22"></span>
-          <span class="fs-card-mini">Contrarian &middot; maybe accelerate it</span>
-        </div>
-      </div>
-      <div class="fs-card fs-card-4">
-        <div class="fs-card-mini-label">MRR &middot; trailing 30d</div>
-        <svg class="fs-spark" viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="fsSparkGrad" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="#9c5c2a" stop-opacity="0.32"/>
-              <stop offset="100%" stop-color="#9c5c2a" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path class="fs-spark-fill" d="M0 50 L0 32 L18 28 L36 22 L54 18 L72 14 L90 12 L108 16 L126 22 L144 30 L162 36 L180 42 L198 50 L220 54 L220 60 L0 60 Z" fill="url(#fsSparkGrad)"/>
-          <path class="fs-spark-line" d="M0 32 L18 28 L36 22 L54 18 L72 14 L90 12 L108 16 L126 22 L144 30 L162 36 L180 42 L198 50 L220 54" fill="none" stroke="#9c5c2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
-          <circle class="fs-spark-cursor" cx="220" cy="54" r="4" fill="#9c5c2a"/>
-        </svg>
-        <div class="fs-card-mini-row">
-          <span class="fs-card-mini-stat">$213.3k</span>
-          <span class="fs-card-mini-delta">-5.87%</span>
-        </div>
-      </div>
-    </div>
+      <figcaption class="fs-stage-caption">Oracle, 09:14 UTC · live verdict on the demo workspace.</figcaption>
+    </figure>
   </section>
 
   <!-- ══ LOGO MARQUEE ─────────────────────────────────── -->

@@ -2613,3 +2613,221 @@ body:not([data-theme='light']) .fs-flow-svg path{stroke:rgba(232,186,131,.3)}
     opacity:1 !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+ * EDITORIAL HERO REDESIGN
+ * Replaces the floating-card composition with one composed dashboard frame
+ * (Neuralink-feel). Quiets the gimmicky animations so the page reads as a
+ * product page, not an AI demo.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* Override the old hero layout: keep the same container but lose the dot
+ * grid and rebalance the columns for a single hero figure. */
+.fs-hero{
+  position:relative;
+  max-width:1240px;
+  margin:0 auto;
+  padding:160px 28px 96px;
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.12fr);
+  gap:5rem;
+  align-items:center;
+  min-height:78vh;
+}
+.fs-hero-vignette{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 540px at 22% 32%,rgba(228,196,158,.36),transparent 60%),
+    radial-gradient(720px 480px at 86% 70%,rgba(196,148,98,.18),transparent 60%);
+  filter:blur(1px);
+}
+/* Hide the dot-grid backdrop on the home hero for the editorial pass. */
+.fs-grid-bg{display:none !important}
+
+.fs-hero .fs-headline{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(3.4rem,6.4vw,6rem);
+  line-height:.99;
+  letter-spacing:-.028em;
+  margin:0 0 1.6rem;
+  color:#1c150c;
+  font-weight:400;
+}
+.fs-hero .fs-headline em{
+  color:rgba(28,21,12,.5);
+  font-style:italic;font-weight:400;
+}
+.fs-hero .fs-sub{
+  font-size:clamp(1.05rem,1.4vw,1.25rem);
+  color:rgba(53,42,28,.72);
+  line-height:1.5;max-width:480px;
+  margin:0 0 2.4rem;
+}
+.fs-hero .fs-eyebrow{display:none}  /* drop the pill chip; cleaner editorial */
+
+/* Single composed product frame */
+.fs-stage{
+  position:relative;z-index:1;
+  margin:0;
+  display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
+}
+.fs-stage-frame{
+  width:100%;max-width:600px;
+  background:#fbf3e3;
+  border:1px solid rgba(156,92,42,.22);
+  border-radius:16px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.5) inset,
+    0 24px 60px rgba(86,57,28,.18),
+    0 4px 14px rgba(86,57,28,.10);
+  overflow:hidden;
+  transform:rotate(-1deg) translateY(0);
+  transition:transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.fs-hero.active .fs-stage-frame,
+.fs-hero.is-visible .fs-stage-frame{transform:rotate(-.5deg) translateY(0)}
+.fs-stage-chrome{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.85rem 1rem;
+  border-bottom:1px solid rgba(156,92,42,.14);
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.18));
+}
+.fs-stage-dot{width:9px;height:9px;border-radius:50%;background:rgba(156,92,42,.22)}
+.fs-stage-dot:nth-child(1){background:rgba(168,58,34,.42)}
+.fs-stage-dot:nth-child(2){background:rgba(156,92,42,.42)}
+.fs-stage-dot:nth-child(3){background:rgba(63,122,85,.42)}
+.fs-stage-url{
+  margin-left:.7rem;font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;color:rgba(53,42,28,.55);letter-spacing:.02em;
+}
+
+.fs-stage-body{padding:1.6rem 1.8rem 1.8rem}
+
+.fs-stage-hd{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+  margin-bottom:1.4rem;
+}
+.fs-stage-eyebrow{
+  font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:#9c5c2a;
+}
+.fs-stage-eyebrow::before{
+  content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3f7a55;margin-right:.45rem;vertical-align:middle;
+  box-shadow:0 0 0 0 rgba(63,122,85,.5);animation:fsStagePulse 2.4s infinite;
+}
+@keyframes fsStagePulse{
+  0%{box-shadow:0 0 0 0 rgba(63,122,85,.5)}
+  70%{box-shadow:0 0 0 10px rgba(63,122,85,0)}
+  100%{box-shadow:0 0 0 0 rgba(63,122,85,0)}
+}
+.fs-stage-title{
+  font-family:'Instrument Serif',serif;
+  font-size:1.3rem;line-height:1.1;color:#1c150c;margin-top:.2rem;
+}
+.fs-stage-pri{
+  font-size:.74rem;font-weight:700;letter-spacing:.08em;
+  color:#a83a22;background:rgba(168,58,34,.12);
+  border:1px solid rgba(168,58,34,.32);
+  padding:.35rem .55rem;border-radius:6px;
+  flex-shrink:0;
+}
+
+.fs-stage-headline{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(1.7rem,2.6vw,2.3rem);
+  line-height:1.1;letter-spacing:-.018em;
+  color:#1c150c;margin:0 0 .8rem;
+}
+.fs-stage-headline em{color:#9c5c2a;font-style:italic;font-weight:400}
+
+.fs-stage-quote{
+  font-size:.92rem;line-height:1.55;color:rgba(53,42,28,.85);
+  padding-left:.85rem;border-left:2px solid #9c5c2a;
+  margin:0 0 1.4rem;
+}
+.fs-stage-byline{
+  display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(53,42,28,.55);margin-top:.4rem;font-weight:500;
+}
+
+.fs-stage-chart{
+  width:100%;height:130px;display:block;margin:0 0 1.4rem;
+}
+.fs-stage-line{
+  stroke-dasharray:100;stroke-dashoffset:100;
+  animation:fsStageDraw 2.6s .35s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes fsStageDraw{to{stroke-dashoffset:0}}
+.fs-stage-mark{opacity:0;animation:fsStageMark .6s 2.6s ease forwards}
+@keyframes fsStageMark{to{opacity:1}}
+.fs-stage-mark-pulse{
+  transform-origin:280px 30px;
+  animation:fsStageMarkPulse 2.6s 3s infinite;
+  opacity:0;
+}
+@keyframes fsStageMarkPulse{
+  0%{opacity:.7;r:5}
+  80%{opacity:0;r:18}
+  100%{opacity:0;r:18}
+}
+
+.fs-stage-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:.55rem 1.2rem;
+  margin-bottom:1.3rem;
+  padding:1rem 0;
+  border-top:1px solid rgba(156,92,42,.14);
+  border-bottom:1px solid rgba(156,92,42,.14);
+}
+.fs-stage-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;
+}
+.fs-stage-key{
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(53,42,28,.55);font-weight:500;
+}
+.fs-stage-val{
+  font-family:'Instrument Serif',serif;font-size:1.1rem;color:#1c150c;
+}
+.fs-stage-val-bad{color:#a83a22}
+
+.fs-stage-foot{
+  display:flex;align-items:center;gap:.55rem;
+  font-size:.78rem;color:rgba(53,42,28,.7);
+  padding-top:.2rem;
+}
+.fs-stage-foot-dot{width:6px;height:6px;border-radius:50%}
+.fs-stage-foot-arrow{margin-left:auto;color:#9c5c2a;font-size:1rem}
+
+.fs-stage-caption{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:rgba(53,42,28,.5);letter-spacing:.04em;
+  padding-left:.4rem;
+}
+
+/* Hide the old floating-card layer, keep the legacy CSS but disable it. */
+.fs-hero-stage{display:none !important}
+.fs-status{display:none !important}
+
+/* Quiet the radar sweep on Moment 2 (no rotating gradient cone). */
+.fs-radar-sweep{display:none !important}
+
+/* Quiet the typing-dot animation on Moment 3 - feels like an AI demo. */
+.fs-debate-typing{display:none !important}
+.fs-debate-final{margin-top:.8rem}
+
+/* Smaller, less hyperactive deck pages bounce. */
+.fs-deck-pages span{animation-duration:3.4s;animation-timing-function:ease-in-out}
+
+@media (max-width:960px){
+  .fs-hero{grid-template-columns:1fr;gap:3rem;padding-top:120px;min-height:auto}
+  .fs-stage-frame{max-width:520px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .fs-stage-line,.fs-stage-mark,.fs-stage-mark-pulse,.fs-stage-eyebrow::before{
+    animation:none !important;
+    stroke-dashoffset:0 !important;
+    opacity:1 !important;
+  }
+}
